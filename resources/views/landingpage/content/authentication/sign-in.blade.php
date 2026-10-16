@@ -5,13 +5,13 @@
     <style>
         /* Color palette dari landing page */
         :root {
-            --primary-red: #E60000;
-            --primary-dark-red: #B71C1C;
-            --primary-orange: #FF5733;
-            --primary-light: #FF6B6B;
-            --bg-light: #F2F2F2;
-            --text-dark: #333333;
-            --text-gray: #666666;
+            --primary-blue: #0194F3;
+            --primary-dark-blue: #0064D2;
+            --primary-light-blue: #33ADFF;
+            --primary-accent: #0F294D;
+            --bg-light: #F7F9FC;
+            --text-dark: #0F294D;
+            --text-gray: #687176;
         }
 
         /* Full page background */
@@ -32,20 +32,20 @@
 
         /* Gradient background dengan warna landing page */
         .bg-gradient-primary {
-            background: linear-gradient(135deg, #E60000 0%, #B71C1C 50%, #FF5733 100%);
+            background: linear-gradient(135deg, #0194F3 0%, #0064D2 50%, #33ADFF 100%);
         }
 
         .bg-gradient-card {
-            background: linear-gradient(145deg, #ffffff 0%, #FFF5F5 100%);
+            background: linear-gradient(145deg, #ffffff 0%, #E6F4FF 100%);
         }
 
         .dark .bg-gradient-card {
-            background: linear-gradient(145deg, #1a1a2e 0%, #2d1b2e 100%);
+            background: linear-gradient(145deg, #1a1a2e 0%, #0F294D 100%);
         }
 
-        /* Custom button dengan warna merah */
+        /* Custom button dengan warna biru */
         .btn-primary {
-            background: linear-gradient(135deg, #E60000 0%, #B71C1C 100%);
+            background: linear-gradient(135deg, #0194F3 0%, #0064D2 100%);
             color: white;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
@@ -69,26 +69,64 @@
         }
 
         .btn-primary:hover {
-            background: linear-gradient(135deg, #FF5733 0%, #E60000 100%);
+            background: linear-gradient(135deg, #33ADFF 0%, #0194F3 100%);
             transform: translateY(-3px);
-            box-shadow: 0 15px 30px -8px rgba(230, 0, 0, 0.5);
+            box-shadow: 0 15px 30px -8px rgba(1, 148, 243, 0.5);
         }
 
         .btn-primary:active {
             transform: translateY(0px);
-            box-shadow: 0 5px 15px -5px rgba(230, 0, 0, 0.4);
+            box-shadow: 0 5px 15px -5px rgba(1, 148, 243, 0.4);
         }
 
-        /* Input focus dengan warna merah */
+        /* Button Kembali ke Beranda */
+        .btn-back-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-back-home:hover {
+            background: rgba(255, 255, 255, 0.95);
+            color: #0194F3;
+            border-color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(1, 148, 243, 0.3);
+        }
+
+        .btn-back-home:hover svg {
+            transform: translateX(-3px);
+        }
+
+        .btn-back-home svg {
+            transition: transform 0.3s ease;
+        }
+
+        .btn-back-home:active {
+            transform: translateY(0);
+        }
+
+        /* Input focus dengan warna biru */
         .input-primary {
             transition: all 0.3s ease;
-            background-color: #FFF5F5;
-            border: 2px solid #FFD4D4;
+            background-color: #E6F4FF;
+            border: 2px solid #B3E0FF;
         }
 
         .input-primary:focus {
-            border-color: #E60000;
-            box-shadow: 0 0 0 4px rgba(230, 0, 0, 0.1);
+            border-color: #0194F3;
+            box-shadow: 0 0 0 4px rgba(1, 148, 243, 0.1);
             background-color: #ffffff;
         }
 
@@ -99,8 +137,8 @@
 
         .dark .input-primary:focus {
             background-color: #1f2937;
-            box-shadow: 0 0 0 4px rgba(230, 0, 0, 0.2);
-            border-color: #E60000;
+            box-shadow: 0 0 0 4px rgba(1, 148, 243, 0.2);
+            border-color: #0194F3;
         }
 
         .input-primary-error {
@@ -112,9 +150,9 @@
             box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1) !important;
         }
 
-        /* Link styles dengan warna merah */
+        /* Link styles dengan warna biru */
         .link-primary {
-            color: #E60000;
+            color: #0194F3;
             transition: all 0.3s ease;
             position: relative;
         }
@@ -126,7 +164,7 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: linear-gradient(90deg, #E60000, #FF5733);
+            background: linear-gradient(90deg, #0194F3, #33ADFF);
             transition: width 0.3s ease;
         }
 
@@ -135,12 +173,12 @@
         }
 
         .link-primary:hover {
-            color: #FF5733;
+            color: #33ADFF;
         }
 
         /* Checkbox custom */
         .checkbox-primary {
-            accent-color: #E60000;
+            accent-color: #0194F3;
             transition: all 0.2s ease;
             cursor: pointer;
         }
@@ -231,15 +269,15 @@
         }
 
         .dark .bg-primary-pale {
-            background-color: rgba(230, 0, 0, 0.08);
+            background-color: rgba(1, 148, 243, 0.08);
         }
 
         .dark .text-primary-dark {
-            color: #FF6B6B;
+            color: #33ADFF;
         }
 
         .dark .border-primary-dark {
-            border-color: #FF6B6B;
+            border-color: #33ADFF;
         }
 
         /* Hero Background Overlay - Full Page */
@@ -252,17 +290,17 @@
             width: 100vw;
             height: 100vh;
             background: linear-gradient(135deg,
-                    rgba(230, 0, 0, 0.4) 0%,
-                    rgba(183, 28, 28, 0.3) 50%,
-                    rgba(255, 87, 51, 0.2) 100%);
+                    rgba(1, 148, 243, 0.4) 0%,
+                    rgba(0, 100, 210, 0.3) 50%,
+                    rgba(15, 41, 77, 0.2) 100%);
             z-index: 1;
         }
 
         .dark .hero-overlay {
             background: linear-gradient(135deg,
-                    rgba(183, 28, 28, 0.5) 0%,
-                    rgba(93, 14, 65, 0.4) 50%,
-                    rgba(0, 34, 77, 0.4) 100%);
+                    rgba(0, 100, 210, 0.5) 0%,
+                    rgba(15, 41, 77, 0.4) 50%,
+                    rgba(3, 30, 60, 0.4) 100%);
         }
 
         /* Content wrapper */
@@ -344,12 +382,12 @@
         }
 
         .toast-error {
-            border-left-color: #E60000;
-            background: #fef2f2;
+            border-left-color: #0194F3;
+            background: #E6F4FF;
         }
 
         .toast-error .toast-icon {
-            color: #E60000;
+            color: #0194F3;
         }
 
         .dark .toast-success {
@@ -358,8 +396,8 @@
         }
 
         .dark .toast-error {
-            background: #2e1a1a;
-            border-left-color: #ff6b6b;
+            background: #0F294D;
+            border-left-color: #33ADFF;
         }
 
         .dark .toast {
@@ -444,7 +482,7 @@
         }
 
         .toast-error .toast-progress {
-            color: #E60000;
+            color: #0194F3;
         }
 
         @keyframes progressShrink {
@@ -483,8 +521,19 @@
             <div class="decorative-circle decorative-circle-3 pulse-slow"></div>
             <div class="decorative-circle decorative-circle-4 pulse-slow"></div>
 
+            <!-- Tombol Kembali ke Beranda - Fixed di Kiri -->
+            <div class="fixed top-6 left-6 z-20 card-entrance">
+                <a href="{{ url('/') }}" class="btn-back-home">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Kembali 
+                </a>
+            </div>
+
             <!-- Logo -->
-            <a href="#"
+            <a href="{{ url('/') }}"
                 class="flex items-center justify-center mb-8 text-2xl font-semibold lg:mb-10 relative z-10 logo-shimmer">
                 <img src="{{ asset('landingpage/home.png') }}" class="mr-4 h-11" alt="adakamar.id Logo">
                 <span class="text-white dark:text-white font-bold">adakamar.id</span>
@@ -496,11 +545,11 @@
             <!-- Card Login -->
             <div class="login-card-wrapper">
                 <div
-                    class="w-full p-6 sm:p-8 bg-white/95 dark:bg-gray-800/95 rounded-3xl shadow-2xl relative z-10 border border-[#FFD4D4] dark:border-gray-700 card-entrance backdrop-blur-sm">
+                    class="w-full p-6 sm:p-8 bg-white/95 dark:bg-gray-800/95 rounded-3xl shadow-2xl relative z-10 border border-[#B3E0FF] dark:border-gray-700 card-entrance backdrop-blur-sm">
 
                     <!-- Card Header -->
                     <div class="text-center card-entrance card-entrance-delay-1">
-                        <h2 class="text-2xl font-bold text-[#E60000] dark:text-[#FF6B6B]">
+                        <h2 class="text-2xl font-bold text-[#0194F3] dark:text-[#33ADFF]">
                             Selamat Datang Kembali
                         </h2>
                         <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -515,7 +564,7 @@
                         <!-- Username -->
                         <div class="card-entrance card-entrance-delay-2">
                             <label for="name" class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                                <span class="text-[#E60000] dark:text-[#FF6B6B]">●</span> Username
+                                <span class="text-[#0194F3] dark:text-[#33ADFF]">●</span> Username
                             </label>
                             <input type="text" name="name" id="name" value="{{ old('name') }}"
                                 class="input-primary w-full p-3 rounded-xl text-gray-900 sm:text-sm dark:text-white @error('name') input-primary-error @enderror"
@@ -528,7 +577,7 @@
                         <!-- Password -->
                         <div class="card-entrance card-entrance-delay-3">
                             <label for="password" class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                                <span class="text-[#E60000] dark:text-[#FF6B6B]">●</span> Password
+                                <span class="text-[#0194F3] dark:text-[#33ADFF]">●</span> Password
                             </label>
                             <div class="relative">
                                 <input type="password" name="password" id="password" placeholder="••••••••"
@@ -556,14 +605,14 @@
                                 <input type="checkbox" name="remember" class="checkbox-primary w-4 h-4 rounded">
                                 <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Ingat saya</span>
                             </label>
-                            <a href="#" class="text-sm link-primary">
+                            <a href="{{ route('password.request') }}" class="text-sm link-primary">
                                 Lupa password?
                             </a>
                         </div>
 
                         <!-- Submit Button -->
                         <button type="submit"
-                            class="btn-primary w-full px-5 py-3.5 rounded-xl font-medium text-sm transition-all duration-300 shadow-lg shadow-red-500/20 hover:shadow-red-500/40 card-entrance card-entrance-delay-4">
+                            class="btn-primary w-full px-5 py-3.5 rounded-xl font-medium text-sm transition-all duration-300 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 card-entrance card-entrance-delay-4">
                             <span class="flex items-center justify-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -600,13 +649,13 @@
 
                     if (type === 'text') {
                         eyeIcon.innerHTML = `
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
-                        `;
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+                                        `;
                     } else {
                         eyeIcon.innerHTML = `
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                        `;
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        `;
                     }
                 });
             }
@@ -620,21 +669,21 @@
                 const toast = document.createElement('div');
                 toast.className = `toast toast-${type}`;
                 toast.innerHTML = `
-                    <div class="toast-icon">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            ${type === 'success' 
-                                ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
-                                : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
-                            }
-                        </svg>
-                    </div>
-                    <div class="toast-content">
-                        <div class="toast-title">${title}</div>
-                        <div class="toast-message">${message}</div>
-                    </div>
-                    <button class="toast-close" onclick="this.closest('.toast').remove()">&times;</button>
-                    <div class="toast-progress" style="animation-duration: ${duration}ms;"></div>
-                `;
+                                    <div class="toast-icon">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            ${type === 'success'
+                        ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
+                        : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
+                    }
+                                        </svg>
+                                    </div>
+                                    <div class="toast-content">
+                                        <div class="toast-title">${title}</div>
+                                        <div class="toast-message">${message}</div>
+                                    </div>
+                                    <button class="toast-close" onclick="this.closest('.toast').remove()">&times;</button>
+                                    <div class="toast-progress" style="animation-duration: ${duration}ms;"></div>
+                                `;
 
                 toastContainer.appendChild(toast);
 
@@ -670,36 +719,31 @@
             // SHOW TOAST FROM SESSION (MENGGUNAKAN login_error)
             // ============================================================
 
-            // Cek login_error dari session (khusus untuk error login)
             @if (session('login_error'))
                 showToast('error', 'Login Gagal!', '{{ session('login_error') }}');
             @endif
 
-            // Cek success dari session
             @if (session('success'))
                 showToast('success', 'Berhasil!', '{{ session('success') }}');
             @endif
 
-            // Cek error dari session (selain login_error)
             @if (session('error') && !session('login_error'))
                 showToast('error', 'Gagal!', '{{ session('error') }}');
             @endif
 
-            // Cek error dari Laravel validation (withErrors)
-            @if ($errors->any())
-                const errorMessages = @json($errors->all());
-                const firstError = errorMessages[0] || 'Terjadi kesalahan. Silakan coba lagi.';
-                showToast('error', 'Login Gagal!', firstError);
-            @endif
+                @if ($errors->any())
+                    const errorMessages = @json($errors->all());
+                    const firstError = errorMessages[0] || 'Terjadi kesalahan. Silakan coba lagi.';
+                    showToast('error', 'Login Gagal!', firstError);
+                @endif
 
-            // ============================================================
-            // HANDLE FORM SUBMISSION
-            // ============================================================
-            const loginForm = document.getElementById('loginForm');
+                            // ============================================================
+                            // HANDLE FORM SUBMISSION
+                            // ============================================================
+                            const loginForm = document.getElementById('loginForm');
 
             if (loginForm) {
                 loginForm.addEventListener('submit', function (e) {
-                    // Tampilkan toast loading
                     showToast('success', 'Memproses...', 'Sedang memverifikasi akun Anda.', 3000);
                 });
             }

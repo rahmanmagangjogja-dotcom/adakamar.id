@@ -20,30 +20,64 @@ class ArticleService
     }
 
     /**
-     * Daftar artikel.
+     * Daftar artikel untuk admin.
      */
     public function getArticles(
         ?string $keyword = null,
         int $perPage = 10
     ): LengthAwarePaginator {
         return $this->articleRepository
-            ->getAll($keyword, $perPage);
+            ->getAll(
+                $keyword,
+                $perPage
+            );
     }
 
     /**
-     * Detail artikel.
+     * Artikel Published untuk landing page.
+     *
+     * Mengambil artikel yang:
+     * - status = Published
+     * - published_at tidak null
+     * - diurutkan dari artikel terbaru
      */
-    public function getArticle(int $id): ?Article
-    {
+    public function getPublishedArticles(
+        int $limit = 6
+    ) {
+        return $this->articleRepository
+            ->getPublished($limit);
+    }
+
+    /**
+     * Detail artikel berdasarkan ID.
+     *
+     * Digunakan untuk kebutuhan admin.
+     */
+    public function getArticle(
+        int $id
+    ): ?Article {
         return $this->articleRepository
             ->findById($id);
     }
 
     /**
+     * Detail artikel berdasarkan slug.
+     *
+     * Digunakan untuk halaman detail artikel publik.
+     */
+    public function getArticleBySlug(
+        string $slug
+    ): ?Article {
+        return $this->articleRepository
+            ->findBySlug($slug);
+    }
+
+    /**
      * Buat artikel baru.
      */
-    public function createArticle(array $data): Article
-    {
+    public function createArticle(
+        array $data
+    ): Article {
         return DB::transaction(function () use ($data) {
 
             /*
@@ -55,10 +89,14 @@ class ArticleService
             $slug = $data['slug'] ?? null;
 
             if (!$slug) {
-                $slug = Str::slug($data['title']);
+                $slug = Str::slug(
+                    $data['title']
+                );
             }
 
-            $slug = $this->generateUniqueSlug($slug);
+            $slug = $this->generateUniqueSlug(
+                $slug
+            );
 
             /*
             |--------------------------------------------------------------------------
@@ -70,9 +108,10 @@ class ArticleService
                 isset($data['thumbnail']) &&
                 $data['thumbnail'] instanceof UploadedFile
             ) {
-                $data['thumbnail'] = $this->storeThumbnail(
-                    $data['thumbnail']
-                );
+                $data['thumbnail'] =
+                    $this->storeThumbnail(
+                        $data['thumbnail']
+                    );
             }
 
             /*
@@ -81,22 +120,37 @@ class ArticleService
             |--------------------------------------------------------------------------
             */
 
-            if (($data['status'] ?? 'Draft') === 'Published') {
-                $data['published_at'] = $data['published_at'] ?? now();
+            if (
+                ($data['status'] ?? 'Draft') === 'Published'
+            ) {
+                $data['published_at'] =
+                    $data['published_at'] ?? now();
             } else {
                 $data['published_at'] = null;
             }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Simpan slug
+            |--------------------------------------------------------------------------
+            */
 
             $data['slug'] = $slug;
 
             /*
             |--------------------------------------------------------------------------
-            | Create
+            | Create artikel
             |--------------------------------------------------------------------------
             */
 
             $article = $this->articleRepository
                 ->create($data);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Load relasi
+            |--------------------------------------------------------------------------
+            */
 
             return $article->load([
                 'category',
@@ -136,7 +190,9 @@ class ArticleService
             $slug = $data['slug'] ?? null;
 
             if (!$slug) {
-                $slug = Str::slug($data['title']);
+                $slug = Str::slug(
+                    $data['title']
+                );
             }
 
             $slug = $this->generateUniqueSlug(
@@ -155,17 +211,31 @@ class ArticleService
                 $data['thumbnail'] instanceof UploadedFile
             ) {
 
+                /*
+                | Hapus thumbnail lama
+                */
+
                 if ($article->thumbnail) {
                     $this->deleteFile(
                         $article->thumbnail
                     );
                 }
 
-                $data['thumbnail'] = $this->storeThumbnail(
-                    $data['thumbnail']
-                );
+                /*
+                | Simpan thumbnail baru
+                */
+
+                $data['thumbnail'] =
+                    $this->storeThumbnail(
+                        $data['thumbnail']
+                    );
 
             } else {
+
+                /*
+                | Jangan ubah thumbnail lama
+                */
+
                 unset($data['thumbnail']);
             }
 
@@ -175,35 +245,78 @@ class ArticleService
             |--------------------------------------------------------------------------
             */
 
-            if (($data['status'] ?? $article->status) === 'Published') {
+            if (
+                ($data['status'] ?? $article->status)
+                === 'Published'
+            ) {
 
                 if (!$article->published_at) {
                     $data['published_at'] = now();
                 }
 
             } else {
+
                 $data['published_at'] = null;
             }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Simpan slug
+            |--------------------------------------------------------------------------
+            */
 
             $data['slug'] = $slug;
 
             /*
             |--------------------------------------------------------------------------
-            | Update
+            | Update artikel
             |--------------------------------------------------------------------------
             */
 
-            return $this->articleRepository
-                ->update($article, $data);
+            $updated = $this->articleRepository
+                ->update(
+                    $article,
+                    $data
+                );
+
+            /*
+            |--------------------------------------------------------------------------
+            | Cek hasil update
+            |--------------------------------------------------------------------------
+            */
+
+            if (!$updated) {
+                return null;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Refresh artikel
+            |--------------------------------------------------------------------------
+            */
+
+            return $article
+                ->refresh()
+                ->load([
+                    'category',
+                    'user',
+                ]);
         });
     }
 
     /**
      * Hapus artikel.
      */
-    public function deleteArticle(int $id): bool
-    {
+    public function deleteArticle(
+        int $id
+    ): bool {
         return DB::transaction(function () use ($id) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | Cari artikel
+            |--------------------------------------------------------------------------
+            */
 
             $article = $this->articleRepository
                 ->findById($id);
@@ -226,7 +339,7 @@ class ArticleService
 
             /*
             |--------------------------------------------------------------------------
-            | Soft delete
+            | Hapus artikel
             |--------------------------------------------------------------------------
             */
 
@@ -243,20 +356,31 @@ class ArticleService
         ?int $exceptId = null
     ): string {
 
-        $originalSlug = Str::slug($slug);
+        $originalSlug = Str::slug(
+            $slug
+        );
 
         if (!$originalSlug) {
             $originalSlug = 'artikel';
         }
 
         $slug = $originalSlug;
+
         $counter = 1;
 
         while (
             $this->articleRepository
-                ->findBySlug($slug, $exceptId)
+                ->findBySlug(
+                    $slug,
+                    $exceptId
+                )
         ) {
-            $slug = $originalSlug . '-' . $counter;
+
+            $slug =
+                $originalSlug .
+                '-' .
+                $counter;
+
             $counter++;
         }
 
@@ -276,7 +400,15 @@ class ArticleService
         UploadedFile $file
     ): string {
 
-        $directory = public_path('articles');
+        $directory = public_path(
+            'articles'
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Buat directory jika belum ada
+        |--------------------------------------------------------------------------
+        */
 
         if (!is_dir($directory)) {
             mkdir(
@@ -286,14 +418,32 @@ class ArticleService
             );
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Nama file asli
+        |--------------------------------------------------------------------------
+        */
+
         $originalName = pathinfo(
             $file->getClientOriginalName(),
             PATHINFO_FILENAME
         );
 
+        /*
+        |--------------------------------------------------------------------------
+        | Extension
+        |--------------------------------------------------------------------------
+        */
+
         $extension = strtolower(
             $file->getClientOriginalExtension()
         );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Generate filename
+        |--------------------------------------------------------------------------
+        */
 
         $filename =
             time() .
@@ -304,26 +454,44 @@ class ArticleService
             '.' .
             $extension;
 
+        /*
+        |--------------------------------------------------------------------------
+        | Move file
+        |--------------------------------------------------------------------------
+        */
+
         $file->move(
             $directory,
             $filename
         );
 
+        /*
+        |--------------------------------------------------------------------------
+        | Path yang disimpan ke database
+        |--------------------------------------------------------------------------
+        */
+
         return 'articles/' . $filename;
     }
 
     /**
-     * Hapus file.
+     * Hapus file thumbnail.
      */
     protected function deleteFile(
         string $path
     ): void {
 
         $filePath = public_path(
-            ltrim($path, '/')
+            ltrim(
+                $path,
+                '/'
+            )
         );
 
-        if (file_exists($filePath)) {
+        if (
+            file_exists($filePath) &&
+            is_file($filePath)
+        ) {
             unlink($filePath);
         }
     }

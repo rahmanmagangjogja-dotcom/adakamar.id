@@ -20,35 +20,79 @@ class AccommodationService
     }
 
     /**
-     * Daftar accommodation.
+     * Daftar accommodation untuk admin.
      */
     public function getAccommodations(
         ?string $keyword = null,
-        int $perPage = 10
+        int $perPage = 5,
+        ?int $categoryId = null
     ): LengthAwarePaginator {
-        return $this->accommodationRepository
-            ->getAll($keyword, $perPage);
+        return $this->accommodationRepository->getAll(
+            $keyword,
+            $perPage,
+            $categoryId
+        );
     }
 
     /**
-     * Detail accommodation.
+     * Detail accommodation berdasarkan ID.
      */
-    public function getAccommodation(int $id): ?Accommodation
-    {
-        return $this->accommodationRepository
-            ->findById($id);
+    public function getAccommodation(
+        int $id
+    ): ?Accommodation {
+        return $this->accommodationRepository->findById($id);
+    }
+
+    /**
+     * Detail accommodation berdasarkan slug.
+     */
+    public function getAccommodationBySlug(
+        string $slug
+    ): ?Accommodation {
+        return $this->accommodationRepository->findBySlug($slug);
+    }
+
+    /**
+     * Ambil accommodation berdasarkan slug kategori.
+     */
+    public function getByCategorySlug(
+        string $slug
+    ): ?array {
+        $category = $this->accommodationRepository
+            ->findCategoryBySlug($slug);
+
+        if (!$category) {
+            return null;
+        }
+
+        $accommodations = $this->accommodationRepository
+            ->getAccommodationsByCategory($category->id);
+
+        return [
+            'category' => $category,
+            'accommodations' => $accommodations,
+        ];
     }
 
     /**
      * Buat accommodation baru.
      */
-    public function createAccommodation(array $data): Accommodation
-    {
+    public function createAccommodation(
+        array $data
+    ): Accommodation {
         return DB::transaction(function () use ($data) {
 
             /*
             |--------------------------------------------------------------------------
-            | Slug
+            | Normalisasi data
+            |--------------------------------------------------------------------------
+            */
+
+            $data = $this->normalizeContactData($data);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Generate slug
             |--------------------------------------------------------------------------
             */
 
@@ -58,7 +102,7 @@ class AccommodationService
                 $slug = Str::slug($data['title']);
             }
 
-            $slug = $this->generateUniqueSlug($slug);
+            $data['slug'] = $this->generateUniqueSlug($slug);
 
             /*
             |--------------------------------------------------------------------------
@@ -85,23 +129,15 @@ class AccommodationService
             $ruleIds = $data['rule_ids'] ?? [];
             $gallery = $data['gallery'] ?? [];
 
-            /*
-            |--------------------------------------------------------------------------
-            | Hapus field yang bukan kolom accommodation
-            |--------------------------------------------------------------------------
-            */
-
             unset(
                 $data['facility_ids'],
                 $data['rule_ids'],
                 $data['gallery']
             );
 
-            $data['slug'] = $slug;
-
             /*
             |--------------------------------------------------------------------------
-            | Create accommodation
+            | Create
             |--------------------------------------------------------------------------
             */
 
@@ -110,25 +146,23 @@ class AccommodationService
 
             /*
             |--------------------------------------------------------------------------
-            | Fasilitas
+            | Facilities
             |--------------------------------------------------------------------------
             */
 
-            if (!empty($facilityIds)) {
-                $accommodation->facilities()
-                    ->sync($facilityIds);
-            }
+            $accommodation
+                ->facilities()
+                ->sync($facilityIds);
 
             /*
             |--------------------------------------------------------------------------
-            | Aturan
+            | Rules
             |--------------------------------------------------------------------------
             */
 
-            if (!empty($ruleIds)) {
-                $accommodation->rules()
-                    ->sync($ruleIds);
-            }
+            $accommodation
+                ->rules()
+                ->sync($ruleIds);
 
             /*
             |--------------------------------------------------------------------------
@@ -145,11 +179,11 @@ class AccommodationService
 
             /*
             |--------------------------------------------------------------------------
-            | Return data lengkap
+            | Return
             |--------------------------------------------------------------------------
             */
 
-            return $accommodation->load([
+            return $accommodation->fresh([
                 'category',
                 'images',
                 'facilities',
@@ -182,7 +216,15 @@ class AccommodationService
 
             /*
             |--------------------------------------------------------------------------
-            | Slug
+            | Normalisasi data
+            |--------------------------------------------------------------------------
+            */
+
+            $data = $this->normalizeContactData($data);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Generate slug
             |--------------------------------------------------------------------------
             */
 
@@ -192,7 +234,7 @@ class AccommodationService
                 $slug = Str::slug($data['title']);
             }
 
-            $slug = $this->generateUniqueSlug(
+            $data['slug'] = $this->generateUniqueSlug(
                 $slug,
                 $accommodation->id
             );
@@ -207,7 +249,6 @@ class AccommodationService
                 isset($data['thumbnail']) &&
                 $data['thumbnail'] instanceof UploadedFile
             ) {
-
                 /*
                 | Hapus thumbnail lama
                 */
@@ -227,7 +268,7 @@ class AccommodationService
                 );
             } else {
                 /*
-                | Jangan update thumbnail jika tidak ada file baru
+                | Jangan ubah thumbnail lama
                 */
 
                 unset($data['thumbnail']);
@@ -243,50 +284,46 @@ class AccommodationService
             $ruleIds = $data['rule_ids'] ?? [];
             $gallery = $data['gallery'] ?? [];
 
-            /*
-            |--------------------------------------------------------------------------
-            | Hapus field relasi dari data utama
-            |--------------------------------------------------------------------------
-            */
-
             unset(
                 $data['facility_ids'],
                 $data['rule_ids'],
                 $data['gallery']
             );
 
-            $data['slug'] = $slug;
-
             /*
             |--------------------------------------------------------------------------
-            | Update accommodation
+            | Update data utama
             |--------------------------------------------------------------------------
             */
 
-            $this->accommodationRepository
-                ->update($accommodation, $data);
+            $this->accommodationRepository->update(
+                $accommodation,
+                $data
+            );
 
             /*
             |--------------------------------------------------------------------------
-            | Sync fasilitas
+            | Sync Facilities
             |--------------------------------------------------------------------------
             */
 
-            $accommodation->facilities()
+            $accommodation
+                ->facilities()
                 ->sync($facilityIds);
 
             /*
             |--------------------------------------------------------------------------
-            | Sync aturan
+            | Sync Rules
             |--------------------------------------------------------------------------
             */
 
-            $accommodation->rules()
+            $accommodation
+                ->rules()
                 ->sync($ruleIds);
 
             /*
             |--------------------------------------------------------------------------
-            | Gallery baru
+            | Tambah Gallery Baru
             |--------------------------------------------------------------------------
             */
 
@@ -315,8 +352,9 @@ class AccommodationService
     /**
      * Hapus accommodation.
      */
-    public function deleteAccommodation(int $id): bool
-    {
+    public function deleteAccommodation(
+        int $id
+    ): bool {
         return DB::transaction(function () use ($id) {
 
             /*
@@ -346,7 +384,7 @@ class AccommodationService
 
             /*
             |--------------------------------------------------------------------------
-            | Hapus semua gallery
+            | Hapus gallery
             |--------------------------------------------------------------------------
             */
 
@@ -363,20 +401,22 @@ class AccommodationService
 
             /*
             |--------------------------------------------------------------------------
-            | Hapus relasi fasilitas
+            | Hapus facilities
             |--------------------------------------------------------------------------
             */
 
-            $accommodation->facilities()
+            $accommodation
+                ->facilities()
                 ->detach();
 
             /*
             |--------------------------------------------------------------------------
-            | Hapus relasi aturan
+            | Hapus rules
             |--------------------------------------------------------------------------
             */
 
-            $accommodation->rules()
+            $accommodation
+                ->rules()
                 ->detach();
 
             /*
@@ -391,6 +431,127 @@ class AccommodationService
     }
 
     /**
+     * Normalisasi data kontak dan sosial media.
+     *
+     * - Trim whitespace
+     * - String kosong menjadi null
+     * - Menambahkan https:// pada sosial media
+     */
+    protected function normalizeContactData(
+        array $data
+    ): array {
+
+        /*
+        |--------------------------------------------------------------------------
+        | Contact
+        |--------------------------------------------------------------------------
+        */
+
+        $contactFields = [
+            'phone',
+            'whatsapp',
+            'email',
+        ];
+
+        foreach ($contactFields as $field) {
+
+            if (
+                isset($data[$field]) &&
+                is_string($data[$field])
+            ) {
+                $value = trim($data[$field]);
+
+                $data[$field] = $value !== ''
+                    ? $value
+                    : null;
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Social Media
+        |--------------------------------------------------------------------------
+        */
+
+        $socialFields = [
+            'facebook',
+            'instagram',
+            'youtube',
+            'x',
+            'tiktok',
+        ];
+
+        foreach ($socialFields as $field) {
+
+            if (
+                isset($data[$field]) &&
+                is_string($data[$field])
+            ) {
+                $value = trim($data[$field]);
+
+                if ($value !== '') {
+
+                    /*
+                    | Jika user memasukkan:
+                    |
+                    | instagram.com/user
+                    |
+                    | maka menjadi:
+                    |
+                    | https://instagram.com/user
+                    */
+
+                    if (!preg_match('/^https?:\/\//i', $value)) {
+                        $value = 'https://' . ltrim($value, '/');
+                    }
+
+                    $data[$field] = $value;
+
+                } else {
+
+                    $data[$field] = null;
+                }
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Google Maps URL
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            isset($data['google_maps_url']) &&
+            is_string($data['google_maps_url'])
+        ) {
+            $value = trim($data['google_maps_url']);
+
+            $data['google_maps_url'] = $value !== ''
+                ? $value
+                : null;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Maps Embed
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            isset($data['maps_embed']) &&
+            is_string($data['maps_embed'])
+        ) {
+            $value = trim($data['maps_embed']);
+
+            $data['maps_embed'] = $value !== ''
+                ? $value
+                : null;
+        }
+
+        return $data;
+    }
+
+    /**
      * Generate slug unik.
      */
     protected function generateUniqueSlug(
@@ -400,42 +561,38 @@ class AccommodationService
 
         $originalSlug = Str::slug($slug);
 
-        $slug = $originalSlug;
+        $uniqueSlug = $originalSlug;
 
         $counter = 1;
 
         while (
             $this->accommodationRepository
-                ->findBySlug($slug, $exceptId)
+                ->findBySlug(
+                    $uniqueSlug,
+                    $exceptId
+                )
         ) {
-            $slug = $originalSlug . '-' . $counter;
+            $uniqueSlug =
+                $originalSlug .
+                '-' .
+                $counter;
 
             $counter++;
         }
 
-        return $slug;
+        return $uniqueSlug;
     }
 
     /**
      * Simpan thumbnail.
-     *
-     * File:
-     * public/accommodations
-     *
-     * Database:
-     * accommodations/nama-file.jpg
      */
     protected function storeThumbnail(
         UploadedFile $file
     ): string {
 
-        /*
-        |--------------------------------------------------------------------------
-        | Pastikan folder tersedia
-        |--------------------------------------------------------------------------
-        */
-
-        $directory = public_path('accommodations');
+        $directory = public_path(
+            'accommodations'
+        );
 
         if (!is_dir($directory)) {
             mkdir(
@@ -444,12 +601,6 @@ class AccommodationService
                 true
             );
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | Nama file
-        |--------------------------------------------------------------------------
-        */
 
         $originalName = pathinfo(
             $file->getClientOriginalName(),
@@ -469,54 +620,21 @@ class AccommodationService
             '.' .
             $extension;
 
-        /*
-        |--------------------------------------------------------------------------
-        | Pindahkan file
-        |--------------------------------------------------------------------------
-        */
-
         $file->move(
             $directory,
             $filename
         );
-
-        /*
-        |--------------------------------------------------------------------------
-        | Path yang disimpan di database
-        |--------------------------------------------------------------------------
-        */
 
         return 'accommodations/' . $filename;
     }
 
     /**
      * Simpan gallery.
-     *
-     * File:
-     * public/galery_accommodation
-     *
-     * Database:
-     * galery_accommodation/nama-file.jpg
      */
     protected function storeGallery(
         Accommodation $accommodation,
         array $files
     ): void {
-
-        /*
-        |--------------------------------------------------------------------------
-        | Sort order terakhir
-        |--------------------------------------------------------------------------
-        */
-
-        $lastSortOrder = $accommodation->images()
-            ->max('sort_order') ?? 0;
-
-        /*
-        |--------------------------------------------------------------------------
-        | Folder gallery
-        |--------------------------------------------------------------------------
-        */
 
         $directory = public_path(
             'galery_accommodation'
@@ -530,21 +648,11 @@ class AccommodationService
             );
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Loop file
-        |--------------------------------------------------------------------------
-        */
-
         foreach ($files as $file) {
 
             if (!$file instanceof UploadedFile) {
                 continue;
             }
-
-            /*
-            | Nama file
-            */
 
             $originalName = pathinfo(
                 $file->getClientOriginalName(),
@@ -564,57 +672,31 @@ class AccommodationService
                 '.' .
                 $extension;
 
-            /*
-            | Pindahkan file
-            */
-
             $file->move(
                 $directory,
                 $filename
             );
 
-            /*
-            | Sort order
-            */
-
-            $lastSortOrder++;
-
-            /*
-            | Simpan ke database
-            */
-
-            $accommodation->images()->create([
-                'image' =>
-                    'galery_accommodation/' . $filename,
-
-                'sort_order' =>
-                    $lastSortOrder,
-            ]);
+            $accommodation
+                ->images()
+                ->create([
+                    'image' =>
+                        'galery_accommodation/' .
+                        $filename,
+                ]);
         }
     }
 
     /**
-     * Hapus file dari public.
+     * Hapus file.
      */
     protected function deleteFile(
         string $path
     ): void {
 
-        /*
-        |--------------------------------------------------------------------------
-        | Path fisik
-        |--------------------------------------------------------------------------
-        */
-
         $filePath = public_path(
             ltrim($path, '/')
         );
-
-        /*
-        |--------------------------------------------------------------------------
-        | Hapus jika file ada
-        |--------------------------------------------------------------------------
-        */
 
         if (file_exists($filePath)) {
             unlink($filePath);

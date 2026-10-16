@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Accommodation;
 use App\Models\AccommodationCategory;
 use App\Models\Facility;
 use App\Models\Rule;
@@ -21,19 +20,18 @@ class AccommodationController extends Controller
     }
 
     /**
-     * Daftar penginapan.
+     * Daftar penginapan untuk admin.
      */
     public function index(Request $request)
     {
         $keyword = $request->input('keyword');
+        $categoryId = $request->input('category_id');
 
         $accommodations = $this->accommodationService
-            ->getAccommodations($keyword, 10);
+            ->getAccommodations($keyword, 5, $categoryId);
 
         $categories = AccommodationCategory::orderBy('name')->get();
-
         $facilities = Facility::orderBy('name')->get();
-
         $rules = Rule::orderBy('name')->get();
 
         return view(
@@ -48,64 +46,75 @@ class AccommodationController extends Controller
     }
 
     /**
-     * Simpan penginapan baru.
+     * Menampilkan penginapan berdasarkan kategori
+     *
+     * URL:
+     * /kategori-penginapanlanding/{slug}
      */
-    public function store(Request $request)
+    public function byCategory(string $slug)
     {
-        try {
-            $validated = $request->validate(
-                $this->storeRules()
-            );
+        $data = $this->accommodationService
+            ->getByCategorySlug($slug);
 
-            $accommodation = $this->accommodationService
-                ->createAccommodation($validated);
-
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Penginapan berhasil ditambahkan.',
-                    'data' => $accommodation,
-                ]);
-            }
-
-            return redirect()
-                ->route('accommodations.index')
-                ->with(
-                    'success',
-                    'Penginapan berhasil ditambahkan.'
-                );
-
-        } catch (ValidationException $e) {
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validasi gagal.',
-                    'errors' => $e->errors(),
-                ], 422);
-            }
-
-            throw $e;
-
-        } catch (\Exception $e) {
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
-                ], 500);
-            }
-
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'Terjadi kesalahan: ' . $e->getMessage()
-                );
+        if (!$data) {
+            abort(404);
         }
+
+        return view(
+            'landingpage.content.accomodation.kamar',
+            [
+                'category' => $data['category'],
+                'accommodations' => $data['accommodations'],
+            ]
+        );
     }
 
     /**
-     * Detail penginapan.
+     * Detail penginapan untuk landing page
+     *
+     * URL:
+     * /penginapanlanding/{slug}
+     */
+    public function publicDetail(string $slug)
+    {
+        $accommodation = $this->accommodationService
+            ->getAccommodationBySlug($slug);
+
+        if (!$accommodation) {
+            abort(404);
+        }
+
+        $accommodation->load([
+            'category',
+            'images',
+            'facilities',
+            'rules',
+        ]);
+
+
+        $title = $accommodation->meta_title
+            ? $accommodation->meta_title . ' | adakamar.id'
+            : $accommodation->title . ' | adakamar.id';
+
+
+        $metaDescription = $accommodation->meta_description
+            ?: \Illuminate\Support\Str::limit(
+                strip_tags($accommodation->description),
+                155
+            );
+
+        return view(
+            'landingpage.content.accomodation.detail_penginapan',
+            compact(
+                'accommodation',
+                'title',
+                'metaDescription'
+            )
+        );
+    }
+
+    /**
+     * Detail penginapan untuk admin / AJAX.
      */
     public function show(int $id)
     {
@@ -128,37 +137,40 @@ class AccommodationController extends Controller
 
         $data = $accommodation->toArray();
 
-        /**
-         * ID fasilitas.
-         */
         $data['facility_ids'] = $accommodation
             ->facilities
             ->pluck('id')
             ->toArray();
 
-        /**
-         * ID aturan.
-         */
         $data['rule_ids'] = $accommodation
             ->rules
             ->pluck('id')
             ->toArray();
 
-        /**
-         * Format gambar.
-         */
         $data['images'] = $accommodation->images
             ->map(function ($item) {
                 return [
                     'id' => $item->id,
                     'image' => $item->image,
-                    'sort_order' => $item->sort_order,
                     'image_url' => $item->image
                         ? asset($item->image)
                         : null,
                 ];
             })
             ->values();
+
+        $data['thumbnail_url'] = $accommodation->thumbnail
+            ? asset($accommodation->thumbnail)
+            : null;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Accessor URL tambahan untuk JS di modal edit
+        |--------------------------------------------------------------------------
+        */
+        $data['whatsapp_url'] = $accommodation->whatsapp_url;
+        $data['phone_url'] = $accommodation->phone_url;
+        $data['email_url'] = $accommodation->email_url;
 
         return response()->json([
             'success' => true,
@@ -167,23 +179,104 @@ class AccommodationController extends Controller
     }
 
     /**
+     * Menyimpan penginapan.
+     */
+    public function store(Request $request)
+    {
+        try {
+            $validated = $request->validate(
+                $this->storeRules()
+            );
+
+            $accommodation = $this->accommodationService
+                ->createAccommodation($validated);
+
+            if (
+                $request->ajax() ||
+                $request->wantsJson()
+            ) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Penginapan berhasil ditambahkan.',
+                    'data' => $accommodation,
+                ]);
+            }
+
+            return redirect()
+                ->route('accommodations.index')
+                ->with(
+                    'success',
+                    'Penginapan berhasil ditambahkan.'
+                );
+
+        } catch (ValidationException $e) {
+
+            if (
+                $request->ajax() ||
+                $request->wantsJson()
+            ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal.',
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            throw $e;
+
+        } catch (\Throwable $e) {
+
+            if (
+                $request->ajax() ||
+                $request->wantsJson()
+            ) {
+                return response()->json([
+                    'success' => false,
+                    'message' =>
+                        'Terjadi kesalahan: '
+                        . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Terjadi kesalahan: '
+                    . $e->getMessage()
+                );
+        }
+    }
+
+    /**
      * Update penginapan.
      */
-    public function update(Request $request, int $id)
-    {
+    public function update(
+        Request $request,
+        int $id
+    ) {
         try {
             $validated = $request->validate(
                 $this->updateRules()
             );
 
             $accommodation = $this->accommodationService
-                ->updateAccommodation($id, $validated);
+                ->updateAccommodation(
+                    $id,
+                    $validated
+                );
 
             if (!$accommodation) {
-                if ($request->ajax() || $request->wantsJson()) {
+
+                if (
+                    $request->ajax() ||
+                    $request->wantsJson()
+                ) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Penginapan tidak ditemukan.',
+                        'message' =>
+                            'Penginapan tidak ditemukan.',
                     ], 404);
                 }
 
@@ -195,10 +288,14 @@ class AccommodationController extends Controller
                     );
             }
 
-            if ($request->ajax() || $request->wantsJson()) {
+            if (
+                $request->ajax() ||
+                $request->wantsJson()
+            ) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Penginapan berhasil diperbarui.',
+                    'message' =>
+                        'Penginapan berhasil diperbarui.',
                     'data' => $accommodation,
                 ]);
             }
@@ -211,7 +308,11 @@ class AccommodationController extends Controller
                 );
 
         } catch (ValidationException $e) {
-            if ($request->ajax() || $request->wantsJson()) {
+
+            if (
+                $request->ajax() ||
+                $request->wantsJson()
+            ) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Validasi gagal.',
@@ -221,11 +322,17 @@ class AccommodationController extends Controller
 
             throw $e;
 
-        } catch (\Exception $e) {
-            if ($request->ajax() || $request->wantsJson()) {
+        } catch (\Throwable $e) {
+
+            if (
+                $request->ajax() ||
+                $request->wantsJson()
+            ) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                    'message' =>
+                        'Terjadi kesalahan: '
+                        . $e->getMessage(),
                 ], 500);
             }
 
@@ -234,7 +341,8 @@ class AccommodationController extends Controller
                 ->withInput()
                 ->with(
                     'error',
-                    'Terjadi kesalahan: ' . $e->getMessage()
+                    'Terjadi kesalahan: '
+                    . $e->getMessage()
                 );
         }
     }
@@ -244,28 +352,40 @@ class AccommodationController extends Controller
      */
     public function destroy(int $id)
     {
-        $deleted = $this->accommodationService
-            ->deleteAccommodation($id);
+        try {
+            $deleted = $this->accommodationService
+                ->deleteAccommodation($id);
 
-        if (!$deleted) {
+            if (!$deleted) {
+                return redirect()
+                    ->route('accommodations.index')
+                    ->with(
+                        'error',
+                        'Penginapan tidak ditemukan.'
+                    );
+            }
+
             return redirect()
                 ->route('accommodations.index')
                 ->with(
+                    'success',
+                    'Penginapan berhasil dihapus.'
+                );
+
+        } catch (\Throwable $e) {
+
+            return redirect()
+                ->back()
+                ->with(
                     'error',
-                    'Penginapan tidak ditemukan.'
+                    'Terjadi kesalahan: '
+                    . $e->getMessage()
                 );
         }
-
-        return redirect()
-            ->route('accommodations.index')
-            ->with(
-                'success',
-                'Penginapan berhasil dihapus.'
-            );
     }
 
     /**
-     * Validation rules untuk store.
+     * Validasi create.
      */
     protected function storeRules(): array
     {
@@ -291,7 +411,7 @@ class AccommodationController extends Controller
                 'required',
                 'image',
                 'mimes:jpg,jpeg,png,webp',
-                'max:5120',
+                'max:1048576',
             ],
 
             'price' => [
@@ -306,6 +426,87 @@ class AccommodationController extends Controller
                 'max:500',
             ],
 
+            /*
+            |--------------------------------------------------------------------------
+            | Kontak
+            |--------------------------------------------------------------------------
+            */
+            'phone' => [
+                'nullable',
+                'string',
+                'max:30',
+            ],
+
+            'whatsapp' => [
+                'nullable',
+                'string',
+                'max:30',
+            ],
+
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+            ],
+
+            /*
+            |--------------------------------------------------------------------------
+            | Sosial Media
+            |--------------------------------------------------------------------------
+            */
+            'facebook' => [
+                'nullable',
+                'url',
+                'max:255',
+            ],
+
+            'instagram' => [
+                'nullable',
+                'url',
+                'max:255',
+            ],
+
+            'youtube' => [
+                'nullable',
+                'url',
+                'max:255',
+            ],
+
+            'x' => [
+                'nullable',
+                'url',
+                'max:255',
+            ],
+
+            'tiktok' => [
+                'nullable',
+                'url',
+                'max:255',
+            ],
+
+            /*
+            |--------------------------------------------------------------------------
+            | Maps
+            |--------------------------------------------------------------------------
+            */
+            'maps_embed' => [
+                'nullable',
+                'string',
+            ],
+
+            'google_maps_url' => [
+                'nullable',
+                'url',
+                'max:2048',
+            ],
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Detail
+            |--------------------------------------------------------------------------
+            */
             'capacity' => [
                 'required',
                 'integer',
@@ -351,6 +552,11 @@ class AccommodationController extends Controller
                 'string',
             ],
 
+            /*
+            |--------------------------------------------------------------------------
+            | Relasi
+            |--------------------------------------------------------------------------
+            */
             'facility_ids' => [
                 'nullable',
                 'array',
@@ -385,7 +591,7 @@ class AccommodationController extends Controller
     }
 
     /**
-     * Validation rules untuk update.
+     * Validasi update.
      */
     protected function updateRules(): array
     {
@@ -411,7 +617,7 @@ class AccommodationController extends Controller
                 'nullable',
                 'image',
                 'mimes:jpg,jpeg,png,webp',
-                'max:5120',
+                'max:1048576',
             ],
 
             'price' => [
@@ -426,6 +632,87 @@ class AccommodationController extends Controller
                 'max:500',
             ],
 
+            /*
+            |--------------------------------------------------------------------------
+            | Kontak
+            |--------------------------------------------------------------------------
+            */
+            'phone' => [
+                'nullable',
+                'string',
+                'max:30',
+            ],
+
+            'whatsapp' => [
+                'nullable',
+                'string',
+                'max:30',
+            ],
+
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+            ],
+
+            /*
+            |--------------------------------------------------------------------------
+            | Sosial Media
+            |--------------------------------------------------------------------------
+            */
+            'facebook' => [
+                'nullable',
+                'url',
+                'max:255',
+            ],
+
+            'instagram' => [
+                'nullable',
+                'url',
+                'max:255',
+            ],
+
+            'youtube' => [
+                'nullable',
+                'url',
+                'max:255',
+            ],
+
+            'x' => [
+                'nullable',
+                'url',
+                'max:255',
+            ],
+
+            'tiktok' => [
+                'nullable',
+                'url',
+                'max:255',
+            ],
+
+            /*
+            |--------------------------------------------------------------------------
+            | Maps
+            |--------------------------------------------------------------------------
+            */
+            'maps_embed' => [
+                'nullable',
+                'string',
+            ],
+
+            'google_maps_url' => [
+                'nullable',
+                'url',
+                'max:2048',
+            ],
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Detail
+            |--------------------------------------------------------------------------
+            */
             'capacity' => [
                 'required',
                 'integer',
@@ -471,6 +758,11 @@ class AccommodationController extends Controller
                 'string',
             ],
 
+            /*
+            |--------------------------------------------------------------------------
+            | Relasi
+            |--------------------------------------------------------------------------
+            */
             'facility_ids' => [
                 'nullable',
                 'array',

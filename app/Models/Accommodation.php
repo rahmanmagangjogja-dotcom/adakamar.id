@@ -22,18 +22,47 @@ class Accommodation extends Model
      * Kolom yang boleh diisi secara mass assignment.
      */
     protected $fillable = [
+        // Relasi kategori
         'category_id',
+
+        // Informasi penginapan
         'title',
         'slug',
         'thumbnail',
+
+        // Harga
         'price',
+
+        // Lokasi
         'address',
+        'maps_embed',
+        'google_maps_url',
+
+        // Kontak
+        'phone',
+        'whatsapp',
+        'email',
+
+        // Sosial Media
+        'facebook',
+        'instagram',
+        'youtube',
+        'x',
+        'tiktok',
+
+        // Detail penginapan
         'capacity',
         'bedroom',
         'bathroom',
         'size',
+
+        // Status
         'status',
+
+        // Deskripsi
         'description',
+
+        // SEO
         'meta_title',
         'meta_description',
     ];
@@ -46,7 +75,15 @@ class Accommodation extends Model
         'capacity' => 'integer',
         'bedroom' => 'integer',
         'bathroom' => 'integer',
+        'latitude' => 'decimal:7',
+        'longitude' => 'decimal:7',
     ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relasi
+    |--------------------------------------------------------------------------
+    */
 
     /**
      * Relasi ke kategori akomodasi.
@@ -102,5 +139,77 @@ class Accommodation extends Model
             'accommodation_id',
             'rule_id'
         )->withTimestamps();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Accessor
+    |--------------------------------------------------------------------------
+    | Memudahkan menampilkan link kontak yang siap diklik.
+    */
+
+    /**
+     * URL WhatsApp yang siap diklik.
+     */
+    public function getWhatsappUrlAttribute(): ?string
+    {
+        if (empty($this->whatsapp)) {
+            return null;
+        }
+
+        $clean = preg_replace('/[^0-9]/', '', $this->whatsapp);
+
+        return $clean ? 'https://wa.me/' . $clean : null;
+    }
+
+    /**
+     * URL Telepon yang siap diklik.
+     */
+    public function getPhoneUrlAttribute(): ?string
+    {
+        if (empty($this->phone)) {
+            return null;
+        }
+
+        $clean = preg_replace('/[^0-9+]/', '', $this->phone);
+
+        return $clean ? 'tel:' . $clean : null;
+    }
+
+    /**
+     * URL Email yang siap diklik.
+     */
+    public function getEmailUrlAttribute(): ?string
+    {
+        return !empty($this->email) ? 'mailto:' . $this->email : null;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Helper
+    |--------------------------------------------------------------------------
+    | Untuk cek apakah data kontak / sosial media tersedia.
+    */
+
+    /**
+     * Cek apakah accommodation punya kontak.
+     */
+    public function hasContact(): bool
+    {
+        return !empty($this->phone)
+            || !empty($this->whatsapp)
+            || !empty($this->email);
+    }
+
+    /**
+     * Cek apakah accommodation punya sosial media.
+     */
+    public function hasSocialMedia(): bool
+    {
+        return !empty($this->facebook)
+            || !empty($this->instagram)
+            || !empty($this->youtube)
+            || !empty($this->x)
+            || !empty($this->tiktok);
     }
 }

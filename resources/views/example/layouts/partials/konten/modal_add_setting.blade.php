@@ -5,9 +5,9 @@
             onclick="closeAddSettingModal()"></div>
 
         <div class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-800 sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
-            <div class="px-6 py-4 border-b border-[#FFD4D4] dark:border-gray-700">
+            <div class="px-6 py-4 border-b border-[#B3E0FF] dark:border-gray-700">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-semibold text-[#E60000] dark:text-[#FF6B6B]">
+                    <h3 class="text-xl font-semibold text-[#0194F3] dark:text-[#33ADFF]">
                         <svg class="w-6 h-6 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
                         </svg>
@@ -27,10 +27,10 @@
                     @csrf
 
                     <!-- Tab Navigation -->
-                    <div class="border-b border-[#FFD4D4] dark:border-gray-700 mb-6">
+                    <div class="border-b border-[#B3E0FF] dark:border-gray-700 mb-6">
                         <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="addSettingTab" role="tablist">
                             <li class="mr-2" role="presentation">
-                                <button class="inline-block p-4 border-b-2 rounded-t-lg border-[#E60000] text-[#E60000] dark:border-[#FF6B6B] dark:text-[#FF6B6B]" 
+                                <button class="inline-block p-4 border-b-2 rounded-t-lg border-[#0194F3] text-[#0194F3] dark:border-[#33ADFF] dark:text-[#33ADFF]" 
                                     data-tab="add-info" role="tab" type="button" onclick="switchAddTab('add-info')">
                                     <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M2 4a1 1 0 011-1h14a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V4zm2 0v12h12V4H4z" />
@@ -40,7 +40,7 @@
                                 </button>
                             </li>
                             <li class="mr-2" role="presentation">
-                                <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" 
+                                <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg text-gray-600 hover:text-gray-900 hover:border-gray-300 dark:text-gray-400 dark:hover:text-white dark:hover:border-gray-500" 
                                     data-tab="add-branding" role="tab" type="button" onclick="switchAddTab('add-branding')">
                                     <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
@@ -49,7 +49,7 @@
                                 </button>
                             </li>
                             <li class="mr-2" role="presentation">
-                                <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" 
+                                <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg text-gray-600 hover:text-gray-900 hover:border-gray-300 dark:text-gray-400 dark:hover:text-white dark:hover:border-gray-500" 
                                     data-tab="add-contact" role="tab" type="button" onclick="switchAddTab('add-contact')">
                                     <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
@@ -58,7 +58,7 @@
                                 </button>
                             </li>
                             <li class="mr-2" role="presentation">
-                                <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" 
+                                <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg text-gray-600 hover:text-gray-900 hover:border-gray-300 dark:text-gray-400 dark:hover:text-white dark:hover:border-gray-500" 
                                     data-tab="add-social" role="tab" type="button" onclick="switchAddTab('add-social')">
                                     <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
@@ -68,7 +68,7 @@
                                 </button>
                             </li>
                             <li class="mr-2" role="presentation">
-                                <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" 
+                                <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg text-gray-600 hover:text-gray-900 hover:border-gray-300 dark:text-gray-400 dark:hover:text-white dark:hover:border-gray-500" 
                                     data-tab="add-seo" role="tab" type="button" onclick="switchAddTab('add-seo')">
                                     <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
@@ -77,7 +77,7 @@
                                 </button>
                             </li>
                             <li role="presentation">
-                                <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" 
+                                <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg text-gray-600 hover:text-gray-900 hover:border-gray-300 dark:text-gray-400 dark:hover:text-white dark:hover:border-gray-500" 
                                     data-tab="add-footer" role="tab" type="button" onclick="switchAddTab('add-footer')">
                                     <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V5zm2 2h10v2H5V7zm0 4h10v2H5v-2z" clip-rule="evenodd" />
@@ -92,14 +92,14 @@
                     <div class="space-y-6">
                         <!-- Tab 1: Informasi Website -->
                         <div id="add-info" class="add-tab-content">
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Informasi Website</h4>
+                            <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4">Informasi Website</h4>
                             <div class="grid grid-cols-1 gap-4">
                                 <div>
                                     <label for="addSiteName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Nama Website <span class="text-red-500">*</span>
                                     </label>
                                     <input type="text" name="site_name" id="addSiteName"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="Masukkan nama website" required>
                                     <span class="text-red-500 text-xs error-message" id="add_site_name_error"></span>
                                 </div>
@@ -109,7 +109,7 @@
                                         Tagline
                                     </label>
                                     <input type="text" name="tagline" id="addTagline"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="Tagline website">
                                     <span class="text-red-500 text-xs error-message" id="add_tagline_error"></span>
                                 </div>
@@ -119,7 +119,7 @@
                                         Tentang
                                     </label>
                                     <textarea name="about" id="addAbout" rows="3"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="Deskripsi tentang website"></textarea>
                                     <span class="text-red-500 text-xs error-message" id="add_about_error"></span>
                                 </div>
@@ -128,7 +128,7 @@
 
                         <!-- Tab 2: Branding & Logo -->
                         <div id="add-branding" class="add-tab-content hidden">
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Branding & Logo</h4>
+                            <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4">Branding & Logo</h4>
                             <div class="space-y-4">
                                 <div>
                                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -137,10 +137,10 @@
                                     <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Format: JPG, JPEG, PNG, WEBP (Maks. 20MB)</p>
                                     
                                     <div id="addLogoUploadArea"
-                                        class="w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-[#FFF5F5] border-[#FFD4D4] hover:bg-[#FFE8E8] dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 transition-colors">
+                                        class="w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 border-gray-300 hover:bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 transition-colors">
                                         <label for="addLogoUpload" class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
                                             <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                                <svg class="w-8 h-8 mb-2 text-[#FF6B6B] dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <svg class="w-8 h-8 mb-2 text-[#0194F3] dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                 </svg>
                                                 <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">
@@ -154,7 +154,7 @@
 
                                     <div id="addLogoPreviewContainer" class="hidden relative w-full mt-2">
                                         <img id="addLogoPreview" src="#" alt="Preview Logo"
-                                            class="w-32 h-32 object-cover rounded-lg border-2 border-[#FFD4D4] dark:border-gray-600">
+                                            class="w-32 h-32 object-cover rounded-lg border-2 border-[#B3E0FF] dark:border-gray-600">
                                         <div class="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-3 py-1.5 rounded-lg">
                                             <span id="addLogoFileName"></span>
                                             <span class="mx-2">|</span>
@@ -181,14 +181,14 @@
 
                         <!-- Tab 3: Kontak -->
                         <div id="add-contact" class="add-tab-content hidden">
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Informasi Kontak</h4>
+                            <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4">Informasi Kontak</h4>
                             <div class="grid grid-cols-1 gap-4">
                                 <div>
                                     <label for="addAddress" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Alamat
                                     </label>
                                     <textarea name="address" id="addAddress" rows="2"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="Alamat lengkap"></textarea>
                                     <span class="text-red-500 text-xs error-message" id="add_address_error"></span>
                                 </div>
@@ -198,7 +198,7 @@
                                         Telepon
                                     </label>
                                     <input type="text" name="phone" id="addPhone"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="08123456789">
                                     <span class="text-red-500 text-xs error-message" id="add_phone_error"></span>
                                 </div>
@@ -208,7 +208,7 @@
                                         WhatsApp
                                     </label>
                                     <input type="text" name="whatsapp" id="addWhatsapp"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="08123456789">
                                     <span class="text-red-500 text-xs error-message" id="add_whatsapp_error"></span>
                                 </div>
@@ -218,7 +218,7 @@
                                         Email
                                     </label>
                                     <input type="email" name="email" id="addEmail"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="admin@website.com">
                                     <span class="text-red-500 text-xs error-message" id="add_email_error"></span>
                                 </div>
@@ -228,7 +228,7 @@
                                         Google Maps Embed
                                     </label>
                                     <textarea name="maps_embed" id="addMapsEmbed" rows="2"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="<iframe src='...'></iframe>"></textarea>
                                     <span class="text-red-500 text-xs error-message" id="add_maps_embed_error"></span>
                                 </div>
@@ -237,7 +237,7 @@
 
                         <!-- Tab 4: Sosial Media -->
                         <div id="add-social" class="add-tab-content hidden">
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Sosial Media</h4>
+                            <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4">Sosial Media</h4>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label for="addFacebook" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -250,7 +250,7 @@
                                             </svg>
                                         </div>
                                         <input type="text" name="facebook" id="addFacebook"
-                                            class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                             placeholder="https://facebook.com/username">
                                     </div>
                                     <span class="text-red-500 text-xs error-message" id="add_facebook_error"></span>
@@ -267,7 +267,7 @@
                                             </svg>
                                         </div>
                                         <input type="text" name="instagram" id="addInstagram"
-                                            class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                             placeholder="https://instagram.com/username">
                                     </div>
                                     <span class="text-red-500 text-xs error-message" id="add_instagram_error"></span>
@@ -284,7 +284,7 @@
                                             </svg>
                                         </div>
                                         <input type="text" name="x" id="addX"
-                                            class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                             placeholder="https://x.com/username">
                                     </div>
                                     <span class="text-red-500 text-xs error-message" id="add_x_error"></span>
@@ -301,7 +301,7 @@
                                             </svg>
                                         </div>
                                         <input type="text" name="youtube" id="addYoutube"
-                                            class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                             placeholder="https://youtube.com/@channel">
                                     </div>
                                     <span class="text-red-500 text-xs error-message" id="add_youtube_error"></span>
@@ -318,7 +318,7 @@
                                             </svg>
                                         </div>
                                         <input type="text" name="tiktok" id="addTiktok"
-                                            class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                             placeholder="https://tiktok.com/@username">
                                     </div>
                                     <span class="text-red-500 text-xs error-message" id="add_tiktok_error"></span>
@@ -328,14 +328,14 @@
 
                         <!-- Tab 5: SEO -->
                         <div id="add-seo" class="add-tab-content hidden">
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">SEO (Search Engine Optimization)</h4>
+                            <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4">SEO (Search Engine Optimization)</h4>
                             <div class="grid grid-cols-1 gap-4">
                                 <div>
                                     <label for="addMetaTitle" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Meta Title
                                     </label>
                                     <input type="text" name="meta_title" id="addMetaTitle"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="Meta Title untuk SEO">
                                     <span class="text-red-500 text-xs error-message" id="add_meta_title_error"></span>
                                 </div>
@@ -345,7 +345,7 @@
                                         Meta Description
                                     </label>
                                     <textarea name="meta_description" id="addMetaDescription" rows="2"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="Meta Description untuk SEO"></textarea>
                                     <span class="text-red-500 text-xs error-message" id="add_meta_description_error"></span>
                                 </div>
@@ -355,7 +355,7 @@
                                         Meta Keywords
                                     </label>
                                     <input type="text" name="meta_keywords" id="addMetaKeywords"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="keyword1, keyword2, keyword3">
                                     <span class="text-red-500 text-xs error-message" id="add_meta_keywords_error"></span>
                                 </div>
@@ -364,14 +364,14 @@
 
                         <!-- Tab 6: Footer -->
                         <div id="add-footer" class="add-tab-content hidden">
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Footer</h4>
+                            <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4">Footer</h4>
                             <div class="grid grid-cols-1 gap-4">
                                 <div>
                                     <label for="addFooterDescription" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Deskripsi Footer
                                     </label>
                                     <textarea name="footer_description" id="addFooterDescription" rows="2"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="Deskripsi untuk footer"></textarea>
                                     <span class="text-red-500 text-xs error-message" id="add_footer_description_error"></span>
                                 </div>
@@ -381,7 +381,7 @@
                                         Copyright
                                     </label>
                                     <input type="text" name="copyright" id="addCopyright"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="© 2024 Nama Website. All rights reserved.">
                                     <span class="text-red-500 text-xs error-message" id="add_copyright_error"></span>
                                 </div>
@@ -389,16 +389,16 @@
                         </div>
                     </div>
 
-                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-6 pt-4 border-t border-[#FFD4D4] dark:border-gray-700">
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-6 pt-4 border-t border-[#B3E0FF] dark:border-gray-700">
                         <button type="button" onclick="submitAddSetting()"
-                            class="text-white bg-[#E60000] hover:bg-[#B71C1C] focus:ring-4 focus:ring-[#FFD4D4] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#FF6B6B] dark:hover:bg-[#E60000] dark:focus:ring-[#FF6B6B] w-full sm:w-auto">
+                            class="text-white bg-[#0194F3] hover:bg-[#0064D2] focus:ring-4 focus:ring-[#B3E0FF] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#33ADFF] dark:hover:bg-[#0194F3] dark:focus:ring-[#33ADFF] w-full sm:w-auto">
                             <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
                             Simpan Pengaturan
                         </button>
                         <button type="button" onclick="closeAddSettingModal()"
-                            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 hover:text-[#E60000] focus:ring-4 focus:ring-[#FFD4D4] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 w-full sm:w-auto">
+                            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 hover:text-[#0194F3] focus:ring-4 focus:ring-[#B3E0FF] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 w-full sm:w-auto">
                             Batal
                         </button>
                     </div>
@@ -420,15 +420,31 @@
             selectedTab.classList.remove('hidden');
         }
 
+        // Reset semua tab ke state non-aktif
         document.querySelectorAll('#addSettingTab button').forEach(btn => {
-            btn.classList.remove('border-[#E60000]', 'text-[#E60000]', 'dark:border-[#FF6B6B]', 'dark:text-[#FF6B6B]');
-            btn.classList.add('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300', 'dark:hover:text-gray-300');
+            btn.classList.remove(
+                'border-[#0194F3]', 'text-[#0194F3]',
+                'dark:border-[#33ADFF]', 'dark:text-[#33ADFF]'
+            );
+            btn.classList.add(
+                'border-transparent',
+                'text-gray-600', 'hover:text-gray-900', 'hover:border-gray-300',
+                'dark:text-gray-400', 'dark:hover:text-white', 'dark:hover:border-gray-500'
+            );
         });
 
+        // Set tab aktif
         const activeBtn = document.querySelector(`#addSettingTab button[data-tab="${tabId}"]`);
         if (activeBtn) {
-            activeBtn.classList.remove('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300', 'dark:hover:text-gray-300');
-            activeBtn.classList.add('border-[#E60000]', 'text-[#E60000]', 'dark:border-[#FF6B6B]', 'dark:text-[#FF6B6B]');
+            activeBtn.classList.remove(
+                'border-transparent',
+                'text-gray-600', 'hover:text-gray-900', 'hover:border-gray-300',
+                'dark:text-gray-400', 'dark:hover:text-white', 'dark:hover:border-gray-500'
+            );
+            activeBtn.classList.add(
+                'border-[#0194F3]', 'text-[#0194F3]',
+                'dark:border-[#33ADFF]', 'dark:text-[#33ADFF]'
+            );
         }
     }
 
@@ -664,14 +680,14 @@
         border-radius: 3px;
     }
     #addSettingModal .max-h-\[70vh\]::-webkit-scrollbar-thumb {
-        background: #E60000;
+        background: #0194F3;
         border-radius: 3px;
     }
     .dark #addSettingModal .max-h-\[70vh\]::-webkit-scrollbar-track {
         background: #374151;
     }
     .dark #addSettingModal .max-h-\[70vh\]::-webkit-scrollbar-thumb {
-        background: #FF6B6B;
+        background: #33ADFF;
     }
     .error-message {
         margin-top: 4px;

@@ -6,9 +6,9 @@
 
         <div
             class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-800 sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
-            <div class="px-6 py-4 border-b border-[#FFD4D4] dark:border-gray-700">
+            <div class="px-6 py-4 border-b border-[#B3E0FF] dark:border-gray-700">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-semibold text-[#E60000] dark:text-[#FF6B6B]">
+                    <h3 class="text-xl font-semibold text-[#0194F3] dark:text-[#33ADFF]">
                         <svg class="w-6 h-6 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path
                                 d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
@@ -30,10 +30,57 @@
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="id" id="editArticleId">
+
+                    <!-- Tab Navigation -->
+                    <div class="border-b border-[#B3E0FF] dark:border-gray-700 mb-6">
+                        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="editArticleTab"
+                            role="tablist">
+                            <li class="mr-2" role="presentation">
+                                <button
+                                    class="inline-block p-4 border-b-2 rounded-t-lg border-[#0194F3] text-[#0194F3] dark:border-[#33ADFF] dark:text-[#33ADFF]"
+                                    data-tab="edit-artikel-utama" role="tab" type="button"
+                                    onclick="switchEditArticleTab('edit-artikel-utama')">
+                                    <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M2 4a1 1 0 011-1h14a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V4zm2 0v12h12V4H4z" />
+                                        <path d="M5 6h10v2H5V6zm0 4h10v2H5v-2zm0 4h6v2H5v-2z" />
+                                    </svg>
+                                    Informasi Utama
+                                </button>
+                            </li>
+                            <li class="mr-2" role="presentation">
+                                <button
+                                    class="inline-block p-4 border-b-2 border-transparent rounded-t-lg text-gray-600 hover:text-gray-900 hover:border-gray-300 dark:text-gray-400 dark:hover:text-white dark:hover:border-gray-500"
+                                    data-tab="edit-artikel-media" role="tab" type="button"
+                                    onclick="switchEditArticleTab('edit-artikel-media')">
+                                    <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    Media
+                                </button>
+                            </li>
+                            <li role="presentation">
+                                <button
+                                    class="inline-block p-4 border-b-2 border-transparent rounded-t-lg text-gray-600 hover:text-gray-900 hover:border-gray-300 dark:text-gray-400 dark:hover:text-white dark:hover:border-gray-500"
+                                    data-tab="edit-artikel-seo" role="tab" type="button"
+                                    onclick="switchEditArticleTab('edit-artikel-seo')">
+                                    <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                    </svg>
+                                    SEO
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Tab Content -->
                     <div class="space-y-6">
-                        <!-- Informasi Artikel -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Informasi Artikel
+                        <!-- Tab 1: Informasi Utama -->
+                        <div id="edit-artikel-utama" class="edit-article-tab-content">
+                            <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4">Informasi Artikel
                             </h4>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <!-- Judul -->
@@ -42,18 +89,32 @@
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Judul <span
                                             class="text-red-500">*</span></label>
                                     <input type="text" name="title" id="editTitle"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="Masukkan judul artikel" required>
                                     <span class="text-red-500 text-xs error-message" id="edit_title_error"></span>
                                 </div>
 
                                 <!-- Slug -->
                                 <div class="sm:col-span-2">
-                                    <label for="editSlug"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Slug</label>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <label for="editSlug"
+                                            class="text-sm font-medium text-gray-900 dark:text-white">Slug</label>
+                                        <button type="button" onclick="generateEditSlugFromTitle()"
+                                            class="text-xs text-[#0194F3] hover:text-[#0064D2] dark:text-[#33ADFF] dark:hover:text-[#33ADFF] font-medium">
+                                            <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                                                </path>
+                                            </svg>
+                                            Generate dari Judul
+                                        </button>
+                                    </div>
                                     <input type="text" name="slug" id="editSlug"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
-                                        placeholder="Auto-generate dari judul">
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
+                                        placeholder="Kosongkan untuk auto-generate">
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Biarkan kosong untuk
+                                        auto-generate atau edit sesuai keinginan</p>
                                     <span class="text-red-500 text-xs error-message" id="edit_slug_error"></span>
                                 </div>
 
@@ -63,7 +124,7 @@
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kategori
                                         <span class="text-red-500">*</span></label>
                                     <select name="category_id" id="editCategory" required
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]">
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]">
                                         <option value="">Pilih Kategori</option>
                                         @if(isset($categories) && $categories->count())
                                             @foreach($categories as $category)
@@ -80,20 +141,20 @@
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status
                                         <span class="text-red-500">*</span></label>
                                     <select name="status" id="editStatus" required
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]">
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]">
                                         <option value="Draft">Draft</option>
                                         <option value="Published">Published</option>
                                     </select>
                                     <span class="text-red-500 text-xs error-message" id="edit_status_error"></span>
                                 </div>
 
-                                <!-- Published At - hanya tanggal -->
+                                <!-- Published At -->
                                 <div>
                                     <label for="editPublishedAt"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal
                                         Publikasi</label>
                                     <input type="date" name="published_at" id="editPublishedAt"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]">
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]">
                                     <span class="text-red-500 text-xs error-message"
                                         id="edit_published_at_error"></span>
                                 </div>
@@ -103,7 +164,7 @@
                                     <label for="editExcerpt"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ringkasan</label>
                                     <textarea name="excerpt" id="editExcerpt" rows="2"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="Masukkan ringkasan artikel"></textarea>
                                     <span class="text-red-500 text-xs error-message" id="edit_excerpt_error"></span>
                                 </div>
@@ -114,21 +175,23 @@
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Konten
                                         <span class="text-red-500">*</span></label>
                                     <textarea name="content" id="editContent" rows="6"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="Masukkan konten artikel" required></textarea>
                                     <span class="text-red-500 text-xs error-message" id="edit_content_error"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Thumbnail -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Thumbnail</h4>
+                        <!-- Tab 2: Media (Thumbnail) -->
+                        <div id="edit-artikel-media" class="edit-article-tab-content hidden">
+                            <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4">Thumbnail</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Kosongkan jika tidak ingin
+                                mengganti thumbnail</p>
                             <div class="flex flex-col items-center">
                                 <!-- Preview Image -->
                                 <div id="editThumbnailPreviewContainer" class="hidden relative w-full">
                                     <img id="editThumbnailPreview" src="#" alt="Preview Thumbnail"
-                                        class="w-full h-48 object-cover rounded-lg border-2 border-[#FFD4D4] dark:border-gray-600">
+                                        class="w-full h-48 object-cover rounded-lg border-2 border-[#B3E0FF] dark:border-gray-600">
                                     <div
                                         class="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-3 py-1.5 rounded-lg">
                                         <span id="editThumbnailFileName"></span>
@@ -158,17 +221,17 @@
 
                                 <!-- Upload Area -->
                                 <div id="editThumbnailUploadArea"
-                                    class="w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-[#FFF5F5] border-[#FFD4D4] hover:bg-[#FFE8E8] dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 transition-colors">
+                                    class="w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 border-gray-300 hover:bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 transition-colors">
                                     <label for="editThumbnailUpload"
                                         class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
                                         <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                            <svg class="w-8 h-8 mb-2 text-[#FF6B6B] dark:text-gray-400" fill="none"
+                                            <svg class="w-8 h-8 mb-2 text-[#0194F3] dark:text-gray-400" fill="none"
                                                 stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                             </svg>
                                             <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">
-                                                <span class="font-semibold">Klik untuk upload</span> thumbnail
+                                                <span class="font-semibold">Klik untuk upload</span> thumbnail baru
                                             </p>
                                             <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG, WEBP (Maks.
                                                 5MB)</p>
@@ -182,16 +245,17 @@
                             </div>
                         </div>
 
-                        <!-- SEO -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">SEO</h4>
+                        <!-- Tab 3: SEO -->
+                        <div id="edit-artikel-seo" class="edit-article-tab-content hidden">
+                            <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4">SEO (Search Engine
+                                Optimization)</h4>
                             <div class="grid grid-cols-1 gap-4">
                                 <div>
                                     <label for="editMetaTitle"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Meta
                                         Title</label>
                                     <input type="text" name="meta_title" id="editMetaTitle"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="Meta Title">
                                     <span class="text-red-500 text-xs error-message" id="edit_meta_title_error"></span>
                                 </div>
@@ -200,7 +264,7 @@
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Meta
                                         Description</label>
                                     <textarea name="meta_description" id="editMetaDescription" rows="2"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="Meta Description"></textarea>
                                     <span class="text-red-500 text-xs error-message"
                                         id="edit_meta_description_error"></span>
@@ -210,7 +274,7 @@
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Meta
                                         Keywords</label>
                                     <input type="text" name="meta_keywords" id="editMetaKeywords"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                         placeholder="Meta Keywords (pisahkan dengan koma)">
                                     <span class="text-red-500 text-xs error-message"
                                         id="edit_meta_keywords_error"></span>
@@ -220,9 +284,9 @@
                     </div>
 
                     <div
-                        class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-6 pt-4 border-t border-[#FFD4D4] dark:border-gray-700">
+                        class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-6 pt-4 border-t border-[#B3E0FF] dark:border-gray-700">
                         <button type="submit"
-                            class="text-white bg-[#E60000] hover:bg-[#B71C1C] focus:ring-4 focus:ring-[#FFD4D4] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#FF6B6B] dark:hover:bg-[#E60000] dark:focus:ring-[#FF6B6B] w-full sm:w-auto">
+                            class="text-white bg-[#0194F3] hover:bg-[#0064D2] focus:ring-4 focus:ring-[#B3E0FF] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#33ADFF] dark:hover:bg-[#0194F3] dark:focus:ring-[#33ADFF] w-full sm:w-auto">
                             <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M5 13l4 4L19 7"></path>
@@ -230,7 +294,7 @@
                             Update Artikel
                         </button>
                         <button type="button" onclick="closeEditArticleModal()"
-                            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 hover:text-[#E60000] focus:ring-4 focus:ring-[#FFD4D4] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 w-full sm:w-auto">
+                            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 hover:text-[#0194F3] focus:ring-4 focus:ring-[#B3E0FF] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 w-full sm:w-auto">
                             Batal
                         </button>
                     </div>
@@ -241,10 +305,57 @@
 </div>
 
 <script>
+    // ========== TAB FUNCTION ==========
+    function switchEditArticleTab(tabId) {
+        document.querySelectorAll('.edit-article-tab-content').forEach(el => {
+            el.classList.add('hidden');
+        });
+
+        const selectedTab = document.getElementById(tabId);
+        if (selectedTab) {
+            selectedTab.classList.remove('hidden');
+        }
+
+        // Reset semua tab ke state non-aktif
+        document.querySelectorAll('#editArticleTab button').forEach(btn => {
+            btn.classList.remove(
+                'border-[#0194F3]', 'text-[#0194F3]',
+                'dark:border-[#33ADFF]', 'dark:text-[#33ADFF]'
+            );
+            btn.classList.add(
+                'border-transparent',
+                'text-gray-600', 'hover:text-gray-900', 'hover:border-gray-300',
+                'dark:text-gray-400', 'dark:hover:text-white', 'dark:hover:border-gray-500'
+            );
+        });
+
+        // Set tab aktif
+        const activeBtn = document.querySelector(`#editArticleTab button[data-tab="${tabId}"]`);
+        if (activeBtn) {
+            activeBtn.classList.remove(
+                'border-transparent',
+                'text-gray-600', 'hover:text-gray-900', 'hover:border-gray-300',
+                'dark:text-gray-400', 'dark:hover:text-white', 'dark:hover:border-gray-500'
+            );
+            activeBtn.classList.add(
+                'border-[#0194F3]', 'text-[#0194F3]',
+                'dark:border-[#33ADFF]', 'dark:text-[#33ADFF]'
+            );
+        }
+    }
+
     // ========== OPEN/CLOSE MODAL ==========
     function openEditArticleModal(id) {
-        // Gunakan route show untuk mengambil data
         var url = '{{ route('articles.show', '') }}/' + id;
+
+        Swal.fire({
+            title: 'Memuat data...',
+            text: 'Mohon tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
 
         fetch(url, {
             method: 'GET',
@@ -254,9 +365,14 @@
             }
         })
             .then(function (response) {
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status}`);
+                }
                 return response.json();
             })
             .then(function (data) {
+                Swal.close();
+
                 if (data.success) {
                     var article = data.data;
 
@@ -266,7 +382,6 @@
                     document.getElementById('editCategory').value = article.category_id || '';
                     document.getElementById('editStatus').value = article.status || 'Draft';
 
-                    // Format published_at untuk input date (hanya tanggal)
                     if (article.published_at) {
                         var date = new Date(article.published_at);
                         var formattedDate = date.getFullYear() + '-' +
@@ -283,7 +398,6 @@
                     document.getElementById('editMetaDescription').value = article.meta_description || '';
                     document.getElementById('editMetaKeywords').value = article.meta_keywords || '';
 
-                    // Thumbnail
                     var previewContainer = document.getElementById('editThumbnailPreviewContainer');
                     var preview = document.getElementById('editThumbnailPreview');
                     var uploadArea = document.getElementById('editThumbnailUploadArea');
@@ -298,12 +412,13 @@
                         uploadArea.classList.remove('hidden');
                     }
 
-                    // Set form action untuk update
                     document.getElementById('editArticleForm').action = '{{ route('articles.update', '') }}/' + article.id;
 
                     document.querySelectorAll('#editArticleForm .error-message').forEach(function (el) {
                         el.textContent = '';
                     });
+
+                    switchEditArticleTab('edit-artikel-utama');
 
                     document.getElementById('editArticleModal').classList.remove('hidden');
                     document.body.style.overflow = 'hidden';
@@ -316,6 +431,7 @@
                 }
             })
             .catch(function (error) {
+                Swal.close();
                 console.error('Error:', error);
                 Swal.fire({
                     icon: 'error',
@@ -330,12 +446,43 @@
         document.body.style.overflow = 'auto';
     }
 
+    // ========== SLUG GENERATOR ==========
+    function generateEditSlugFromTitle() {
+        const title = document.getElementById('editTitle').value.trim();
+        const slugInput = document.getElementById('editSlug');
+
+        if (!title) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: 'Masukkan judul artikel terlebih dahulu'
+            });
+            document.getElementById('editTitle').focus();
+            return;
+        }
+
+        const slug = title.toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-');
+
+        slugInput.value = slug;
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Slug telah digenerate dari judul artikel',
+            timer: 1500,
+            showConfirmButton: false
+        });
+    }
+
     // ========== THUMBNAIL ==========
     document.addEventListener('DOMContentLoaded', function () {
         var upload = document.getElementById('editThumbnailUpload');
+        var uploadArea = document.getElementById('editThumbnailUploadArea');
         var previewContainer = document.getElementById('editThumbnailPreviewContainer');
         var preview = document.getElementById('editThumbnailPreview');
-        var uploadArea = document.getElementById('editThumbnailUploadArea');
         var fileName = document.getElementById('editThumbnailFileName');
         var fileSize = document.getElementById('editThumbnailFileSize');
 
@@ -395,12 +542,14 @@
 
         if (titleInput && slugInput) {
             titleInput.addEventListener('input', function () {
-                var slug = this.value
-                    .toLowerCase()
-                    .replace(/[^a-z0-9\s-]/g, '')
-                    .replace(/\s+/g, '-')
-                    .replace(/-+/g, '-');
-                slugInput.value = slug;
+                if (slugInput.value === '') {
+                    var slug = this.value
+                        .toLowerCase()
+                        .replace(/[^a-z0-9\s-]/g, '')
+                        .replace(/\s+/g, '-')
+                        .replace(/-+/g, '-');
+                    slugInput.value = slug;
+                }
             });
         }
     });
@@ -448,7 +597,7 @@
     }
 
     #editArticleModal .max-h-\[70vh\]::-webkit-scrollbar-thumb {
-        background: #E60000;
+        background: #0194F3;
         border-radius: 3px;
     }
 
@@ -457,7 +606,7 @@
     }
 
     .dark #editArticleModal .max-h-\[70vh\]::-webkit-scrollbar-thumb {
-        background: #FF6B6B;
+        background: #33ADFF;
     }
 
     #editThumbnailPreviewContainer {

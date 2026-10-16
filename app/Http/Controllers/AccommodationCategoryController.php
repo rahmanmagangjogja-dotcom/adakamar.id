@@ -230,7 +230,7 @@ class AccommodationCategoryController extends Controller
                 'nullable',
                 'image',
                 'mimes:jpg,jpeg,png,webp',
-                'max:20480',
+                'max:1048576',
             ],
 
             'description' => [
@@ -269,7 +269,7 @@ class AccommodationCategoryController extends Controller
                 'nullable',
                 'image',
                 'mimes:jpg,jpeg,png,webp',
-                'max:20480',
+                'max:1048576',
             ],
 
             'description' => [

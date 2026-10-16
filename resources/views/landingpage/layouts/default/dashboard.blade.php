@@ -2,11 +2,11 @@
 
 @section('main')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
+
     @include('landingpage.layouts.partials.navbar-dashboard')
 
-    <!-- Main Content -->
-    <main class="pt-16 bg-gray-50 dark:bg-gray-900">
+    <!-- Main Content - TANPA padding & background -->
+    <main>
         @yield('content')
     </main>
 

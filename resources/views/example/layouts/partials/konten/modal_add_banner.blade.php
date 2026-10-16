@@ -6,9 +6,9 @@
 
         <div
             class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-800 sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
-            <div class="px-6 py-4 border-b border-[#FFD4D4] dark:border-gray-700">
+            <div class="px-6 py-4 border-b border-[#B3E0FF] dark:border-gray-700">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-semibold text-[#E60000] dark:text-[#FF6B6B]">
+                    <h3 class="text-xl font-semibold text-[#0194F3] dark:text-[#33ADFF]">
                         <svg class="w-6 h-6 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path
                                 d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
@@ -35,7 +35,7 @@
                                 Judul <span class="text-red-500">*</span>
                             </label>
                             <input type="text" name="title" id="addTitle"
-                                class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                class="shadow-sm bg-[#E6F4FF] border border-[#B3E0FF] text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                 placeholder="Masukkan judul banner" required>
                             <span class="text-red-500 text-xs error-message" id="add_title_error"></span>
                         </div>
@@ -47,7 +47,7 @@
                                 Subjudul
                             </label>
                             <input type="text" name="subtitle" id="addSubtitle"
-                                class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                class="shadow-sm bg-[#E6F4FF] border border-[#B3E0FF] text-gray-900 sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF]"
                                 placeholder="Masukkan subjudul banner (opsional)">
                             <span class="text-red-500 text-xs error-message" id="add_subtitle_error"></span>
                         </div>
@@ -58,14 +58,14 @@
                                 Gambar <span class="text-red-500">*</span>
                             </label>
                             <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Format: JPG, JPEG, PNG, WEBP (Maks.
-                                2MB)</p>
+                                1GB)</p>
 
                             <div id="addImageUploadArea"
-                                class="w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-[#FFF5F5] border-[#FFD4D4] hover:bg-[#FFE8E8] dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 transition-colors">
+                                class="w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-[#E6F4FF] border-[#B3E0FF] hover:bg-[#D6ECFF] dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 transition-colors">
                                 <label for="addImageUpload"
                                     class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
                                     <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <svg class="w-8 h-8 mb-2 text-[#FF6B6B] dark:text-gray-400" fill="none"
+                                        <svg class="w-8 h-8 mb-2 text-[#0194F3] dark:text-gray-400" fill="none"
                                             stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -74,7 +74,7 @@
                                             <span class="font-semibold">Klik untuk upload</span> gambar
                                         </p>
                                         <p class="text-xs text-gray-500 dark:text-gray-400">JPG, JPEG, PNG, WEBP (Maks.
-                                            2MB)</p>
+                                            1GB)</p>
                                     </div>
                                     <input type="file" id="addImageUpload" name="image" accept="image/*" class="hidden"
                                         required>
@@ -84,7 +84,7 @@
                             <!-- Preview Gambar -->
                             <div id="addImagePreviewContainer" class="hidden relative w-full mt-2">
                                 <img id="addImagePreview" src="#" alt="Preview Gambar"
-                                    class="w-full h-48 object-cover rounded-lg border-2 border-[#FFD4D4] dark:border-gray-600">
+                                    class="w-full h-48 object-cover rounded-lg border-2 border-[#B3E0FF] dark:border-gray-600">
                                 <div
                                     class="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-3 py-1.5 rounded-lg">
                                     <span id="addImageFileName"></span>
@@ -115,9 +115,9 @@
                     </div>
 
                     <div
-                        class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-6 pt-4 border-t border-[#FFD4D4] dark:border-gray-700">
+                        class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-6 pt-4 border-t border-[#B3E0FF] dark:border-gray-700">
                         <button type="button" onclick="submitAddBanner()"
-                            class="text-white bg-[#E60000] hover:bg-[#B71C1C] focus:ring-4 focus:ring-[#FFD4D4] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#FF6B6B] dark:hover:bg-[#E60000] dark:focus:ring-[#FF6B6B] w-full sm:w-auto">
+                            class="text-white bg-[#0194F3] hover:bg-[#0064D2] focus:ring-4 focus:ring-[#B3E0FF] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#33ADFF] dark:hover:bg-[#0194F3] dark:focus:ring-[#33ADFF] w-full sm:w-auto">
                             <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 4v16m8-8H4"></path>
@@ -125,7 +125,7 @@
                             Simpan Banner
                         </button>
                         <button type="button" onclick="closeAddBannerModal()"
-                            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 hover:text-[#E60000] focus:ring-4 focus:ring-[#FFD4D4] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 w-full sm:w-auto">
+                            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 hover:text-[#0194F3] focus:ring-4 focus:ring-[#B3E0FF] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 w-full sm:w-auto">
                             Batal
                         </button>
                     </div>
@@ -188,15 +188,17 @@
                 }
 
                 if (file) {
-                    if (file.size > 2 * 1024 * 1024) {
+                    const maxSize = 1024 * 1024 * 1024; // 1 GB dalam bytes
+                    if (file.size > maxSize) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal!',
-                            text: 'Ukuran file maksimal 2MB'
+                            text: 'Ukuran file maksimal 1GB'
                         });
                         this.value = '';
                         return;
                     }
+
                     const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
                     if (!validTypes.includes(file.type)) {
                         Swal.fire({
@@ -215,11 +217,18 @@
                         previewContainer.classList.remove('hidden');
 
                         fileName.textContent = file.name;
-                        const sizeInKB = (file.size / 1024).toFixed(2);
-                        if (sizeInKB > 1024) {
-                            fileSize.textContent = (sizeInKB / 1024).toFixed(2) + ' MB';
+
+                        const sizeInBytes = file.size;
+                        const sizeInKB = sizeInBytes / 1024;
+                        const sizeInMB = sizeInKB / 1024;
+                        const sizeInGB = sizeInMB / 1024;
+
+                        if (sizeInGB >= 1) {
+                            fileSize.textContent = sizeInGB.toFixed(2) + ' GB';
+                        } else if (sizeInMB >= 1) {
+                            fileSize.textContent = sizeInMB.toFixed(2) + ' MB';
                         } else {
-                            fileSize.textContent = sizeInKB + ' KB';
+                            fileSize.textContent = sizeInKB.toFixed(2) + ' KB';
                         }
                     };
                     reader.readAsDataURL(file);
@@ -239,10 +248,8 @@
     window.submitAddBanner = async function () {
         console.log('=== SUBMIT BANNER ===');
 
-        // Reset error messages
         document.querySelectorAll('#addBannerForm .error-message').forEach(el => el.textContent = '');
 
-        // Validasi
         const title = document.getElementById('addTitle').value.trim();
         const image = document.getElementById('addImageUpload').files[0];
 
@@ -271,6 +278,11 @@
         const form = document.getElementById('addBannerForm');
         const formData = new FormData(form);
 
+        console.log('Data yang dikirim:');
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ': ' + (pair[0] === 'image' ? '[FILE]' : pair[1]));
+        }
+
         Swal.fire({
             title: 'Menyimpan...',
             text: 'Mohon tunggu sebentar',
@@ -289,21 +301,25 @@
                 body: formData
             });
 
-            let data;
+            console.log('HTTP Status:', response.status);
+            console.log('Content-Type:', response.headers.get('content-type'));
+
             const contentType = response.headers.get('content-type') || '';
-            if (contentType.includes('application/json')) {
-                data = await response.json();
-            } else {
+
+            if (!contentType.includes('application/json')) {
                 const text = await response.text();
-                console.error('Response bukan JSON:', text);
-                throw new Error(`Server mengembalikan response bukan JSON. HTTP ${response.status}`);
+                console.error('Response bukan JSON:', text.substring(0, 500));
+                throw new Error('Server mengembalikan response bukan JSON. Pastikan controller meresponse dengan JSON untuk AJAX request.');
             }
+
+            const data = await response.json();
+            console.log('Response JSON:', data);
 
             if (response.ok && data.success) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: 'Banner berhasil ditambahkan!',
+                    text: data.message || 'Banner berhasil ditambahkan!',
                     timer: 2000,
                     showConfirmButton: false
                 }).then(() => {
@@ -336,10 +352,16 @@
 
         } catch (error) {
             console.error('=== ERROR SUBMIT ===', error);
+
+            let errorMessage = 'Terjadi kesalahan: ' + error.message;
+            if (error.message.includes('bukan JSON')) {
+                errorMessage += '\n\nCoba periksa: \n1. Apakah route sudah benar?\n2. Apakah controller meresponse JSON untuk AJAX?\n3. Coba refresh halaman dan coba lagi.';
+            }
+
             Swal.fire({
                 icon: 'error',
                 title: 'Error!',
-                text: 'Terjadi kesalahan: ' + error.message
+                text: errorMessage
             });
         }
     };
@@ -385,7 +407,7 @@
     }
 
     #addBannerModal .max-h-\[70vh\]::-webkit-scrollbar-thumb {
-        background: #E60000;
+        background: #0194F3;
         border-radius: 3px;
     }
 
@@ -394,7 +416,7 @@
     }
 
     .dark #addBannerModal .max-h-\[70vh\]::-webkit-scrollbar-thumb {
-        background: #FF6B6B;
+        background: #33ADFF;
     }
 
     .error-message {

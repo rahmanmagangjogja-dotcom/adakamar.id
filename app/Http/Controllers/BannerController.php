@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\BannerService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class BannerController extends Controller
@@ -45,35 +46,75 @@ class BannerController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+        try {
+            $validated = $request->validate([
+                'title' => [
+                    'required',
+                    'string',
+                    'max:255',
+                ],
 
-            'subtitle' => [
-                'nullable',
-                'string',
-                'max:255',
-            ],
+                'subtitle' => [
+                    'nullable',
+                    'string',
+                    'max:255',
+                ],
 
-            'image' => [
-                'required',
-                'image',
-                'mimes:jpg,jpeg,png,webp',
-                'max:2048',
-            ],
-        ]);
+                'image' => [
+                    'required',
+                    'image',
+                    'mimes:jpg,jpeg,png,webp',
+                    'max:1048576', // 1 GB
+                ],
+            ]);
 
-        $this->service->create($validated);
+            $banner = $this->service->create($validated);
 
-        return redirect()
-            ->route('banners.index')
-            ->with(
-                'success',
-                'Banner berhasil ditambahkan.'
-            );
+            // Jika request dari AJAX
+            if ($this->isAjax($request)) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Banner berhasil ditambahkan.',
+                    'data' => $banner,
+                ], 201);
+            }
+
+            return redirect()
+                ->route('banners.index')
+                ->with('success', 'Banner berhasil ditambahkan.');
+
+        } catch (ValidationException $e) {
+
+            if ($this->isAjax($request)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal.',
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            throw $e;
+
+        } catch (Throwable $e) {
+
+            \Log::error('Gagal menambahkan banner', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
+            if ($this->isAjax($request)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 
     /*
@@ -90,21 +131,41 @@ class BannerController extends Controller
         try {
             $banner = $this->service->findById($id);
 
+            if (!$banner) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Banner tidak ditemukan.',
+                ], 404);
+            }
+
             return response()->json([
                 'success' => true,
-
                 'data' => [
                     'id' => $banner->id,
                     'title' => $banner->title,
                     'subtitle' => $banner->subtitle,
                     'image' => $banner->image,
+
+                    // Path gambar dari folder public/banner
+                    'image_url' => $banner->image
+                        ? asset('banner/' . $banner->image)
+                        : null,
                 ],
             ], 200);
+
         } catch (Throwable $e) {
+
+            \Log::error('Gagal mengambil data banner', [
+                'id' => $id,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Banner tidak ditemukan.',
-            ], 404);
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -119,38 +180,79 @@ class BannerController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        $validated = $request->validate([
-            'title' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+        try {
+            $validated = $request->validate([
+                'title' => [
+                    'required',
+                    'string',
+                    'max:255',
+                ],
 
-            'subtitle' => [
-                'nullable',
-                'string',
-                'max:255',
-            ],
+                'subtitle' => [
+                    'nullable',
+                    'string',
+                    'max:255',
+                ],
 
-            'image' => [
-                'nullable',
-                'image',
-                'mimes:jpg,jpeg,png,webp',
-                'max:2048',
-            ],
-        ]);
+                'image' => [
+                    'nullable',
+                    'image',
+                    'mimes:jpg,jpeg,png,webp',
+                    'max:1048576', // 1 GB
+                ],
+            ]);
 
-        $this->service->update(
-            $id,
-            $validated
-        );
-
-        return redirect()
-            ->route('banners.index')
-            ->with(
-                'success',
-                'Banner berhasil diperbarui.'
+            $banner = $this->service->update(
+                $id,
+                $validated
             );
+
+            // Jika request dari AJAX
+            if ($this->isAjax($request)) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Banner berhasil diperbarui.',
+                    'data' => $banner,
+                ]);
+            }
+
+            return redirect()
+                ->route('banners.index')
+                ->with('success', 'Banner berhasil diperbarui.');
+
+        } catch (ValidationException $e) {
+
+            if ($this->isAjax($request)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal.',
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            throw $e;
+
+        } catch (Throwable $e) {
+
+            \Log::error('Gagal memperbarui banner', [
+                'id' => $id,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
+            if ($this->isAjax($request)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 
     /*
@@ -160,17 +262,60 @@ class BannerController extends Controller
     */
 
     /**
-     * Menghapus banner.
+     * Menghapus banner beserta image.
      */
-    public function destroy(int $id)
+    public function destroy(Request $request, int $id)
     {
-        $this->service->delete($id);
+        try {
+            $this->service->delete($id);
 
-        return redirect()
-            ->route('banners.index')
-            ->with(
-                'success',
-                'Banner berhasil dihapus.'
-            );
+            // Jika request dari AJAX
+            if ($this->isAjax($request)) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Banner berhasil dihapus.',
+                ]);
+            }
+
+            return redirect()
+                ->route('banners.index')
+                ->with('success', 'Banner berhasil dihapus.');
+
+        } catch (Throwable $e) {
+
+            \Log::error('Gagal menghapus banner', [
+                'id' => $id,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
+            if ($this->isAjax($request)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()
+                ->route('banners.index')
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | HELPER
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Cek apakah request berasal dari AJAX.
+     */
+    protected function isAjax(Request $request): bool
+    {
+        return $request->ajax()
+            || $request->wantsJson()
+            || $request->expectsJson();
     }
 }

@@ -20,29 +20,56 @@ class GalleryService
 
     /**
      * Daftar gallery.
+     *
+     * Digunakan untuk halaman admin.
      */
     public function getGalleries(
         ?string $keyword = null,
         int $perPage = 10
     ): LengthAwarePaginator {
+
         return $this->galleryRepository
-            ->getAll($keyword, $perPage);
+            ->getAll(
+                $keyword,
+                $perPage
+            );
     }
 
     /**
      * Detail gallery.
      */
-    public function getGallery(int $id): ?Gallery
-    {
+    public function getGallery(
+        int $id
+    ): ?Gallery {
+
         return $this->galleryRepository
             ->findById($id);
     }
 
     /**
+     * Ambil gallery aktif.
+     *
+     * Digunakan untuk landing page.
+     *
+     * Hanya gallery dengan:
+     *
+     * is_active = true
+     *
+     * yang akan ditampilkan.
+     */
+    public function getActiveGalleries()
+    {
+        return $this->galleryRepository
+            ->getActiveGalleries();
+    }
+
+    /**
      * Buat gallery baru.
      */
-    public function createGallery(array $data): Gallery
-    {
+    public function createGallery(
+        array $data
+    ): Gallery {
+
         return DB::transaction(function () use ($data) {
 
             /*
@@ -55,25 +82,43 @@ class GalleryService
                 isset($data['image']) &&
                 $data['image'] instanceof UploadedFile
             ) {
-                $data['image'] = $this->storeImage(
-                    $data['image']
-                );
+
+                $data['image'] =
+                    $this->storeImage(
+                        $data['image']
+                    );
             }
 
             /*
             |--------------------------------------------------------------------------
             | Default sort order
             |--------------------------------------------------------------------------
+            |
+            | Jika sort_order tidak dikirim,
+            | otomatis diletakkan di urutan terakhir.
+            |
             */
 
             if (!isset($data['sort_order'])) {
+
                 $data['sort_order'] =
                     (Gallery::max('sort_order') ?? 0) + 1;
             }
 
             /*
             |--------------------------------------------------------------------------
-            | Create
+            | Default status aktif
+            |--------------------------------------------------------------------------
+            */
+
+            if (!isset($data['is_active'])) {
+
+                $data['is_active'] = true;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Create gallery
             |--------------------------------------------------------------------------
             */
 
@@ -89,12 +134,21 @@ class GalleryService
         int $id,
         array $data
     ): ?Gallery {
+
         return DB::transaction(function () use ($id, $data) {
 
-            $gallery = $this->galleryRepository
-                ->findById($id);
+            /*
+            |--------------------------------------------------------------------------
+            | Cari gallery
+            |--------------------------------------------------------------------------
+            */
+
+            $gallery =
+                $this->galleryRepository
+                    ->findById($id);
 
             if (!$gallery) {
+
                 return null;
             }
 
@@ -110,27 +164,35 @@ class GalleryService
             ) {
 
                 /*
+                |--------------------------------------------------------------------------
                 | Hapus gambar lama
+                |--------------------------------------------------------------------------
                 */
 
                 if ($gallery->image) {
+
                     $this->deleteFile(
                         $gallery->image
                     );
                 }
 
                 /*
+                |--------------------------------------------------------------------------
                 | Simpan gambar baru
+                |--------------------------------------------------------------------------
                 */
 
-                $data['image'] = $this->storeImage(
-                    $data['image']
-                );
+                $data['image'] =
+                    $this->storeImage(
+                        $data['image']
+                    );
 
             } else {
 
                 /*
-                | Jangan ubah image jika tidak upload
+                |--------------------------------------------------------------------------
+                | Jangan ubah image
+                |--------------------------------------------------------------------------
                 */
 
                 unset($data['image']);
@@ -138,12 +200,21 @@ class GalleryService
 
             /*
             |--------------------------------------------------------------------------
-            | Update
+            | Update gallery
             |--------------------------------------------------------------------------
             */
 
             $this->galleryRepository
-                ->update($gallery, $data);
+                ->update(
+                    $gallery,
+                    $data
+                );
+
+            /*
+            |--------------------------------------------------------------------------
+            | Return data terbaru
+            |--------------------------------------------------------------------------
+            */
 
             return $gallery->fresh();
         });
@@ -152,14 +223,24 @@ class GalleryService
     /**
      * Hapus gallery.
      */
-    public function deleteGallery(int $id): bool
-    {
+    public function deleteGallery(
+        int $id
+    ): bool {
+
         return DB::transaction(function () use ($id) {
 
-            $gallery = $this->galleryRepository
-                ->findById($id);
+            /*
+            |--------------------------------------------------------------------------
+            | Cari gallery
+            |--------------------------------------------------------------------------
+            */
+
+            $gallery =
+                $this->galleryRepository
+                    ->findById($id);
 
             if (!$gallery) {
+
                 return false;
             }
 
@@ -170,6 +251,7 @@ class GalleryService
             */
 
             if ($gallery->image) {
+
                 $this->deleteFile(
                     $gallery->image
                 );
@@ -177,7 +259,7 @@ class GalleryService
 
             /*
             |--------------------------------------------------------------------------
-            | Hapus database
+            | Hapus data gallery
             |--------------------------------------------------------------------------
             */
 
@@ -190,16 +272,25 @@ class GalleryService
      * Simpan image ke public/galleries.
      *
      * Database:
+     *
      * galleries/nama-file.jpg
      *
      * File:
+     *
      * public/galleries/nama-file.jpg
      */
     protected function storeImage(
         UploadedFile $file
     ): string {
 
-        $directory = public_path('galleries');
+        /*
+        |--------------------------------------------------------------------------
+        | Folder penyimpanan
+        |--------------------------------------------------------------------------
+        */
+
+        $directory =
+            public_path('galleries');
 
         /*
         |--------------------------------------------------------------------------
@@ -208,6 +299,7 @@ class GalleryService
         */
 
         if (!is_dir($directory)) {
+
             mkdir(
                 $directory,
                 0755,
@@ -217,13 +309,20 @@ class GalleryService
 
         /*
         |--------------------------------------------------------------------------
-        | Nama file
+        | Extension
         |--------------------------------------------------------------------------
         */
 
-        $extension = strtolower(
-            $file->getClientOriginalExtension()
-        );
+        $extension =
+            strtolower(
+                $file->getClientOriginalExtension()
+            );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Nama file
+        |--------------------------------------------------------------------------
+        */
 
         $filename =
             time() .
@@ -245,7 +344,7 @@ class GalleryService
 
         /*
         |--------------------------------------------------------------------------
-        | Path database
+        | Path yang disimpan ke database
         |--------------------------------------------------------------------------
         */
 
@@ -259,11 +358,31 @@ class GalleryService
         string $path
     ): void {
 
-        $filePath = public_path(
-            ltrim($path, '/')
-        );
+        /*
+        |--------------------------------------------------------------------------
+        | Path file
+        |--------------------------------------------------------------------------
+        */
 
-        if (file_exists($filePath)) {
+        $filePath =
+            public_path(
+                ltrim(
+                    $path,
+                    '/'
+                )
+            );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Hapus jika file ada
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            file_exists($filePath) &&
+            is_file($filePath)
+        ) {
+
             unlink($filePath);
         }
     }
