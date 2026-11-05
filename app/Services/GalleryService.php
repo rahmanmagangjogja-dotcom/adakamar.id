@@ -2,75 +2,388 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\GalleryRepositoryInterface;
+use App\Models\Gallery;
+use App\Repositories\GalleryRepository;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class GalleryService
 {
-    protected $repository;
+    protected GalleryRepository $galleryRepository;
 
     public function __construct(
-        GalleryRepositoryInterface $repository
+        GalleryRepository $galleryRepository
     ) {
-        $this->repository = $repository;
+        $this->galleryRepository = $galleryRepository;
     }
 
-    public function getAll()
-    {
-        return $this->repository->getAll();
+    /**
+     * Daftar gallery.
+     *
+     * Digunakan untuk halaman admin.
+     */
+    public function getGalleries(
+        ?string $keyword = null,
+        int $perPage = 10
+    ): LengthAwarePaginator {
+
+        return $this->galleryRepository
+            ->getAll(
+                $keyword,
+                $perPage
+            );
     }
 
-    public function getById($id)
-    {
-        return $this->repository->getById($id);
+    /**
+     * Detail gallery.
+     */
+    public function getGallery(
+        int $id
+    ): ?Gallery {
+
+        return $this->galleryRepository
+            ->findById($id);
     }
 
-    public function create(array $data, array $images = [])
+    /**
+     * Ambil gallery aktif.
+     *
+     * Digunakan untuk landing page.
+     *
+     * Hanya gallery dengan:
+     *
+     * is_active = true
+     *
+     * yang akan ditampilkan.
+     */
+    public function getActiveGalleries()
     {
-        $results = [];
+        return $this->galleryRepository
+            ->getActiveGalleries();
+    }
 
-        foreach ($images as $image) {
+    /**
+     * Buat gallery baru.
+     */
+    public function createGallery(
+        array $data
+    ): Gallery {
 
-            if ($image instanceof UploadedFile) {
+        return DB::transaction(function () use ($data) {
 
-                $imagePath = $image->store('galleries', 'public');
+            /*
+            |--------------------------------------------------------------------------
+            | Upload gambar
+            |--------------------------------------------------------------------------
+            */
 
-                $galleryData = $data;
+            if (
+                isset($data['image']) &&
+                $data['image'] instanceof UploadedFile
+            ) {
 
-                $galleryData['image'] = $imagePath;
-
-                $results[] = $this->repository->create($galleryData);
+                $data['image'] =
+                    $this->storeImage(
+                        $data['image']
+                    );
             }
-        }
 
-        return $results;
+            /*
+            |--------------------------------------------------------------------------
+            | Default sort order
+            |--------------------------------------------------------------------------
+            |
+            | Jika sort_order tidak dikirim,
+            | otomatis diletakkan di urutan terakhir.
+            |
+            */
+
+            if (!isset($data['sort_order'])) {
+
+                $data['sort_order'] =
+                    (Gallery::max('sort_order') ?? 0) + 1;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Default status aktif
+            |--------------------------------------------------------------------------
+            */
+
+            if (!isset($data['is_active'])) {
+
+                $data['is_active'] = true;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Create gallery
+            |--------------------------------------------------------------------------
+            */
+
+            return $this->galleryRepository
+                ->create($data);
+        });
     }
 
-    public function update($id, array $data, ?UploadedFile $image = null)
-    {
-        $gallery = $this->repository->getById($id);
+    /**
+     * Update gallery.
+     */
+    public function updateGallery(
+        int $id,
+        array $data
+    ): ?Gallery {
 
-        if ($image) {
+        return DB::transaction(function () use ($id, $data) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | Cari gallery
+            |--------------------------------------------------------------------------
+            */
+
+            $gallery =
+                $this->galleryRepository
+                    ->findById($id);
+
+            if (!$gallery) {
+
+                return null;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Upload gambar baru
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                isset($data['image']) &&
+                $data['image'] instanceof UploadedFile
+            ) {
+
+                /*
+                |--------------------------------------------------------------------------
+                | Hapus gambar lama
+                |--------------------------------------------------------------------------
+                */
+
+                if ($gallery->image) {
+
+                    $this->deleteFile(
+                        $gallery->image
+                    );
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | Simpan gambar baru
+                |--------------------------------------------------------------------------
+                */
+
+                $data['image'] =
+                    $this->storeImage(
+                        $data['image']
+                    );
+
+            } else {
+
+                /*
+                |--------------------------------------------------------------------------
+                | Jangan ubah image
+                |--------------------------------------------------------------------------
+                */
+
+                unset($data['image']);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Update gallery
+            |--------------------------------------------------------------------------
+            */
+
+            $this->galleryRepository
+                ->update(
+                    $gallery,
+                    $data
+                );
+
+            /*
+            |--------------------------------------------------------------------------
+            | Return data terbaru
+            |--------------------------------------------------------------------------
+            */
+
+            return $gallery->fresh();
+        });
+    }
+
+    /**
+     * Hapus gallery.
+     */
+    public function deleteGallery(
+        int $id
+    ): bool {
+
+        return DB::transaction(function () use ($id) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | Cari gallery
+            |--------------------------------------------------------------------------
+            */
+
+            $gallery =
+                $this->galleryRepository
+                    ->findById($id);
+
+            if (!$gallery) {
+
+                return false;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Hapus file gambar
+            |--------------------------------------------------------------------------
+            */
 
             if ($gallery->image) {
-                Storage::disk('public')->delete($gallery->image);
+
+                $this->deleteFile(
+                    $gallery->image
+                );
             }
 
-            $data['image'] = $image->store('galleries', 'public');
-        }
+            /*
+            |--------------------------------------------------------------------------
+            | Hapus data gallery
+            |--------------------------------------------------------------------------
+            */
 
-        return $this->repository->update($id, $data);
+            return $this->galleryRepository
+                ->delete($gallery);
+        });
     }
 
-    public function delete($id)
-    {
-        $gallery = $this->repository->getById($id);
+    /**
+     * Simpan image ke public/galleries.
+     *
+     * Database:
+     *
+     * galleries/nama-file.jpg
+     *
+     * File:
+     *
+     * public/galleries/nama-file.jpg
+     */
+    protected function storeImage(
+        UploadedFile $file
+    ): string {
 
-        if ($gallery->image) {
-            Storage::disk('public')->delete($gallery->image);
+        /*
+        |--------------------------------------------------------------------------
+        | Folder penyimpanan
+        |--------------------------------------------------------------------------
+        */
+
+        $directory =
+            public_path('galleries');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pastikan folder tersedia
+        |--------------------------------------------------------------------------
+        */
+
+        if (!is_dir($directory)) {
+
+            mkdir(
+                $directory,
+                0755,
+                true
+            );
         }
 
-        return $this->repository->delete($id);
+        /*
+        |--------------------------------------------------------------------------
+        | Extension
+        |--------------------------------------------------------------------------
+        */
+
+        $extension =
+            strtolower(
+                $file->getClientOriginalExtension()
+            );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Nama file
+        |--------------------------------------------------------------------------
+        */
+
+        $filename =
+            time() .
+            '_' .
+            uniqid() .
+            '.' .
+            $extension;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pindahkan file
+        |--------------------------------------------------------------------------
+        */
+
+        $file->move(
+            $directory,
+            $filename
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Path yang disimpan ke database
+        |--------------------------------------------------------------------------
+        */
+
+        return 'galleries/' . $filename;
+    }
+
+    /**
+     * Hapus file dari public.
+     */
+    protected function deleteFile(
+        string $path
+    ): void {
+
+        /*
+        |--------------------------------------------------------------------------
+        | Path file
+        |--------------------------------------------------------------------------
+        */
+
+        $filePath =
+            public_path(
+                ltrim(
+                    $path,
+                    '/'
+                )
+            );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Hapus jika file ada
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            file_exists($filePath) &&
+            is_file($filePath)
+        ) {
+
+            unlink($filePath);
+        }
     }
 }

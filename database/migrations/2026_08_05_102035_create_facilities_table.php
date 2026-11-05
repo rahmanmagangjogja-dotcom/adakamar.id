@@ -15,8 +15,6 @@ return new class extends Migration {
 
             $table->string('name')->unique();
 
-            $table->string('icon')->nullable();
-
             $table->text('description')->nullable();
 
             $table->boolean('is_active')->default(true);

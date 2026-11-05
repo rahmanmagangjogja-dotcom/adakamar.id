@@ -2,167 +2,781 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\article_categories;
-use Illuminate\Http\Request;
+use App\Models\Article;
+use App\Models\ArticleCategory;
 use App\Services\ArticleService;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class ArticleController extends Controller
 {
-    protected $service;
+    /**
+     * Batas ukuran thumbnail dalam KB (satuan yang dipakai rule `max` Laravel).
+     * 102400 KB = 100 MB. Ubah di sini untuk mengganti limit secara global.
+     */
+    private const IMAGE_MAX_KB = 102400;   // 100 MB
+    private const IMAGE_MAX_MB = 100;
+
+    protected ArticleService $articleService;
 
     public function __construct(
-        ArticleService $service
+        ArticleService $articleService
     ) {
-        $this->service = $service;
+        $this->articleService = $articleService;
     }
 
-    public function index()
+    /**
+     * ============================================================
+     * PUBLIC
+     * ============================================================
+     */
+
+    /**
+     * Detail artikel untuk halaman publik.
+     *
+     * Artikel dicari berdasarkan slug.
+     * Hanya artikel Published yang dapat diakses.
+     */
+    public function publicDetail(string $slug)
     {
-        $artikel = $this->service->getAll();
+        $article = $this->articleService
+            ->getArticleBySlug($slug);
 
-        return view(
-            'example.content.crud.artikel.index',
-            compact('artikel')
-        );
-    }
+        /*
+        |--------------------------------------------------------------------------
+        | Artikel tidak ditemukan
+        |--------------------------------------------------------------------------
+        */
 
-    public function create()
-    {
-        $kategoris = article_categories::all();
-
-        return view(
-            'example.content.crud.artikel.create',
-            compact('kategoris')
-        );
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate(
-            [
-                'title' => 'required|string|max:255',
-                'category_id' => 'required|exists:article_categories,id',
-                'slug' => 'required|string|max:255|unique:articles,slug',
-                'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-                'content' => 'required',
-            ],
-            [
-                'title.required' => 'Judul artikel wajib diisi.',
-                'category_id.required' => 'Kategori artikel wajib dipilih.',
-                'category_id.exists' => 'Kategori yang dipilih tidak valid.',
-                'slug.required' => 'Slug artikel wajib diisi.',
-                'slug.unique' => 'Slug artikel sudah digunakan. Silakan gunakan slug lain.',
-                'thumbnail.image' => 'Thumbnail harus berupa gambar.',
-                'thumbnail.mimes' => 'Format thumbnail harus jpg, jpeg, png, atau webp.',
-                'thumbnail.max' => 'Ukuran thumbnail maksimal 2 MB.',
-                'content.required' => 'Isi artikel wajib diisi.',
-            ]
-        );
-
-        // Ambil semua data dari form KECUALI thumbnail
-        $data = $request->except([
-            '_token',
-            'thumbnail'
-        ]);
-
-        // Proses thumbnail
-        if ($request->hasFile('thumbnail')) {
-
-            $imageName = time() . '.' .
-                $request->file('thumbnail')->extension();
-
-            $request->file('thumbnail')->move(
-                public_path('storage/articles'),
-                $imageName
-            );
-
-            // Simpan PATH thumbnail, bukan temporary file
-            $data['thumbnail'] = 'storage/articles/' . $imageName;
+        if (!$article) {
+            abort(404);
         }
 
-        $this->service->create($data);
+        /*
+        |--------------------------------------------------------------------------
+        | Hanya artikel Published yang boleh tampil
+        |--------------------------------------------------------------------------
+        */
 
-        return redirect()
-            ->route('artikel.index')
-            ->with('success', 'Artikel berhasil ditambahkan.');
-    }
-    public function edit($id)
-    {
-        $artikel = $this->service->getById($id);
+        if (
+            $article->status !== 'Published' ||
+            !$article->published_at
+        ) {
+            abort(404);
+        }
 
-       
+        /*
+        |--------------------------------------------------------------------------
+        | Load relasi
+        |--------------------------------------------------------------------------
+        */
 
-        $kategoris = article_categories::all();
+        $article->load([
+            'category',
+            'user',
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Metadata SEO
+        |--------------------------------------------------------------------------
+        */
+
+        $title = $article->meta_title
+            ? $article->meta_title . ' | adakamar.id'
+            : $article->title . ' | adakamar.id';
+
+        $metaDescription = $article->meta_description
+            ?: \Illuminate\Support\Str::limit(
+                strip_tags($article->content),
+                155
+            );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Halaman detail artikel
+        |--------------------------------------------------------------------------
+        */
 
         return view(
-            'example.content.crud.artikel.edit',
-            compact('artikel', 'kategoris')
+            'landingpage.content.article.detail_artikel',
+            compact(
+                'article',
+                'title',
+                'metaDescription'
+            )
         );
     }
 
-    public function update(Request $request, $id)
-{
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'category_id' => 'required|exists:article_categories,id',
-        'slug' => 'required|string|max:255|unique:articles,slug,' . $id,
-        'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-        'excerpt' => 'nullable|string',
-        'content' => 'required',
-        'meta_title' => 'nullable|string',
-        'meta_description' => 'nullable|string',
-        'meta_keywords' => 'nullable|string',
-        'status' => 'required|in:Draft,Published',
-        'published_at' => 'nullable|date',
-    ]);
-
-    /*
-    |--------------------------------------------------------------------------
-    | Ambil data selain thumbnail
-    |--------------------------------------------------------------------------
-    */
-    $data = $request->except([
-        '_token',
-        '_method',
-        'thumbnail'
-    ]);
-
-    /*
-    |--------------------------------------------------------------------------
-    | Jika upload thumbnail baru
-    |--------------------------------------------------------------------------
-    */
-    if ($request->hasFile('thumbnail')) {
-
-        $imageName = time() . '.' .
-            $request->file('thumbnail')->extension();
-
-        $request->file('thumbnail')->move(
-            public_path('storage/articles'),
-            $imageName
-        );
-
-        $data['thumbnail'] = 'storage/articles/' . $imageName;
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Update artikel
-    |--------------------------------------------------------------------------
-    */
-    $this->service->update($id, $data);
-
-    return redirect()
-        ->route('artikel.index')
-        ->with('success', 'Artikel berhasil diperbarui.');
-}
-
-    public function destroy($id)
+    /**
+     * Halaman semua artikel untuk publik.
+     *
+     * Dipanggil oleh route: article.semua
+     * Menampilkan semua artikel Published dengan pagination.
+     */
+    public function publicIndex()
     {
-        $this->service->delete($id);
+        $articles = Article::with('category')
+            ->where('status', 'Published')
+            ->whereNotNull('published_at')
+            ->latest('published_at')
+            ->paginate(9);
 
-        return redirect()
-            ->route('artikel.index')
-            ->with('success', 'Artikel berhasil dihapus.');
+        /*
+        |--------------------------------------------------------------------------
+        | Metadata SEO
+        |--------------------------------------------------------------------------
+        */
+
+        $title = 'Semua Artikel | adakamar.id';
+
+        $metaDescription = 'Kumpulan artikel, tips, dan informasi seputar penginapan di adakamar.id';
+
+        /*
+        |--------------------------------------------------------------------------
+        | Halaman semua artikel
+        |--------------------------------------------------------------------------
+        */
+
+        return view(
+            'landingpage.content.article.semua_artikel',
+            compact(
+                'articles',
+                'title',
+                'metaDescription'
+            )
+        );
+    }
+
+    /**
+     * Ambil 3 artikel terbaru untuk landing page.
+     *
+     * Bisa dipanggil dari HomeController atau langsung di route.
+     */
+    public function latestThree()
+    {
+        return Article::with('category')
+            ->where('status', 'Published')
+            ->whereNotNull('published_at')
+            ->latest('published_at')
+            ->take(3)
+            ->get();
+    }
+
+
+    /**
+     * ============================================================
+     * ADMIN
+     * ============================================================
+     */
+
+    /**
+     * Daftar artikel.
+     */
+    public function index(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        $articles = $this->articleService
+            ->getArticles($keyword, 10);
+
+        $categories = ArticleCategory::orderBy('name')
+            ->get();
+
+        return view(
+            'example.content.artikel.article',
+            compact(
+                'articles',
+                'categories'
+            )
+        );
+    }
+
+    /**
+     * Simpan artikel baru.
+     */
+    public function store(Request $request)
+    {
+        try {
+
+            $validated = $request->validate(
+                $this->rules(),
+                $this->validationMessages()
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | User login sebagai penulis
+            |--------------------------------------------------------------------------
+            */
+
+            $validated['user_id'] = auth()->id();
+
+            /*
+            |--------------------------------------------------------------------------
+            | Jika status Published tetapi published_at kosong,
+            | otomatis menggunakan waktu sekarang.
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                $validated['status'] === 'Published' &&
+                empty($validated['published_at'])
+            ) {
+                $validated['published_at'] = now();
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Jika status Draft, published_at dikosongkan.
+            |--------------------------------------------------------------------------
+            */
+
+            if ($validated['status'] === 'Draft') {
+                $validated['published_at'] = null;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Simpan artikel
+            |--------------------------------------------------------------------------
+            */
+
+            $article = $this->articleService
+                ->createArticle($validated);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Load relasi
+            |--------------------------------------------------------------------------
+            */
+
+            $article->load([
+                'category',
+                'user',
+            ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Response JSON
+            |--------------------------------------------------------------------------
+            */
+
+            if ($request->ajax() || $request->wantsJson()) {
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Artikel berhasil ditambahkan.',
+                    'data' => $article,
+                ]);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Redirect
+            |--------------------------------------------------------------------------
+            */
+
+            return redirect()
+                ->route('articles.index')
+                ->with(
+                    'success',
+                    'Artikel berhasil ditambahkan.'
+                );
+
+        } catch (ValidationException $e) {
+
+            if ($request->ajax() || $request->wantsJson()) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal.',
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            throw $e;
+
+        } catch (\Throwable $e) {
+
+            if ($request->ajax() || $request->wantsJson()) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Terjadi kesalahan: ' . $e->getMessage()
+                );
+        }
+    }
+
+    /**
+     * Detail artikel.
+     *
+     * Digunakan oleh modal detail artikel di admin.
+     */
+    public function show(int $id)
+    {
+        try {
+
+            $article = $this->articleService
+                ->getArticle($id);
+
+            if (!$article) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Artikel tidak ditemukan.',
+                ], 404);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Load relasi kategori dan user/penulis
+            |--------------------------------------------------------------------------
+            */
+
+            $article->load([
+                'category',
+                'user',
+            ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Data artikel
+            |--------------------------------------------------------------------------
+            */
+
+            $data = $article->toArray();
+
+            /*
+            |--------------------------------------------------------------------------
+            | URL thumbnail
+            |--------------------------------------------------------------------------
+            */
+
+            $data['thumbnail_url'] = $article->thumbnail
+                ? asset($article->thumbnail)
+                : null;
+
+            /*
+            |--------------------------------------------------------------------------
+            | Informasi kategori
+            |--------------------------------------------------------------------------
+            */
+
+            $data['category_name'] = $article->category
+                ? $article->category->name
+                : null;
+
+            /*
+            |--------------------------------------------------------------------------
+            | Informasi penulis
+            |--------------------------------------------------------------------------
+            */
+
+            $data['author_name'] = $article->user
+                ? $article->user->name
+                : null;
+
+            /*
+            |--------------------------------------------------------------------------
+            | Format tanggal publish
+            |--------------------------------------------------------------------------
+            */
+
+            $data['published_at_formatted'] =
+                $article->published_at
+                ? $article->published_at->format('d F Y H:i')
+                : null;
+
+            /*
+            |--------------------------------------------------------------------------
+            | Response
+            |--------------------------------------------------------------------------
+            */
+
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+            ]);
+
+        } catch (\Throwable $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Form edit artikel.
+     *
+     * Karena edit menggunakan modal,
+     * data dikembalikan dalam bentuk JSON.
+     */
+    public function edit(int $id)
+    {
+        try {
+
+            $article = $this->articleService
+                ->getArticle($id);
+
+            if (!$article) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Artikel tidak ditemukan.',
+                ], 404);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Load relasi
+            |--------------------------------------------------------------------------
+            */
+
+            $article->load([
+                'category',
+                'user',
+            ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Tambahkan URL thumbnail
+            |--------------------------------------------------------------------------
+            */
+
+            $data = $article->toArray();
+
+            $data['thumbnail_url'] = $article->thumbnail
+                ? asset($article->thumbnail)
+                : null;
+
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+            ]);
+
+        } catch (\Throwable $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Update artikel.
+     */
+    public function update(
+        Request $request,
+        int $id
+    ) {
+        try {
+
+            $validated = $request->validate(
+                $this->rules(),
+                $this->validationMessages()
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | Atur published_at
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                $validated['status'] === 'Published' &&
+                empty($validated['published_at'])
+            ) {
+                $validated['published_at'] = now();
+            }
+
+            if ($validated['status'] === 'Draft') {
+                $validated['published_at'] = null;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Update artikel
+            |--------------------------------------------------------------------------
+            */
+
+            $article = $this->articleService
+                ->updateArticle(
+                    $id,
+                    $validated
+                );
+
+            if (!$article) {
+
+                if ($request->ajax() || $request->wantsJson()) {
+
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Artikel tidak ditemukan.',
+                    ], 404);
+                }
+
+                return redirect()
+                    ->route('articles.index')
+                    ->with(
+                        'error',
+                        'Artikel tidak ditemukan.'
+                    );
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Load relasi terbaru
+            |--------------------------------------------------------------------------
+            */
+
+            $article->load([
+                'category',
+                'user',
+            ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Response AJAX / JSON
+            |--------------------------------------------------------------------------
+            */
+
+            if ($request->ajax() || $request->wantsJson()) {
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Artikel berhasil diperbarui.',
+                    'data' => $article,
+                ]);
+            }
+
+            return redirect()
+                ->route('articles.index')
+                ->with(
+                    'success',
+                    'Artikel berhasil diperbarui.'
+                );
+
+        } catch (ValidationException $e) {
+
+            if ($request->ajax() || $request->wantsJson()) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal.',
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            throw $e;
+
+        } catch (\Throwable $e) {
+
+            if ($request->ajax() || $request->wantsJson()) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Terjadi kesalahan: ' . $e->getMessage()
+                );
+        }
+    }
+
+    /**
+     * Hapus artikel.
+     */
+    public function destroy(
+        Request $request,
+        int $id
+    ) {
+        try {
+
+            $deleted = $this->articleService
+                ->deleteArticle($id);
+
+            if (!$deleted) {
+
+                if ($request->ajax() || $request->wantsJson()) {
+
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Artikel tidak ditemukan.',
+                    ], 404);
+                }
+
+                return redirect()
+                    ->route('articles.index')
+                    ->with(
+                        'error',
+                        'Artikel tidak ditemukan.'
+                    );
+            }
+
+            if ($request->ajax() || $request->wantsJson()) {
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Artikel berhasil dihapus.',
+                ]);
+            }
+
+            return redirect()
+                ->route('articles.index')
+                ->with(
+                    'success',
+                    'Artikel berhasil dihapus.'
+                );
+
+        } catch (\Throwable $e) {
+
+            if ($request->ajax() || $request->wantsJson()) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Terjadi kesalahan: ' . $e->getMessage()
+                );
+        }
+    }
+
+    /**
+     * ============================================================
+     * VALIDATION
+     * ============================================================
+     */
+
+    /**
+     * Validation rules untuk store & update artikel.
+     *
+     * `thumbnail` memakai max:102400 = 100 MB (Laravel pakai satuan KB).
+     */
+    protected function rules(): array
+    {
+        return [
+            'category_id' => [
+                'required',
+                'exists:article_categories,id',
+            ],
+
+            'title' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'slug' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'thumbnail' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:' . self::IMAGE_MAX_KB, // 100 MB
+            ],
+
+            'excerpt' => [
+                'nullable',
+                'string',
+            ],
+
+            'content' => [
+                'required',
+                'string',
+            ],
+
+            'meta_title' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'meta_description' => [
+                'nullable',
+                'string',
+            ],
+
+            'meta_keywords' => [
+                'nullable',
+                'string',
+            ],
+
+            'status' => [
+                'required',
+                'in:Draft,Published',
+            ],
+
+            'published_at' => [
+                'nullable',
+                'date',
+            ],
+        ];
+    }
+
+    /**
+     * Custom validation messages (pesan ramah pengguna).
+     */
+    protected function validationMessages(): array
+    {
+        $maxMb = self::IMAGE_MAX_MB;
+
+        return [
+            // Kategori
+            'category_id.required' => 'Kategori artikel wajib dipilih.',
+            'category_id.exists' => 'Kategori artikel tidak ditemukan.',
+
+            // Judul & slug
+            'title.required' => 'Judul artikel wajib diisi.',
+            'title.max' => 'Judul artikel maksimal 255 karakter.',
+            'slug.max' => 'Slug maksimal 255 karakter.',
+
+            // Thumbnail
+            'thumbnail.image' => 'Thumbnail harus berupa gambar.',
+            'thumbnail.mimes' => 'Thumbnail harus berformat JPG, JPEG, PNG, atau WEBP.',
+            'thumbnail.max' => "Ukuran thumbnail maksimal {$maxMb} MB.",
+            'thumbnail.uploaded' => 'Thumbnail gagal diupload. Cek batas upload server (upload_max_filesize / post_max_size).',
+
+            // Konten
+            'content.required' => 'Konten artikel wajib diisi.',
+
+            // Meta
+            'meta_title.max' => 'Meta title maksimal 255 karakter.',
+
+            // Status
+            'status.required' => 'Status artikel wajib dipilih.',
+            'status.in' => 'Status artikel harus Draft atau Published.',
+
+            // Publish date
+            'published_at.date' => 'Tanggal publish tidak valid.',
+        ];
     }
 }

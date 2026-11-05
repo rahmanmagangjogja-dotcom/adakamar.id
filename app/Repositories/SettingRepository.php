@@ -3,25 +3,84 @@
 namespace App\Repositories;
 
 use App\Models\Setting;
-use App\Repositories\Interfaces\SettingRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class SettingRepository implements SettingRepositoryInterface
+class SettingRepository
 {
-    public function getSetting()
+    protected Setting $model;
+
+    public function __construct(Setting $model)
     {
-        return Setting::first();
+        $this->model = $model;
     }
 
-    public function update(array $data)
+    /**
+     * Mengambil semua setting.
+     */
+    public function getAll()
     {
-        $setting = Setting::first();
+        return $this->model
+            ->latest()
+            ->get();
+    }
 
-        if (!$setting) {
-            return Setting::create($data);
-        }
+    /**
+     * Mengambil setting dengan pagination.
+     *
+     * Tidak wajib digunakan jika settings
+     * hanya memiliki satu record.
+     */
+    public function getPaginated(
+        int $perPage = 10
+    ): LengthAwarePaginator {
+        return $this->model
+            ->latest()
+            ->paginate($perPage);
+    }
 
+    /**
+     * Mengambil setting berdasarkan ID.
+     */
+    public function findById(int $id): ?Setting
+    {
+        return $this->model->find($id);
+    }
+
+    /**
+     * Mengambil setting pertama.
+     */
+    public function first(): ?Setting
+    {
+        return $this->model
+            ->latest('id')
+            ->first();
+    }
+
+    /**
+     * Membuat setting baru.
+     */
+    public function create(array $data): Setting
+    {
+        return $this->model->create($data);
+    }
+
+    /**
+     * Update setting.
+     */
+    public function update(
+        Setting $setting,
+        array $data
+    ): Setting {
         $setting->update($data);
 
         return $setting->fresh();
+    }
+
+    /**
+     * Hapus setting.
+     */
+    public function delete(Setting $setting): bool
+    {
+        return $setting->delete();
     }
 }

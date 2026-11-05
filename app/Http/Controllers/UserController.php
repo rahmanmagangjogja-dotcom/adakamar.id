@@ -2,46 +2,123 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    /**
-     * Menampilkan data user yang sedang login
-     */
-    public function index()
+    protected UserService $userService;
+
+    public function __construct(UserService $userService)
     {
-        $user = Auth::user();
+        $this->userService = $userService;
+    }
+
+    /**
+     * Daftar User
+     */
+    public function index(Request $request)
+    {
+        $keyword = $request->keyword;
+
+        $users = $this->userService->getAll($keyword);
 
         return view(
-            'example.content.crud.user',
-            compact('user')
+            'example_admin.content.crud.users',
+            compact(
+                'users',
+                'keyword'
+            )
         );
     }
 
     /**
-     * Update data user yang sedang login
+     * Form tambah user
      */
-    public function update(Request $request)
+    public function create()
     {
-        $user = Auth::user();
+        $roles = User::ROLES;
 
+        return view(
+            'example_admin.content.crud.add_users',
+            compact('roles')
+        );
+    }
+
+    /**
+     * Simpan user
+     */
+    public function store(Request $request)
+    {
         $validated = $request->validate([
-            'username' => [
+            'name' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('users', 'username')->ignore($user->id),
             ],
 
             'email' => [
-               'required',
-               'string',
-               'max:255', 
-               Rule::unique('users', 'email')->ignore($user->id),
+                'required',
+                'email',
+                'max:255',
+                'unique:users,email',
+            ],
+
+            'password' => [
+                'required',
+                'confirmed',
+                'min:6',
+            ],
+
+            'role' => [
+                'required',
+                Rule::in(array_keys(User::ROLES)),
+            ],
+        ]);
+
+        $this->userService->create($validated);
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'User berhasil ditambahkan.');
+    }
+
+    /**
+     * Form edit
+     */
+    public function edit($id)
+    {
+        $user = $this->userService->findById($id);
+        $roles = User::ROLES;
+
+        return view(
+            'example_admin.content.crud.upd_users',
+            compact(
+                'user',
+                'roles'
+            )
+        );
+    }
+
+    /**
+     * Update user
+     */
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($id),
             ],
 
             'password' => [
@@ -49,21 +126,29 @@ class UserController extends Controller
                 'confirmed',
                 'min:6',
             ],
+
+            'role' => [
+                'required',
+                Rule::in(array_keys(User::ROLES)),
+            ],
         ]);
 
-        // Update username dan nama
-        $user->username = $validated['username'];
-        $user->email = $validated['email'];
-
-        // Update password hanya jika diisi
-        if (!empty($validated['password'])) {
-            $user->password = Hash::make($validated['password']);
-        }
-
-        $user->save();
+        $this->userService->update($id, $validated);
 
         return redirect()
-            ->route('users.index')
-            ->with('success', 'Profil berhasil diperbarui.');
+            ->route('admin.users.index')
+            ->with('success', 'User berhasil diperbarui.');
+    }
+
+    /**
+     * Hapus user
+     */
+    public function destroy($id)
+    {
+        $this->userService->delete($id);
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'User berhasil dihapus.');
     }
 }

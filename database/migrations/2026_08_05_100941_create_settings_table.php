@@ -20,7 +20,7 @@ return new class extends Migration {
 
             // Branding
             $table->string('logo')->nullable();
-            $table->string('favicon')->nullable();
+            
 
             // Kontak
             $table->text('address')->nullable();
@@ -29,13 +29,12 @@ return new class extends Migration {
             $table->string('email')->nullable();
 
             // Lokasi
-            $table->decimal('latitude', 10, 7)->nullable();
-            $table->decimal('longitude', 10, 7)->nullable();
             $table->longText('maps_embed')->nullable();
 
             // Sosial Media
             $table->string('facebook')->nullable();
             $table->string('instagram')->nullable();
+            $table->string('x')->nullable();
             $table->string('youtube')->nullable();
             $table->string('tiktok')->nullable();
 

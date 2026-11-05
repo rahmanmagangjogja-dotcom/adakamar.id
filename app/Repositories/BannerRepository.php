@@ -2,37 +2,62 @@
 
 namespace App\Repositories;
 
-use App\Models\banners;
-use App\Repositories\Interfaces\BannerRepositoryInterface;
+use App\Models\Banner;
 
-class BannerRepository implements BannerRepositoryInterface
+class BannerRepository
 {
+    protected Banner $model;
+
+    public function __construct(Banner $model)
+    {
+        $this->model = $model;
+    }
+
+    /**
+     * Mengambil semua data banner.
+     */
     public function getAll()
     {
-        return banners::latest()->get();
+        return $this->model
+            ->latest()
+            ->get();
     }
 
-    public function getById($id)
+    /**
+     * Mengambil banner berdasarkan ID.
+     */
+    public function findById(int $id): Banner
     {
-        return banners::findOrFail($id);
+        return $this->model->findOrFail($id);
     }
 
-    public function create(array $data)
+    /**
+     * Membuat banner baru.
+     */
+    public function create(array $data): Banner
     {
-        return banners::create($data);
+        return $this->model->create($data);
     }
 
-    public function update($id, array $data)
+    /**
+     * Mengupdate banner berdasarkan ID.
+     */
+    public function update(int $id, array $data): Banner
     {
-        $banner = banners::findOrFail($id);
+        $banner = $this->findById($id);
 
         $banner->update($data);
 
-        return $banner;
+        return $banner->fresh();
     }
 
-    public function delete($id)
+    /**
+     * Menghapus banner berdasarkan ID.
+     */
+    public function delete(int $id): bool
     {
-        return banners::findOrFail($id)->delete();
+        $banner = $this->findById($id);
+
+        return $banner->delete();
     }
 }

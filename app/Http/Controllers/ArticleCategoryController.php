@@ -2,112 +2,299 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\ArticleCategoryService;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ArticleCategoryController extends Controller
 {
-    protected $service;
+    protected ArticleCategoryService $articleCategoryService;
 
     public function __construct(
-        ArticleCategoryService $service
+        ArticleCategoryService $articleCategoryService
     ) {
-        $this->service = $service;
+        $this->articleCategoryService = $articleCategoryService;
     }
 
-    public function index()
+    /**
+     * Daftar kategori artikel.
+     */
+    public function index(Request $request)
     {
-        $kategoris = $this->service->getAll();
+        $keyword = $request->input('keyword');
+
+        $articleCategories = $this->articleCategoryService
+            ->getArticleCategories(
+                $keyword,
+                10
+            );
 
         return view(
-            'example.content.crud.kategoriartikel.index',
-            compact('kategoris')
+            'example.content.artikel.article_category',
+            compact('articleCategories')
         );
     }
 
-    public function create()
-    {
-        return view(
-            'example.content.crud.kategoriartikel.create'
-        );
-    }
-
+    /**
+     * Simpan kategori baru.
+     */
     public function store(Request $request)
     {
-        $request->validate(
-            [
-                'name' => 'required|string|max:255|unique:accommodation_categories,name',
-                'slug' => 'required|string|max:255|unique:accommodation_categories,slug',
-                'description' => 'nullable|string',
-                'is_active' => 'required|boolean',
-            ],
-            [
-                'name.required' => 'Nama kategori wajib diisi.',
-                'name.unique' => 'Nama kategori sudah digunakan.',
-                'slug.required' => 'Slug kategori wajib diisi.',
-                'slug.unique' => 'Slug kategori sudah digunakan.',
-                'description.string' => 'Deskripsi harus berupa teks.',
-                'is_active.required' => 'Status kategori wajib dipilih.',
-                'is_active.boolean' => 'Status kategori tidak valid.',
-            ]
-        );
-        $data = $request->except('_token');
+        try {
+            $validated = $request->validate([
+                'name' => [
+                    'required',
+                    'string',
+                    'max:255',
+                ],
 
-        $this->service->create($data);
+                'slug' => [
+                    'nullable',
+                    'string',
+                    'max:255',
+                ],
 
-        return redirect()
-            ->route('artikel_kategori.index')
-            ->with('success', 'Kategori artikel berhasil ditambahkan.');
+                'description' => [
+                    'nullable',
+                    'string',
+                ],
+
+                'is_active' => [
+                    'nullable',
+                    'boolean',
+                ],
+            ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Default status
+            |--------------------------------------------------------------------------
+            */
+
+            $validated['is_active'] =
+                $request->boolean('is_active');
+
+            $articleCategory = $this->articleCategoryService
+                ->createArticleCategory($validated);
+
+            /*
+            |--------------------------------------------------------------------------
+            | AJAX / JSON
+            |--------------------------------------------------------------------------
+            */
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Kategori artikel berhasil ditambahkan.',
+                    'data' => $articleCategory,
+                ]);
+            }
+
+            return redirect()
+                ->route('article-categories.index')
+                ->with(
+                    'success',
+                    'Kategori artikel berhasil ditambahkan.'
+                );
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal.',
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            throw $e;
+        } catch (\Exception $e) {
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Terjadi kesalahan: ' . $e->getMessage()
+                );
+        }
     }
 
-    public function edit($id)
+    /**
+     * Ambil data kategori untuk edit.
+     */
+    public function edit(int $id)
     {
-        $artikel_kategori = $this->service->getById($id);
+        $articleCategory = $this->articleCategoryService
+            ->getArticleCategory($id);
 
-        return view(
-            'example.content.crud.kategoriartikel.edit',
-            compact('artikel_kategori')
-        );
-    }
+        if (!$articleCategory) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kategori artikel tidak ditemukan.',
+            ], 404);
+        }
 
-    public function update(Request $request, $id)
-    {
-        $request->validate(
-            [
-                'name' => 'required|string|max:255|unique:accommodation_categories,name',
-                'slug' => 'required|string|max:255|unique:accommodation_categories,slug',
-                'description' => 'nullable|string',
-                'is_active' => 'required|boolean',
-            ],
-            [
-                'name.required' => 'Nama kategori wajib diisi.',
-                'name.unique' => 'Nama kategori sudah digunakan.',
-                'slug.required' => 'Slug kategori wajib diisi.',
-                'slug.unique' => 'Slug kategori sudah digunakan.',
-                'description.string' => 'Deskripsi harus berupa teks.',
-                'is_active.required' => 'Status kategori wajib dipilih.',
-                'is_active.boolean' => 'Status kategori tidak valid.',
-            ]
-        );
-
-        $artikel_kategori = $request->except([
-            '_token',
-            '_method'
+        return response()->json([
+            'success' => true,
+            'data' => $articleCategory,
         ]);
-
-        $this->service->update($id, $artikel_kategori);
-
-        return redirect()
-            ->route('artikel_kategori.index')
-            ->with('success', 'Kategori artikel berhasil diperbarui.');
     }
 
-    public function destroy($id)
-    {
-        $this->service->delete($id);
+    /**
+     * Update kategori.
+     */
+    public function update(
+        Request $request,
+        int $id
+    ) {
+        try {
+
+            $validated = $request->validate([
+                'name' => [
+                    'required',
+                    'string',
+                    'max:255',
+                ],
+
+                'slug' => [
+                    'nullable',
+                    'string',
+                    'max:255',
+                ],
+
+                'description' => [
+                    'nullable',
+                    'string',
+                ],
+
+                'is_active' => [
+                    'nullable',
+                    'boolean',
+                ],
+            ]);
+
+            $validated['is_active'] =
+                $request->boolean('is_active');
+
+            $articleCategory = $this->articleCategoryService
+                ->updateArticleCategory(
+                    $id,
+                    $validated
+                );
+
+            if (!$articleCategory) {
+
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Kategori artikel tidak ditemukan.',
+                    ], 404);
+                }
+
+                return redirect()
+                    ->route('article-categories.index')
+                    ->with(
+                        'error',
+                        'Kategori artikel tidak ditemukan.'
+                    );
+            }
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Kategori artikel berhasil diperbarui.',
+                    'data' => $articleCategory,
+                ]);
+            }
+
+            return redirect()
+                ->route('article-categories.index')
+                ->with(
+                    'success',
+                    'Kategori artikel berhasil diperbarui.'
+                );
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal.',
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            throw $e;
+
+        } catch (\Exception $e) {
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Terjadi kesalahan: ' . $e->getMessage()
+                );
+        }
+    }
+
+    /**
+     * Hapus kategori.
+     */
+    public function destroy(
+        Request $request,
+        int $id
+    ) {
+        $deleted = $this->articleCategoryService
+            ->deleteArticleCategory($id);
+
+        if (!$deleted) {
+
+            $message = 'Kategori artikel tidak ditemukan atau masih digunakan oleh artikel.';
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                ], 422);
+            }
+
+            return redirect()
+                ->route('article-categories.index')
+                ->with(
+                    'error',
+                    $message
+                );
+        }
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Kategori artikel berhasil dihapus.',
+            ]);
+        }
 
         return redirect()
-            ->route('artikel_kategori.index')
-            ->with('success', 'Kategori artikel berhasil dihapus.');
+            ->route('article-categories.index')
+            ->with(
+                'success',
+                'Kategori artikel berhasil dihapus.'
+            );
     }
 }

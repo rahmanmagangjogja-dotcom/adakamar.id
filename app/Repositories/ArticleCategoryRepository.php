@@ -2,39 +2,76 @@
 
 namespace App\Repositories;
 
-use App\Models\article_categories;
-use App\Repositories\Interfaces\ArticleCategoryRepositoryInterface;
+use App\Models\ArticleCategory;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class ArticleCategoryRepository implements ArticleCategoryRepositoryInterface
+class ArticleCategoryRepository
 {
-    public function getAll()
-    {
-        return article_categories::latest()->get();
+    /**
+     * Ambil semua kategori artikel dengan pagination.
+     */
+    public function getAll(
+        ?string $keyword = null,
+        int $perPage = 10
+    ): LengthAwarePaginator {
+        return ArticleCategory::query()
+            ->when($keyword, function ($query) use ($keyword) {
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%")
+                        ->orWhere('description', 'like', "%{$keyword}%");
+                });
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
     }
 
-    public function getById($id)
+    /**
+     * Cari berdasarkan ID.
+     */
+    public function findById(int $id): ?ArticleCategory
     {
-        return article_categories::findOrFail($id);
+        return ArticleCategory::find($id);
     }
 
-    public function create(array $data)
-    {
-        return article_categories::create($data);
+    /**
+     * Cari berdasarkan slug.
+     */
+    public function findBySlug(
+        string $slug,
+        ?int $exceptId = null
+    ): ?ArticleCategory {
+        return ArticleCategory::query()
+            ->where('slug', $slug)
+            ->when($exceptId, function ($query) use ($exceptId) {
+                $query->where('id', '!=', $exceptId);
+            })
+            ->first();
     }
 
-    public function update($id, array $data)
+    /**
+     * Buat kategori.
+     */
+    public function create(array $data): ArticleCategory
     {
-        $dataCategory = article_categories::findOrFail($id);
-
-        $dataCategory->update($data);
-
-        return $dataCategory;
+        return ArticleCategory::create($data);
     }
 
-    public function delete($id)
-    {
-        $dataCategory = article_categories::findOrFail($id);
+    /**
+     * Update kategori.
+     */
+    public function update(
+        ArticleCategory $articleCategory,
+        array $data
+    ): bool {
+        return $articleCategory->update($data);
+    }
 
-        return $dataCategory->delete();
+    /**
+     * Hapus kategori.
+     */
+    public function delete(
+        ArticleCategory $articleCategory
+    ): bool {
+        return $articleCategory->delete();
     }
 }

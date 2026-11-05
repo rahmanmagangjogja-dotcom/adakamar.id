@@ -2,20 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use Notifiable;
 
     protected $fillable = [
-        'username',
-        
+        'name',
         'email',
         'password',
-        
+        'photo',
         'last_login',
     ];
 
@@ -24,9 +22,12 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected $casts = [
-        
-        'last_login' => 'datetime',
-    ];
-
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'last_login' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
 }

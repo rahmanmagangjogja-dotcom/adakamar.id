@@ -2,49 +2,239 @@
 
 namespace App\Repositories;
 
-use App\Models\articles;
-use App\Repositories\Interfaces\ArticleRepositoryInterface;
+use App\Models\Article;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class ArticleRepository implements ArticleRepositoryInterface
+class ArticleRepository
 {
-    public function getAll()
+    protected Article $model;
+
+    public function __construct(Article $model)
     {
-        return articles::latest()->get();
+        $this->model = $model;
     }
 
-    public function getById($id)
-    {
-        return articles::findOrFail($id);
+    /**
+     * Daftar artikel untuk admin.
+     */
+    public function getAll(
+        ?string $keyword = null,
+        int $perPage = 10
+    ): LengthAwarePaginator {
+
+        return $this->model
+            ->with([
+                'category',
+                'user',
+            ])
+            ->when(
+                filled($keyword),
+                function ($query) use ($keyword) {
+
+                    $query->where(function ($q) use ($keyword) {
+
+                        $q->where(
+                            'title',
+                            'like',
+                            '%' . $keyword . '%'
+                        )
+                            ->orWhere(
+                                'excerpt',
+                                'like',
+                                '%' . $keyword . '%'
+                            )
+                            ->orWhere(
+                                'content',
+                                'like',
+                                '%' . $keyword . '%'
+                            )
+                            ->orWhere(
+                                'meta_title',
+                                'like',
+                                '%' . $keyword . '%'
+                            )
+                            ->orWhere(
+                                'meta_description',
+                                'like',
+                                '%' . $keyword . '%'
+                            )
+                            ->orWhere(
+                                'meta_keywords',
+                                'like',
+                                '%' . $keyword . '%'
+                            );
+                    });
+                }
+            )
+            ->latest()
+            ->paginate($perPage)
+            ->withQueryString();
     }
 
-    public function create(array $data)
-    {
-        return articles::create($data);
+    /**
+     * Detail artikel berdasarkan ID.
+     */
+    public function findById(
+        int $id
+    ): ?Article {
+
+        return $this->model
+            ->with([
+                'category',
+                'user',
+            ])
+            ->find($id);
     }
 
-    public function update($id, array $data)
-    {
-        $article = articles::findOrFail($id);
+    /**
+     * Detail artikel berdasarkan slug.
+     *
+     * Digunakan untuk halaman detail artikel publik.
+     */
+    public function findBySlug(
+        string $slug,
+        ?int $exceptId = null
+    ): ?Article {
 
-        $article->update($data);
+        return $this->model
+            ->with([
+                'category',
+                'user',
+            ])
+            ->when(
+                $exceptId !== null,
+                function ($query) use ($exceptId) {
 
-        return $article;
+                    $query->where(
+                        'id',
+                        '!=',
+                        $exceptId
+                    );
+                }
+            )
+            ->where(
+                'slug',
+                $slug
+            )
+            ->first();
     }
 
-    public function delete($id)
-    {
-        return articles::findOrFail($id)->delete();
+    /**
+     * Simpan artikel baru.
+     */
+    public function create(
+        array $data
+    ): Article {
+
+        return $this->model
+            ->create($data);
     }
 
-    public function getArtikelTerbit()
-    {
-        return articles::where('status', 'Published')->count();
+    /**
+     * Update artikel.
+     */
+    public function update(
+        Article $article,
+        array $data
+    ): bool {
+
+        return $article
+            ->update($data);
     }
 
-    public function getArtikelTerbaru()
-    {
-        return articles::latest('created_at')
-            ->take(5)
+    /**
+     * Hapus artikel.
+     */
+    public function delete(
+        Article $article
+    ): bool {
+
+        return $article
+            ->delete();
+    }
+
+    /**
+     * Artikel untuk dashboard.
+     *
+     * Mengambil semua artikel tanpa filter status.
+     */
+    public function getDashboardArticles(
+        int $limit = 6
+    ) {
+
+        return $this->model
+            ->with([
+                'category',
+                'user',
+            ])
+            ->latest()
+            ->limit($limit)
             ->get();
-}
+    }
+
+    /**
+     * Artikel Published untuk landing page.
+     *
+     * Hanya mengambil artikel yang:
+     * - status = Published
+     * - published_at tidak null
+     * - diurutkan berdasarkan tanggal publish terbaru
+     */
+    public function getPublished(
+        int $limit = 6
+    ) {
+
+        return $this->model
+            ->with([
+                'category',
+                'user',
+            ])
+            ->where(
+                'status',
+                'Published'
+            )
+            ->whereNotNull(
+                'published_at'
+            )
+            ->orderByDesc(
+                'published_at'
+            )
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * Total seluruh artikel.
+     */
+    public function getTotal(): int
+    {
+        return $this->model
+            ->count();
+    }
+
+    /**
+     * Total artikel Published.
+     */
+    public function getPublishedTotal(): int
+    {
+        return $this->model
+            ->where(
+                'status',
+                'Published'
+            )
+            ->count();
+    }
+
+    /**
+     * Total artikel Draft.
+     */
+    public function getDraftTotal(): int
+    {
+        return $this->model
+            ->where(
+                'status',
+                'Draft'
+            )
+            ->count();
+    }
 }

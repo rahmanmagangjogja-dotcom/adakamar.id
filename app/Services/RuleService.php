@@ -2,40 +2,70 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\RuleRepositoryInterface;
+use App\Models\Rule;
+use App\Repositories\RuleRepository;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class RuleService
 {
-    protected $repository;
+    protected RuleRepository $ruleRepository;
 
-    public function __construct(
-        RuleRepositoryInterface $repository
-    ) {
-        $this->repository = $repository;
+    public function __construct(RuleRepository $ruleRepository)
+    {
+        $this->ruleRepository = $ruleRepository;
     }
 
-    public function getAll()
-    {
-        return $this->repository->getAll();
+    /**
+     * Ambil semua aturan dengan pagination.
+     */
+    public function getAll(
+        ?string $keyword = null,
+        int $perPage = 10
+    ): LengthAwarePaginator {
+        return $this->ruleRepository->getAll(
+            $keyword,
+            $perPage
+        );
     }
 
-    public function getById($id)
+    /**
+     * Buat aturan baru.
+     */
+    public function create(array $data): Rule
     {
-        return $this->repository->getById($id);
+        return DB::transaction(function () use ($data) {
+
+            $data['is_active'] = $data['is_active'] ?? true;
+
+            return $this->ruleRepository->create($data);
+        });
     }
 
-    public function create(array $data)
+    /**
+     * Update aturan.
+     */
+    public function update(Rule $rule, array $data): Rule
     {
-        return $this->repository->create($data);
+        return DB::transaction(function () use ($rule, $data) {
+
+            if (!array_key_exists('is_active', $data)) {
+                $data['is_active'] = $rule->is_active;
+            }
+
+            $this->ruleRepository->update($rule, $data);
+
+            return $rule->fresh();
+        });
     }
 
-    public function update($id, array $data)
+    /**
+     * Hapus aturan.
+     */
+    public function delete(Rule $rule): bool
     {
-        return $this->repository->update($id, $data);
-    }
-
-    public function delete($id)
-    {
-        return $this->repository->delete($id);
+        return DB::transaction(function () use ($rule) {
+            return $this->ruleRepository->delete($rule);
+        });
     }
 }

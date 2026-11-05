@@ -2,32 +2,25 @@
 
 namespace App\Repositories;
 
-use App\Repositories\Interfaces\AuthRepositoryInterface;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
-class AuthRepository implements AuthRepositoryInterface
+class AuthRepository
 {
-    public function findByUsername($username)
+    /**
+     * Mencari user berdasarkan name.
+     */
+    public function findByName(string $name): ?User
     {
-        return User::where('username', $username)->first();
+        return User::where('name', $name)->first();
     }
 
-    public function create(array $data)
+    /**
+     * Memperbarui waktu login terakhir.
+     */
+    public function updateLastLogin(User $user): bool
     {
-        return User::create($data);
+        return $user->update([
+            'last_login' => now(),
+        ]);
     }
-
-    public function logout(User $request)
-    {
-        Auth::logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect()
-            ->route('login')
-            ->with('success', 'Berhasil logout.');
-    }
-
 }

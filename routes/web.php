@@ -1,310 +1,473 @@
 <?php
 
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\GaleriesController;
-use App\Http\Middleware\PreventBackHistory;
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\AkomodasiController;
-use App\Http\Controllers\ArticleCategoryController;
-use App\Http\Controllers\BannerController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\FasilitasController;
-use App\Http\Controllers\GalleryController;
-use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\AccommodationCategoryController;
 use App\Http\Controllers\RuleController;
+use App\Http\Controllers\FacilityController;
+use App\Http\Controllers\AccommodationController;
+use App\Http\Controllers\ArticleCategoryController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\SettingController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\AccommodationRatingController;
 
-// Halaman utama
-Route::get('/', function () {
-    return redirect()->route('login');
+/*
+|--------------------------------------------------------------------------
+| Public
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/',
+    [LandingPageController::class, 'index']
+)->name('landingpage');
+
+/*
+|--------------------------------------------------------------------------
+| Public - Penginapan
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/semua-penginapan',
+    [AccommodationController::class, 'publicIndex']
+)->name('accommodationlanding.semua');
+
+Route::get(
+    '/penginapanlanding/{slug}',
+    [AccommodationController::class, 'publicDetail']
+)->name('accommodationlanding.detail');
+
+Route::get(
+    '/kategori-penginapanlanding/{slug}',
+    [AccommodationController::class, 'byCategory']
+)->name('accommodationlanding.category');
+
+
+/*
+|--------------------------------------------------------------------------
+| Public - Artikel
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/artikel/{slug}',
+    [ArticleController::class, 'publicDetail']
+)->name('article.detail');
+
+Route::get(
+    '/semua-artikel',
+    [ArticleController::class, 'publicIndex']
+)->name('article.semua');
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Public - Rating Penginapan
+|--------------------------------------------------------------------------
+*/
+
+Route::post(
+    '/penginapanlanding/{slug}/rating',
+    [AccommodationRatingController::class, 'store']
+)->name('accommodationlanding.rating.store');
+
+
+/*
+|--------------------------------------------------------------------------
+| Authentication
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('guest')->group(function () {
+
+    Route::get(
+        '/login',
+        [AuthController::class, 'showLogin']
+    )->name('login');
+
+    Route::post(
+        '/login',
+        [AuthController::class, 'login']
+    )->name('login.process');
+
+    Route::get(
+        '/forgot-password',
+        [AuthController::class, 'showForgotPassword']
+    )->name('password.request');
+
+    Route::post(
+        '/forgot-password',
+        [AuthController::class, 'sendResetLink']
+    )->name('password.email');
+
+    Route::get(
+        '/reset-password/{token}',
+        [AuthController::class, 'showResetPassword']
+    )->name('password.reset');
+
+    Route::post(
+        '/reset-password',
+        [AuthController::class, 'resetPassword']
+    )->name('password.update');
 });
 
-// Login
-Route::middleware(['guest', PreventBackHistory::class])->group(function () {
 
-    Route::get('/login', [AuthController::class, 'index'])
-        ->name('login');
+/*
+|--------------------------------------------------------------------------
+| Logout
+|--------------------------------------------------------------------------
+*/
 
-    Route::post('/login', [AuthController::class, 'login'])
-        ->name('login.post');
-});
-
-// Logout
-Route::post('/logout', [AuthController::class, 'logout'])
-    ->middleware('auth')
-    ->name('logout');
-
-// Lupa Password
-Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])
-    ->name('password.request');
-
-Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])
-    ->name('password.email');
-
-// Reset Password
-Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])
-    ->name('password.reset');
-
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])
-    ->name('password.update');
-
-Route::middleware('auth')->group(function () {
-
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
+Route::post(
+    '/logout',
+    [AuthController::class, 'logout']
+)->middleware('auth')->name('logout');
 
 
 /*
 |--------------------------------------------------------------------------
-| Akomodasi
+| Admin
 |--------------------------------------------------------------------------
 */
 
-// GET - tampilkan semua akomodasi
-Route::get('/akomodasi', [AkomodasiController::class, 'index'])
-    ->name('akomodasi.index');
-
-// GET - form tambah
-Route::get('/akomodasi/create', [AkomodasiController::class, 'create'])
-    ->name('akomodasi.create');
-
-// POST - simpan data
-Route::post('/akomodasi', [AkomodasiController::class, 'store'])
-    ->name('akomodasi.store');
-
-// GET - detail
-Route::get('/akomodasi/{akomodasi}', [AkomodasiController::class, 'show'])
-    ->name('akomodasi.show');
-
-// GET - form edit
-Route::get('/akomodasi/{akomodasi}/edit', [AkomodasiController::class, 'edit'])
-    ->name('akomodasi.edit');
-
-// PUT - update data
-Route::put('/akomodasi/{akomodasi}', [AkomodasiController::class, 'update'])
-    ->name('akomodasi.update');
-
-// DELETE - hapus data
-Route::delete('/akomodasi/{akomodasi}', [AkomodasiController::class, 'destroy'])
-    ->name('akomodasi.destroy');
-
-
-/*
-|--------------------------------------------------------------------------
-| Kategori
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/kategori', [KategoriController::class, 'index'])
-    ->name('kategori.index');
-
-Route::get('/kategori/create', [KategoriController::class, 'create'])
-    ->name('kategori.create');
-
-Route::post('/kategori', [KategoriController::class, 'store'])
-    ->name('kategori.store');
-
-Route::get('/kategori/{kategori}', [KategoriController::class, 'show'])
-    ->name('kategori.show');
-
-Route::get('/kategori/{kategori}/edit', [KategoriController::class, 'edit'])
-    ->name('kategori.edit');
-
-Route::put('/kategori/{kategori}', [KategoriController::class, 'update'])
-    ->name('kategori.update');
-
-Route::delete('/kategori/{kategori}', [KategoriController::class, 'destroy'])
-    ->name('kategori.destroy');
-
-
-/*
-|--------------------------------------------------------------------------
-| Fasilitas
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/fasilitas', [FasilitasController::class, 'index'])
-    ->name('fasilitas.index');
-
-Route::get('/fasilitas/create', [FasilitasController::class, 'create'])
-    ->name('fasilitas.create');
-
-Route::post('/fasilitas', [FasilitasController::class, 'store'])
-    ->name('fasilitas.store');
-
-Route::get('/fasilitas/{fasilitas}', [FasilitasController::class, 'show'])
-    ->name('fasilitas.show');
-
-Route::get('/fasilitas/{fasilitas}/edit', [FasilitasController::class, 'edit'])
-    ->name('fasilitas.edit');
-
-Route::put('/fasilitas/{fasilitas}', [FasilitasController::class, 'update'])
-    ->name('fasilitas.update');
-
-Route::delete('/fasilitas/{fasilitas}', [FasilitasController::class, 'destroy'])
-    ->name('fasilitas.destroy');
-
-
-/*
-|--------------------------------------------------------------------------
-| Aturan
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/aturan', [RuleController::class, 'index'])
-    ->name('aturan.index');
-
-Route::get('/aturan/create', [RuleController::class, 'create'])
-    ->name('aturan.create');
-
-Route::post('/aturan', [RuleController::class, 'store'])
-    ->name('aturan.store');
-
-Route::get('/aturan/{aturan}', [RuleController::class, 'show'])
-    ->name('aturan.show');
-
-Route::get('/aturan/{aturan}/edit', [RuleController::class, 'edit'])
-    ->name('aturan.edit');
-
-Route::put('/aturan/{aturan}', [RuleController::class, 'update'])
-    ->name('aturan.update');
-
-Route::delete('/aturan/{aturan}', [RuleController::class, 'destroy'])
-    ->name('aturan.destroy');
-
-
-/*
-|--------------------------------------------------------------------------
-| Artikel
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/artikel', [ArticleController::class, 'index'])
-    ->name('artikel.index');
-
-Route::get('/artikel/create', [ArticleController::class, 'create'])
-    ->name('artikel.create');
-
-Route::post('/artikel', [ArticleController::class, 'store'])
-    ->name('artikel.store');
-
-Route::get('/artikel/{artikel}', [ArticleController::class, 'show'])
-    ->name('artikel.show');
-
-Route::get('/artikel/{artikel}/edit', [ArticleController::class, 'edit'])
-    ->name('artikel.edit');
-
-Route::put('/artikel/{artikel}', [ArticleController::class, 'update'])
-    ->name('artikel.update');
-
-Route::delete('/artikel/{artikel}', [ArticleController::class, 'destroy'])
-    ->name('artikel.destroy');
-
-
-Route::get('/artikel_kategori', [ArticleCategoryController::class, 'index'])
-    ->name('artikel_kategori.index');
-
-Route::get('/artikel_kategori/create', [ArticleCategoryController::class, 'create'])
-    ->name('artikel_kategori.create');
-
-Route::post('/artikel_kategori', [ArticleCategoryController::class, 'store'])
-    ->name('artikel_kategori.store');
-
-Route::get('/artikel_kategori/{artikel_kategori}', [ArticleCategoryController::class, 'show'])
-    ->name('artikel_kategori.show');
-
-Route::get('/artikel_kategori/{artikel_kategori}/edit', [ArticleCategoryController::class, 'edit'])
-    ->name('artikel_kategori.edit');
-
-Route::put('/artikel_kategori/{artikel_kategori}', [ArticleCategoryController::class, 'update'])
-    ->name('artikel_kategori.update');
-
-Route::delete('/artikel_kategori/{artikel_kategori}', [ArticleCategoryController::class, 'destroy'])
-    ->name('artikel_kategori.destroy');
-
-
-/*
-|--------------------------------------------------------------------------
-| Banner
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/banner', [BannerController::class, 'index'])
-    ->name('banner.index');
-
-Route::get('/banner/create', [BannerController::class, 'create'])
-    ->name('banner.create');
-
-Route::post('/banner', [BannerController::class, 'store'])
-    ->name('banner.store');
-
-Route::get('/banner/{banner}', [BannerController::class, 'show'])
-    ->name('banner.show');
-
-Route::get('/banner/{banner}/edit', [BannerController::class, 'edit'])
-    ->name('banner.edit');
-
-Route::put('/banner/{banner}', [BannerController::class, 'update'])
-    ->name('banner.update');
-
-Route::delete('/banner/{banner}', [BannerController::class, 'destroy'])
-    ->name('banner.destroy');
-
-
-Route::get('/tentang', [SettingController::class, 'index'])
-    ->name('tentang.index');
-
-Route::get('/tentang/create', [SettingController::class, 'create'])
-    ->name('tentang.create');
-
-Route::post('/tentang', [SettingController::class, 'store'])
-    ->name('tentang.store');
-
-Route::get('/tentang/{tentang}', [SettingController::class, 'show'])
-    ->name('tentang.show');
-
-Route::get('/tentang/{tentang}/edit', [SettingController::class, 'edit'])
-    ->name('tentang.edit');
-
-Route::put('/tentang/{tentang}', [SettingController::class, 'update'])
-    ->name('tentang.update');
-
-Route::delete('/tentang/{tentang}', [SettingController::class, 'destroy'])
-    ->name('tentang.destroy');
-
-// ========================================
-// Galeries Landing Page
-// ========================================
-
-Route::get('/galeries', [GaleriesController::class, 'index'])
-    ->name('galeries.index');
-
-Route::get('/galeries/create', [GaleriesController::class, 'create'])
-    ->name('galeries.create');
-
-Route::post('/galeries', [GaleriesController::class, 'store'])
-    ->name('galeries.store');
-
-Route::get('/galeries/{id}/edit', [GaleriesController::class, 'edit'])
-    ->name('galeries.edit');
-
-Route::put('/galeries/{id}', [GaleriesController::class, 'update'])
-    ->name('galeries.update');
-
-Route::delete('/galeries/{id}', [GaleriesController::class, 'destroy'])
-    ->name('galeries.destroy');
-
-Route::post('/logout', [AuthController::class, 'logout'])
-    ->name('logout');
-
-Route::get('/users', [UserController::class, 'index'])
-    ->name('users.index');
-
-Route::put('/users', [UserController::class, 'update'])
-        ->name('users.update');
-
+Route::middleware(['auth', 'prevent-back-history'])->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/dashboard',
+        [DashboardController::class, 'index']
+    )->name('dashboard');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Kategori Akomodasi
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/accommodation-categories',
+        [AccommodationCategoryController::class, 'index']
+    )->name('accommodation-categories.index');
+
+    Route::post(
+        '/accommodation-categories',
+        [AccommodationCategoryController::class, 'store']
+    )->name('accommodation-categories.store');
+
+    Route::get(
+        '/accommodation-categories/{accommodationCategory}/edit',
+        [AccommodationCategoryController::class, 'edit']
+    )->name('accommodation-categories.edit');
+
+    Route::put(
+        '/accommodation-categories/{accommodationCategory}',
+        [AccommodationCategoryController::class, 'update']
+    )->name('accommodation-categories.update');
+
+    Route::delete(
+        '/accommodation-categories/{accommodationCategory}',
+        [AccommodationCategoryController::class, 'destroy']
+    )->name('accommodation-categories.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Aturan
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/rules',
+        [RuleController::class, 'index']
+    )->name('rules.index');
+
+    Route::post(
+        '/rules',
+        [RuleController::class, 'store']
+    )->name('rules.store');
+
+    Route::get(
+        '/rules/{rule}/edit',
+        [RuleController::class, 'edit']
+    )->name('rules.edit');
+
+    Route::put(
+        '/rules/{rule}',
+        [RuleController::class, 'update']
+    )->name('rules.update');
+
+    Route::delete(
+        '/rules/{rule}',
+        [RuleController::class, 'destroy']
+    )->name('rules.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Fasilitas
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/facilities',
+        [FacilityController::class, 'index']
+    )->name('facilities.index');
+
+    Route::post(
+        '/facilities',
+        [FacilityController::class, 'store']
+    )->name('facilities.store');
+
+    Route::get(
+        '/facilities/{facility}/edit',
+        [FacilityController::class, 'edit']
+    )->name('facilities.edit');
+
+    Route::put(
+        '/facilities/{facility}',
+        [FacilityController::class, 'update']
+    )->name('facilities.update');
+
+    Route::delete(
+        '/facilities/{facility}',
+        [FacilityController::class, 'destroy']
+    )->name('facilities.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Penginapan
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/penginapan',
+        [AccommodationController::class, 'index']
+    )->name('accommodations.index');
+
+    Route::post(
+        '/penginapan',
+        [AccommodationController::class, 'store']
+    )->name('accommodations.store');
+
+    Route::get(
+        '/penginapan/{id}',
+        [AccommodationController::class, 'show']
+    )->name('accommodations.show');
+
+    Route::put(
+        '/penginapan/{id}',
+        [AccommodationController::class, 'update']
+    )->name('accommodations.update');
+
+    Route::delete(
+        '/penginapan/{id}',
+        [AccommodationController::class, 'destroy']
+    )->name('accommodations.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Kategori Artikel
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/article-categories',
+        [ArticleCategoryController::class, 'index']
+    )->name('article-categories.index');
+
+    Route::post(
+        '/article-categories',
+        [ArticleCategoryController::class, 'store']
+    )->name('article-categories.store');
+
+    Route::get(
+        '/article-categories/{id}/edit',
+        [ArticleCategoryController::class, 'edit']
+    )->name('article-categories.edit');
+
+    Route::put(
+        '/article-categories/{id}',
+        [ArticleCategoryController::class, 'update']
+    )->name('article-categories.update');
+
+    Route::delete(
+        '/article-categories/{id}',
+        [ArticleCategoryController::class, 'destroy']
+    )->name('article-categories.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Artikel
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/admin/artikel',
+        [ArticleController::class, 'index']
+    )->name('articles.index');
+
+    Route::post(
+        '/admin/artikel',
+        [ArticleController::class, 'store']
+    )->name('articles.store');
+
+    Route::get(
+        '/admin/artikel/{id}',
+        [ArticleController::class, 'show']
+    )->name('articles.show');
+
+    Route::get(
+        '/admin/artikel/{id}/edit',
+        [ArticleController::class, 'edit']
+    )->name('articles.edit');
+
+    Route::put(
+        '/admin/artikel/{id}',
+        [ArticleController::class, 'update']
+    )->name('articles.update');
+
+    Route::delete(
+        '/admin/artikel/{id}',
+        [ArticleController::class, 'destroy']
+    )->name('articles.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Galeri
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/galeri',
+        [GalleryController::class, 'index']
+    )->name('galleries.index');
+
+    Route::post(
+        '/galeri',
+        [GalleryController::class, 'store']
+    )->name('galleries.store');
+
+    Route::get(
+        '/galeri/{id}',
+        [GalleryController::class, 'show']
+    )->name('galleries.show');
+
+    Route::get(
+        '/galeri/{id}/edit',
+        [GalleryController::class, 'edit']
+    )->name('galleries.edit');
+
+    Route::put(
+        '/galeri/{id}',
+        [GalleryController::class, 'update']
+    )->name('galleries.update');
+
+    Route::delete(
+        '/galeri/{id}',
+        [GalleryController::class, 'destroy']
+    )->name('galleries.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Banner
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/banners',
+        [BannerController::class, 'index']
+    )->name('banners.index');
+
+    Route::post(
+        '/banners',
+        [BannerController::class, 'store']
+    )->name('banners.store');
+
+    Route::get(
+        '/banners/{id}/edit',
+        [BannerController::class, 'edit']
+    )->name('banners.edit');
+
+    Route::put(
+        '/banners/{id}',
+        [BannerController::class, 'update']
+    )->name('banners.update');
+
+    Route::delete(
+        '/banners/{id}',
+        [BannerController::class, 'destroy']
+    )->name('banners.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pengaturan
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/pengaturan',
+        [SettingController::class, 'index']
+    )->name('pengaturan.index');
+
+    Route::post(
+        '/pengaturan',
+        [SettingController::class, 'store']
+    )->name('pengaturan.store');
+
+    Route::get(
+        '/pengaturan/{setting}/edit',
+        [SettingController::class, 'edit']
+    )->name('pengaturan.edit');
+
+    Route::put(
+        '/pengaturan/{setting}',
+        [SettingController::class, 'update']
+    )->name('pengaturan.update');
+
+    Route::delete(
+        '/pengaturan/{setting}',
+        [SettingController::class, 'destroy']
+    )->name('pengaturan.destroy');
+
+    Route::get('/pengaturan/{id}',
+    [SettingController::class, 'show'])
+    ->name('pengaturan.show');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Profil
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/profil',
+        [ProfileController::class, 'edit']
+    )->name('profile.edit');
+
+    Route::put(
+        '/profil',
+        [ProfileController::class, 'update']
+    )->name('profile.update');
 
 });

@@ -2,26 +2,38 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\AuthRepositoryInterface;
+use App\Models\User;
+use App\Repositories\AuthRepository;
 use Illuminate\Support\Facades\Hash;
 
 class AuthService
 {
-    protected $authRepository;
+    protected AuthRepository $authRepository;
 
-    public function __construct(
-        AuthRepositoryInterface $authRepository
-    ) {
+    public function __construct(AuthRepository $authRepository)
+    {
         $this->authRepository = $authRepository;
     }
 
-    public function login($username, $password)
+    /**
+     * Memproses login berdasarkan name dan password.
+     */
+    public function login(string $name, string $password): ?User
     {
-        $user = $this->authRepository->findByUsername($username);
+        $user = $this->authRepository->findByName($name);
 
-        if (!$user || !Hash::check($password, $user->password)) {
-            return false;
+        // User tidak ditemukan
+        if (!$user) {
+            return null;
         }
+
+        // Password tidak sesuai
+        if (!Hash::check($password, $user->password)) {
+            return null;
+        }
+
+        // Update waktu login terakhir
+        $this->authRepository->updateLastLogin($user);
 
         return $user;
     }

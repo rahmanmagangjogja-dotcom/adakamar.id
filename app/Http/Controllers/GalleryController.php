@@ -2,109 +2,343 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\GalleryService;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class GalleryController extends Controller
 {
-    protected $service;
+    protected GalleryService $galleryService;
 
     public function __construct(
-        GalleryService $service
+        GalleryService $galleryService
     ) {
-        $this->service = $service;
+        $this->galleryService = $galleryService;
     }
 
-    public function index()
+    /**
+     * Daftar gallery.
+     */
+    public function index(Request $request)
     {
-        $data = $this->service->getAll();
+        $keyword = $request->input('keyword');
+
+        $galleries = $this->galleryService
+            ->getGalleries($keyword, 10);
 
         return view(
-            'example.content.crud.akomodasi.index',
-            compact('data')
+            'example.content.konten.galeri',
+            compact('galleries')
         );
     }
 
-    public function create()
-    {
-        return view(
-            'example.content.crud.akomodasi.create'
-        );
-    }
-
+    /**
+     * Simpan gallery baru.
+     */
     public function store(Request $request)
-{
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
-        'sort_order' => 'nullable|integer',
-        'is_active' => 'nullable|boolean',
-    ]);
-
-    $data = $request->except('_token', 'image');
-
-    $this->service->create(
-        $data,
-        $request->file('image')
-    );
-
-    return redirect()
-        ->route('gallery.index')
-        ->with('success', 'Galeri berhasil ditambahkan.');
-}
-
-    public function show($id)
-{
-    $data = $this->service->getById($id);
-
-    return view(
-        'example.content.crud.akomodasi.detail',
-        compact('data')
-    );
-}
-
-    public function edit($id)
     {
-        $data = $this->service->getById($id);
+        try {
 
-        return view(
-            'example.content.crud.akomodasi.edit',
-            compact('data')
-        );
+            $validated = $request->validate([
+                'title' => [
+                    'required',
+                    'string',
+                    'max:255',
+                ],
+
+                'image' => [
+                    'required',
+                    'image',
+                    'mimes:jpg,jpeg,png,gif,webp',
+                    'max:1048576',
+                ],
+
+                'sort_order' => [
+                    'nullable',
+                    'integer',
+                    'min:0',
+                ],
+
+                'is_active' => [
+                    'nullable',
+                    'boolean',
+                ],
+            ]);
+            
+            /*
+            |--------------------------------------------------------------------------
+            | Checkbox
+            |--------------------------------------------------------------------------
+            */
+
+            $validated['is_active'] =
+                $request->boolean('is_active');
+
+            $gallery = $this->galleryService
+                ->createGallery($validated);
+
+            if ($request->ajax() || $request->wantsJson()) {
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Gallery berhasil ditambahkan.',
+                    'data' => $gallery,
+                ]);
+            }
+
+            return redirect()
+                ->route('galleries.index')
+                ->with(
+                    'success',
+                    'Gallery berhasil ditambahkan.'
+                );
+
+        } catch (ValidationException $e) {
+
+            if ($request->ajax() || $request->wantsJson()) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal.',
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            throw $e;
+
+        } catch (\Exception $e) {
+
+            if ($request->ajax() || $request->wantsJson()) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Terjadi kesalahan: ' . $e->getMessage()
+                );
+        }
     }
 
-    public function update(Request $request, $id)
-{
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-        'sort_order' => 'nullable|integer',
-        'is_active' => 'nullable|boolean',
-    ]);
-
-    $data = $request->except([
-        '_token',
-        '_method',
-        'image'
-    ]);
-
-    $this->service->update(
-        $id,
-        $data,
-        $request->file('image')
-    );
-
-    return redirect()
-        ->route('gallery.index')
-        ->with('success', 'Galeri berhasil diperbarui.');
-}
-
-    public function destroy($id)
+    /**
+     * Detail gallery.
+     */
+    public function show(int $id)
     {
-        $this->service->delete($id);
+        $gallery = $this->galleryService
+            ->getGallery($id);
 
-        return redirect()
-            ->route('gallery.index')
-            ->with('success', 'Galeri berhasil dihapus.');
+        if (!$gallery) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gallery tidak ditemukan.',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $gallery,
+        ]);
+    }
+
+    /**
+     * Data gallery untuk modal edit.
+     */
+    public function edit(int $id)
+    {
+        $gallery = $this->galleryService
+            ->getGallery($id);
+
+        if (!$gallery) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gallery tidak ditemukan.',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $gallery,
+        ]);
+    }
+
+    /**
+     * Update gallery.
+     */
+    public function update(Request $request, int $id)
+    {
+        try {
+
+            $validated = $request->validate([
+                'title' => [
+                    'required',
+                    'string',
+                    'max:255',
+                ],
+
+                'image' => [
+                    'nullable',
+                    'image',
+                    'mimes:jpg,jpeg,png,gif,webp',
+                    'max:5120',
+                ],
+
+                'sort_order' => [
+                    'nullable',
+                    'integer',
+                    'min:0',
+                ],
+
+                'is_active' => [
+                    'nullable',
+                    'boolean',
+                ],
+            ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Checkbox
+            |--------------------------------------------------------------------------
+            */
+
+            $validated['is_active'] =
+                $request->boolean('is_active');
+
+            $gallery = $this->galleryService
+                ->updateGallery($id, $validated);
+
+            if (!$gallery) {
+
+                if ($request->ajax() || $request->wantsJson()) {
+
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Gallery tidak ditemukan.',
+                    ], 404);
+                }
+
+                return redirect()
+                    ->route('galleries.index')
+                    ->with(
+                        'error',
+                        'Gallery tidak ditemukan.'
+                    );
+            }
+
+            if ($request->ajax() || $request->wantsJson()) {
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Gallery berhasil diperbarui.',
+                    'data' => $gallery,
+                ]);
+            }
+
+            return redirect()
+                ->route('galleries.index')
+                ->with(
+                    'success',
+                    'Gallery berhasil diperbarui.'
+                );
+
+        } catch (ValidationException $e) {
+
+            if ($request->ajax() || $request->wantsJson()) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal.',
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            throw $e;
+
+        } catch (\Exception $e) {
+
+            if ($request->ajax() || $request->wantsJson()) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Terjadi kesalahan: ' . $e->getMessage()
+                );
+        }
+    }
+
+    /**
+     * Hapus gallery.
+     */
+    public function destroy(Request $request, int $id)
+    {
+        try {
+
+            $deleted = $this->galleryService
+                ->deleteGallery($id);
+
+            if (!$deleted) {
+
+                if ($request->ajax() || $request->wantsJson()) {
+
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Gallery tidak ditemukan.',
+                    ], 404);
+                }
+
+                return redirect()
+                    ->route('galleries.index')
+                    ->with(
+                        'error',
+                        'Gallery tidak ditemukan.'
+                    );
+            }
+
+            if ($request->ajax() || $request->wantsJson()) {
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Gallery berhasil dihapus.',
+                ]);
+            }
+
+            return redirect()
+                ->route('galleries.index')
+                ->with(
+                    'success',
+                    'Gallery berhasil dihapus.'
+                );
+
+        } catch (\Exception $e) {
+
+            if ($request->ajax() || $request->wantsJson()) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()
+                ->route('galleries.index')
+                ->with(
+                    'error',
+                    'Terjadi kesalahan: ' . $e->getMessage()
+                );
+        }
     }
 }

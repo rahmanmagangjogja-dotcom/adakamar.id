@@ -14,7 +14,7 @@ class PreventBackHistory
 
         $response->headers->set(
             'Cache-Control',
-            'no-cache, no-store, max-age=0, must-revalidate'
+            'no-cache, no-store, max-age=0, must-revalidate, private'
         );
 
         $response->headers->set(

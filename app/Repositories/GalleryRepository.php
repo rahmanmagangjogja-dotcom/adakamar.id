@@ -2,37 +2,114 @@
 
 namespace App\Repositories;
 
-use App\Models\galleries;
-use App\Repositories\Interfaces\GalleryRepositoryInterface;
+use App\Models\Gallery;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class GalleryRepository implements GalleryRepositoryInterface
+class GalleryRepository
 {
-    public function getAll()
+    /**
+     * Model Gallery.
+     */
+    protected Gallery $model;
+
+    /**
+     * Constructor.
+     */
+    public function __construct(Gallery $model)
     {
-        return galleries::latest()->get();
+        $this->model = $model;
     }
 
-    public function getById($id)
-    {
-        return galleries::with('images')->findOrFail($id);
+    /**
+     * Ambil semua gallery dengan pagination.
+     *
+     * Digunakan untuk halaman admin.
+     */
+    public function getAll(
+        ?string $keyword = null,
+        int $perPage = 10
+    ): LengthAwarePaginator {
+
+        return $this->model
+            ->when(
+                filled($keyword),
+                function ($query) use ($keyword) {
+
+                    $query->where(
+                        'title',
+                        'like',
+                        '%' . $keyword . '%'
+                    );
+                }
+            )
+            ->orderBy('sort_order', 'asc')
+            ->orderByDesc('id')
+            ->paginate($perPage)
+            ->withQueryString();
     }
 
-    public function create(array $data)
-    {
-        return galleries::create($data);
+    /**
+     * Ambil gallery berdasarkan ID.
+     */
+    public function findById(
+        int $id
+    ): ?Gallery {
+
+        return $this->model
+            ->find($id);
     }
 
-    public function update($id, array $data)
-    {
-        $gallery = galleries::findOrFail($id);
+    /**
+     * Buat gallery baru.
+     */
+    public function create(
+        array $data
+    ): Gallery {
 
-        $gallery->update($data);
-
-        return $gallery;
+        return $this->model
+            ->create($data);
     }
 
-    public function delete($id)
+    /**
+     * Update gallery.
+     */
+    public function update(
+        Gallery $gallery,
+        array $data
+    ): bool {
+
+        return $gallery
+            ->update($data);
+    }
+
+    /**
+     * Hapus gallery.
+     */
+    public function delete(
+        Gallery $gallery
+    ): bool {
+
+        return $gallery
+            ->delete();
+    }
+
+    /**
+     * Ambil semua gallery aktif.
+     *
+     * Digunakan untuk landing page.
+     *
+     * Hanya gallery dengan:
+     *
+     * is_active = true
+     *
+     * yang akan ditampilkan.
+     */
+    public function getActiveGalleries()
     {
-        return galleries::findOrFail($id)->delete();
+        return $this->model
+            ->where('is_active', true)
+            ->orderBy('sort_order', 'asc')
+            ->orderByDesc('id')
+            ->get();
     }
 }

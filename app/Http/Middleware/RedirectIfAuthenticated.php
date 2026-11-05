@@ -17,26 +17,8 @@ class RedirectIfAuthenticated
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {
-
             if (Auth::guard($guard)->check()) {
-
-                $role = Auth::user()->role;
-
-                switch ($role) {
-
-                    case 'Admin':
-                        return redirect()->route('dashboard.admin');
-
-                    case 'Manajer Gudang':
-                        return redirect()->route('dashboard');
-
-                    case 'Staff Gudang':
-                        return redirect()->route('dashboard.staff');
-
-                    default:
-                        Auth::logout();
-                        return redirect()->route('sign-in');
-                }
+                return redirect()->route('dashboard');
             }
         }
 

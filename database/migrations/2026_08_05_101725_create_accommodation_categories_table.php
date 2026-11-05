@@ -16,11 +16,11 @@ return new class extends Migration {
             $table->string('name');
             $table->string('slug')->unique();
 
+            // Foto kategori
+            $table->string('thumbnail')->nullable();
+
             $table->text('description')->nullable();
 
-            $table->boolean('is_active')->default(true);
-
-            $table->string('image')->nullable();
 
             $table->timestamps();
         });

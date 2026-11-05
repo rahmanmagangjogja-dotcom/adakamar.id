@@ -2,122 +2,177 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\SettingRepositoryInterface;
+use App\Models\Setting;
+use App\Repositories\SettingRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class SettingService
 {
-    protected $settingRepository;
+    protected SettingRepository $repository;
 
     public function __construct(
-        SettingRepositoryInterface $settingRepository
+        SettingRepository $repository
     ) {
-        $this->settingRepository = $settingRepository;
+        $this->repository = $repository;
     }
 
-    public function getSetting()
+    /**
+     * Mengambil semua pengaturan.
+     */
+    public function getAll(): Collection
     {
-        return $this->settingRepository->getSetting();
+        return $this->repository->getAll();
     }
 
-    public function update(
-        array $data,
-        ?UploadedFile $logo = null,
-        ?UploadedFile $favicon = null
-    ) {
-        $setting = $this->settingRepository->getSetting();
+    /**
+     * Mengambil pengaturan pertama.
+     */
+    public function first(): ?Setting
+    {
+        return $this->repository->first();
+    }
 
-        /*
-        |--------------------------------------------------------------------------
-        | LOGO
-        |--------------------------------------------------------------------------
-        */
+    /**
+     * Mengambil pengaturan dengan pagination.
+     */
+    public function getPaginated(
+        int $perPage = 10
+    ) {
+        return $this->repository->getPaginated($perPage);
+    }
+
+    /**
+     * Mengambil pengaturan berdasarkan ID.
+     */
+    public function findById(int $id): ?Setting
+    {
+        return $this->repository->findById($id);
+    }
+
+    /**
+     * Membuat pengaturan baru.
+     */
+    public function create(
+        array $data,
+        ?UploadedFile $logo = null
+    ): Setting {
+
+        if ($logo) {
+            $data['logo'] = $this->storeLogo($logo);
+        }
+
+        return $this->repository->create($data);
+    }
+
+    /**
+     * Update pengaturan.
+     */
+    public function update(
+        Setting $setting,
+        array $data,
+        ?UploadedFile $logo = null
+    ): Setting {
+
         if ($logo) {
 
-            $folder = public_path('setting/logo');
-
-            /*
-             * Buat folder jika belum ada
-             */
-            if (!file_exists($folder)) {
-                mkdir($folder, 0755, true);
+            if ($setting->logo) {
+                $this->deleteFile(
+                    $setting->logo
+                );
             }
 
-            /*
-             * Nama file baru
-             */
-            $filename = time() . '_logo.' . $logo->getClientOriginalExtension();
+            $data['logo'] = $this->storeLogo($logo);
 
-            /*
-             * Simpan ke public/setting/logo
-             */
-            $logo->move($folder, $filename);
+        } else {
 
-            /*
-             * Hapus logo lama
-             */
-            if (
-                $setting &&
-                $setting->logo &&
-                file_exists(public_path($setting->logo))
-            ) {
-                unlink(public_path($setting->logo));
-            }
-
-            /*
-             * Simpan path relatif ke database
-             */
-            $data['logo'] = 'setting/logo/' . $filename;
+            unset($data['logo']);
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | FAVICON
-        |--------------------------------------------------------------------------
-        */
-        if ($favicon) {
+        return $this->repository->update(
+            $setting,
+            $data
+        );
+    }
 
-            $folder = public_path('setting/favicon');
+    /**
+     * Hapus pengaturan.
+     */
+    public function delete(
+        Setting $setting
+    ): bool {
 
-            /*
-             * Buat folder jika belum ada
-             */
-            if (!file_exists($folder)) {
-                mkdir($folder, 0755, true);
-            }
-
-            /*
-             * Nama file baru
-             */
-            $filename = time() . '_favicon.' . $favicon->getClientOriginalExtension();
-
-            /*
-             * Simpan ke public/setting/favicon
-             */
-            $favicon->move($folder, $filename);
-
-            /*
-             * Hapus favicon lama
-             */
-            if (
-                $setting &&
-                $setting->favicon &&
-                file_exists(public_path($setting->favicon))
-            ) {
-                unlink(public_path($setting->favicon));
-            }
-
-            /*
-             * Simpan path relatif ke database
-             */
-            $data['favicon'] = 'setting/favicon/' . $filename;
+        if ($setting->logo) {
+            $this->deleteFile(
+                $setting->logo
+            );
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | UPDATE DATABASE
-        |--------------------------------------------------------------------------
-        */
-        return $this->settingRepository->update($data);
+        return $this->repository->delete(
+            $setting
+        );
+    }
+
+    /**
+     * Menyimpan logo.
+     */
+    protected function storeLogo(
+        UploadedFile $file
+    ): string {
+
+        $directory = public_path(
+            'settings'
+        );
+
+        if (!File::exists($directory)) {
+            File::makeDirectory(
+                $directory,
+                0755,
+                true
+            );
+        }
+
+        $originalName = pathinfo(
+            $file->getClientOriginalName(),
+            PATHINFO_FILENAME
+        );
+
+        $extension = strtolower(
+            $file->getClientOriginalExtension()
+        );
+
+        $filename =
+            time() .
+            '_' .
+            Str::slug($originalName) .
+            '_' .
+            Str::random(10) .
+            '.' .
+            $extension;
+
+        $file->move(
+            $directory,
+            $filename
+        );
+
+        return 'settings/' . $filename;
+    }
+
+    /**
+     * Menghapus file dari public.
+     */
+    protected function deleteFile(
+        string $path
+    ): void {
+
+        $filePath = public_path(
+            ltrim($path, '/')
+        );
+
+        if (File::exists($filePath)) {
+            File::delete($filePath);
+        }
     }
 }

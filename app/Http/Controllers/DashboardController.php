@@ -3,22 +3,51 @@
 namespace App\Http\Controllers;
 
 use App\Services\DashboardService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\View\View;
+use Throwable;
 
 class DashboardController extends Controller
 {
-    protected $dashboardService;
+    protected DashboardService $service;
 
-    public function __construct(DashboardService $dashboardService)
+    public function __construct(DashboardService $service)
     {
-        $this->dashboardService = $dashboardService;
+        $this->service = $service;
     }
 
-    public function index()
+    public function index(): View|JsonResponse
     {
-        
+        try {
+            $data = $this->service->getDashboardData();
 
-        $data = $this->dashboardService->getDashboardData();
+            if (request()->expectsJson() || request()->wantsJson() || request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'data' => $data,
+                ]);
+            }
 
-        return view('example.content._index', $data);
+            return view(
+                'example.content.dashboard_super_admin',
+                $data
+            );
+
+        } catch (Throwable $e) {
+            \Log::error('Gagal mengambil data dashboard', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
+            if (request()->expectsJson() || request()->wantsJson() || request()->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal mengambil data dashboard: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            abort(500, 'Gagal mengambil data dashboard.');
+        }
     }
 }

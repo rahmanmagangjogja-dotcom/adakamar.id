@@ -2,189 +2,581 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use App\Services\SettingService;
 use Illuminate\Http\Request;
-use App\Models\Setting;
+use Illuminate\Validation\ValidationException;
 
 class SettingController extends Controller
 {
-    protected $settingService;
+    protected SettingService $service;
 
-    public function __construct(SettingService $settingService)
-    {
-        $this->settingService = $settingService;
+    public function __construct(
+        SettingService $service
+    ) {
+        $this->service = $service;
     }
 
     /**
-     * Menampilkan halaman setting
+     * Menampilkan halaman pengaturan.
      */
     public function index()
     {
-        $tentang = $this->settingService->getSetting();
+        $settings = $this->service->getAll();
 
         return view(
-            'example.content.crud.tentang.index',
-            compact('tentang')
+            'example.content.konten.settings',
+            compact('settings')
         );
     }
 
     /**
-     * Menampilkan form tambah setting
-     */
-    public function create()
-    {
-        return view(
-            'example.content.crud.tentang.create'
-        );
-    }
-
-    /**
-     * Menyimpan setting baru
+     * Menyimpan pengaturan baru.
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'site_name' => 'required|string|max:255',
-            'tagline' => 'nullable|string|max:255',
-            'about' => 'nullable|string',
+        try {
 
-            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'favicon' => 'nullable|image|mimes:jpg,jpeg,png,webp,ico|max:2048',
+            $validated = $request->validate(
+                $this->rules(),
+                $this->messages()
+            );
 
-            'address' => 'nullable|string',
-            'phone' => 'nullable|string|max:50',
-            'whatsapp' => 'nullable|string|max:50',
-            'email' => 'nullable|email|max:255',
+            $setting = $this->service->create(
+                $validated,
+                $request->file('logo')
+            );
 
-            
-            
+            /*
+            |--------------------------------------------------------------------------
+            | AJAX / JSON
+            |--------------------------------------------------------------------------
+            */
 
-            'maps_embed' => 'nullable|string',
+            if ($this->isAjax($request)) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Pengaturan berhasil ditambahkan.',
+                    'data' => $setting,
+                ], 201);
+            }
 
-            'facebook' => 'nullable|url|max:255',
-            'instagram' => 'nullable|url|max:255',
-            'youtube' => 'nullable|url|max:255',
-            'tiktok' => 'nullable|url|max:255',
+            /*
+            |--------------------------------------------------------------------------
+            | Request biasa
+            |--------------------------------------------------------------------------
+            */
 
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string',
-            'meta_keywords' => 'nullable|string',
+            return redirect()
+                ->route('pengaturan.index')
+                ->with(
+                    'success',
+                    'Pengaturan berhasil ditambahkan.'
+                );
 
-            'footer_description' => 'nullable|string',
-            'copyright' => 'nullable|string|max:255',
+        } catch (ValidationException $e) {
+
+            if ($this->isAjax($request)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal.',
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            throw $e;
+
+        } catch (\Throwable $e) {
+
+            \Log::error(
+                'Gagal menambahkan pengaturan',
+                [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                ]
+            );
+
+            if ($this->isAjax($request)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Terjadi kesalahan saat menambahkan pengaturan.'
+                );
+        }
+    }
+
+    /**
+     * Mengambil data pengaturan untuk modal edit.
+     */
+    public function edit(
+        Setting $setting
+    ) {
+        return response()->json([
+            'success' => true,
+
+            'data' => [
+                'id' => $setting->id,
+
+                // Website
+                'site_name' => $setting->site_name,
+                'tagline' => $setting->tagline,
+                'about' => $setting->about,
+
+                // Branding
+                'logo' => $setting->logo,
+                'logo_url' => $setting->logo
+                    ? asset($setting->logo)
+                    : null,
+
+                // Kontak
+                'address' => $setting->address,
+                'phone' => $setting->phone,
+                'whatsapp' => $setting->whatsapp,
+                'email' => $setting->email,
+
+                // Maps
+                'maps_embed' => $setting->maps_embed,
+
+                // Social Media
+                'facebook' => $setting->facebook,
+                'instagram' => $setting->instagram,
+                'x' => $setting->x,
+                'youtube' => $setting->youtube,
+                'tiktok' => $setting->tiktok,
+
+                // SEO
+                'meta_title' => $setting->meta_title,
+                'meta_description' => $setting->meta_description,
+                'meta_keywords' => $setting->meta_keywords,
+
+                // Footer
+                'footer_description' =>
+                    $setting->footer_description,
+
+                'copyright' =>
+                    $setting->copyright,
+            ],
         ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | Upload Logo
-        |--------------------------------------------------------------------------
-        */
-        if ($request->hasFile('logo')) {
-
-            $file = $request->file('logo');
-
-            $folder = public_path('setting/logo');
-
-            if (!file_exists($folder)) {
-                mkdir($folder, 0755, true);
-            }
-
-            $filename = time() . '_logo.' . $file->getClientOriginalExtension();
-
-            $file->move($folder, $filename);
-
-            $data['logo'] = 'setting/logo/' . $filename;
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | Upload Favicon
-        |--------------------------------------------------------------------------
-        */
-        if ($request->hasFile('favicon')) {
-
-            $file = $request->file('favicon');
-
-            $folder = public_path('setting/favicon');
-
-            if (!file_exists($folder)) {
-                mkdir($folder, 0755, true);
-            }
-
-            $filename = time() . '_favicon.' . $file->getClientOriginalExtension();
-
-            $file->move($folder, $filename);
-
-            $data['favicon'] = 'setting/favicon/' . $filename;
-        }
-
-        Setting::create($data);
-
-        return redirect()
-            ->route('tentang.index')
-            ->with('success', 'Pengaturan website berhasil ditambahkan.');
     }
 
     /**
-     * Menampilkan form edit setting
+     * Update pengaturan.
      */
-    public function edit($id)
-    {
-        $setting = Setting::findOrFail($id);
+    public function update(
+        Request $request,
+        Setting $setting
+    ) {
+        try {
 
-        return view(
-            'example.content.crud.tentang.edit',
-            compact('setting')
-        );
+            $validated = $request->validate(
+                $this->rules(),
+                $this->messages()
+            );
+
+            $setting = $this->service->update(
+                $setting,
+                $validated,
+                $request->file('logo')
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | AJAX / JSON
+            |--------------------------------------------------------------------------
+            */
+
+            if ($this->isAjax($request)) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Pengaturan berhasil diperbarui.',
+                    'data' => $setting,
+                ]);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Request biasa
+            |--------------------------------------------------------------------------
+            */
+
+            return redirect()
+                ->route('pengaturan.index')
+                ->with(
+                    'success',
+                    'Pengaturan berhasil diperbarui.'
+                );
+
+        } catch (ValidationException $e) {
+
+            if ($this->isAjax($request)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal.',
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            throw $e;
+
+        } catch (\Throwable $e) {
+
+            \Log::error(
+                'Gagal memperbarui pengaturan',
+                [
+                    'setting_id' => $setting->id,
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                ]
+            );
+
+            if ($this->isAjax($request)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Terjadi kesalahan saat memperbarui pengaturan.'
+                );
+        }
+    }
+
+    public function show($id)
+    {
+        try {
+            $setting = $this->service->findById($id);
+
+            if (!$setting) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data pengaturan tidak ditemukan.'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $setting->id,
+                    'site_name' => $setting->site_name,
+                    'tagline' => $setting->tagline,
+                    'about' => $setting->about,
+
+                    'logo' => $setting->logo,
+                    'logo_url' => $setting->logo
+                        ? asset($setting->logo)
+                        : null,
+
+                    'address' => $setting->address,
+                    'phone' => $setting->phone,
+                    'whatsapp' => $setting->whatsapp,
+                    'email' => $setting->email,
+
+                    'maps_embed' => $setting->maps_embed,
+
+                    'facebook' => $setting->facebook,
+                    'instagram' => $setting->instagram,
+                    'x' => $setting->x,
+                    'youtube' => $setting->youtube,
+                    'tiktok' => $setting->tiktok,
+
+                    'meta_title' => $setting->meta_title,
+                    'meta_description' => $setting->meta_description,
+                    'meta_keywords' => $setting->meta_keywords,
+
+                    'footer_description' => $setting->footer_description,
+                    'copyright' => $setting->copyright,
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+    /**
+     * Hapus pengaturan.
+     */
+    public function destroy(
+        Request $request,
+        Setting $setting
+    ) {
+        try {
+
+            $this->service->delete(
+                $setting
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | AJAX / JSON
+            |--------------------------------------------------------------------------
+            */
+
+            if ($this->isAjax($request)) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Pengaturan berhasil dihapus.',
+                ]);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Request biasa
+            |--------------------------------------------------------------------------
+            */
+
+            return redirect()
+                ->route('pengaturan.index')
+                ->with(
+                    'success',
+                    'Pengaturan berhasil dihapus.'
+                );
+
+        } catch (\Throwable $e) {
+
+            \Log::error(
+                'Gagal menghapus pengaturan',
+                [
+                    'setting_id' => $setting->id,
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                ]
+            );
+
+            if ($this->isAjax($request)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()
+                ->route('pengaturan.index')
+                ->with(
+                    'error',
+                    'Terjadi kesalahan saat menghapus pengaturan.'
+                );
+        }
     }
 
     /**
-     * Menyimpan perubahan setting
+     * Cek request AJAX / JSON.
      */
-    public function update(Request $request)
-    {
-    $validated = $request->validate([
-    'site_name' => 'required|string|max:255',
-    'tagline' => 'nullable|string|max:255',
-    'about' => 'nullable|string',
-
-
-        'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-        'favicon' => 'nullable|image|mimes:ico,png,jpg,jpeg,webp|max:1024',
-
-        'address' => 'nullable|string',
-        'phone' => 'nullable|string|max:50',
-        'whatsapp' => 'nullable|string|max:50',
-        'email' => 'nullable|email|max:255',
-
-        
-
-        'maps_embed' => 'nullable|string',
-
-        'facebook' => 'nullable|string|max:255',
-        'instagram' => 'nullable|string|max:255',
-        'youtube' => 'nullable|string|max:255',
-        'tiktok' => 'nullable|string|max:255',
-
-        'meta_title' => 'nullable|string|max:255',
-        'meta_description' => 'nullable|string',
-        'meta_keywords' => 'nullable|string',
-
-        'footer_description' => 'nullable|string',
-        'copyright' => 'nullable|string|max:255',
-    ]);
-
-    $this->settingService->update(
-        $validated,
-        $request->file('logo'),
-        $request->file('favicon')
-    );
-
-    return redirect()
-        ->route('tentang.index')
-        ->with('success', 'Pengaturan website berhasil diperbarui.');
-
-
+    protected function isAjax(
+        Request $request
+    ): bool {
+        return $request->ajax()
+            || $request->wantsJson()
+            || $request->expectsJson();
     }
 
+    /**
+     * Validation rules.
+     */
+    protected function rules(): array
+    {
+        return [
+
+            // Website
+            'site_name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'tagline' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'about' => [
+                'nullable',
+                'string',
+            ],
+
+            // Branding
+            'logo' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:1048576',
+            ],
+
+            // Kontak
+            'address' => [
+                'nullable',
+                'string',
+            ],
+
+            'phone' => [
+                'nullable',
+                'string',
+                'max:20',
+            ],
+
+            'whatsapp' => [
+                'nullable',
+                'string',
+                'max:20',
+            ],
+
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+            ],
+
+            // Maps
+            'maps_embed' => [
+                'nullable',
+                'string',
+            ],
+
+            // Social Media
+            'facebook' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'instagram' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'x' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'youtube' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'tiktok' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            // SEO
+            'meta_title' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'meta_description' => [
+                'nullable',
+                'string',
+            ],
+
+            'meta_keywords' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            // Footer
+            'footer_description' => [
+                'nullable',
+                'string',
+            ],
+
+            'copyright' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+        ];
+    }
+
+    /**
+     * Validation messages.
+     */
+    protected function messages(): array
+    {
+        return [
+
+            'site_name.required' =>
+                'Nama website wajib diisi.',
+
+            'site_name.string' =>
+                'Nama website harus berupa teks.',
+
+            'site_name.max' =>
+                'Nama website maksimal 255 karakter.',
+
+            'tagline.max' =>
+                'Tagline maksimal 255 karakter.',
+
+            'logo.image' =>
+                'Logo harus berupa gambar.',
+
+            'logo.mimes' =>
+                'Logo harus berformat JPG, JPEG, PNG, atau WEBP.',
+
+            'logo.max' =>
+                'Ukuran logo maksimal 1GB.',
+
+            'phone.max' =>
+                'Nomor telepon maksimal 20 karakter.',
+
+            'whatsapp.max' =>
+                'Nomor WhatsApp maksimal 20 karakter.',
+
+            'email.email' =>
+                'Format email tidak valid.',
+
+            'email.max' =>
+                'Email maksimal 255 karakter.',
+
+            'facebook.max' =>
+                'URL Facebook maksimal 255 karakter.',
+
+            'instagram.max' =>
+                'URL Instagram maksimal 255 karakter.',
+
+            'x.max' =>
+                'URL X maksimal 255 karakter.',
+
+            'youtube.max' =>
+                'URL YouTube maksimal 255 karakter.',
+
+            'tiktok.max' =>
+                'URL TikTok maksimal 255 karakter.',
+
+            'meta_title.max' =>
+                'Meta title maksimal 255 karakter.',
+
+            'meta_keywords.max' =>
+                'Meta keywords maksimal 255 karakter.',
+
+            'copyright.max' =>
+                'Copyright maksimal 255 karakter.',
+        ];
+    }
 }

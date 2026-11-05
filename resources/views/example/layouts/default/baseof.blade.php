@@ -2,11 +2,12 @@
 <html lang="en" class="dark">
 
 <head>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   @include('example.layouts.partials.header')
 </head>
 
 @php
-  $whiteBg = isset($params['white_bg']) && $params['white_bg'];
+$whiteBg = isset($params['white_bg']) && $params['white_bg'];
 @endphp
 
 <body class="{{ $whiteBg ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800' }}">
