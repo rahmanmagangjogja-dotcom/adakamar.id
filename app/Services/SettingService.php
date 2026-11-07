@@ -28,20 +28,20 @@ class SettingService
     }
 
     /**
+     * Mengambil pengaturan pertama.
+     */
+    public function first(): ?Setting
+    {
+        return $this->repository->first();
+    }
+
+    /**
      * Mengambil pengaturan dengan pagination.
      */
     public function getPaginated(
         int $perPage = 10
     ) {
         return $this->repository->getPaginated($perPage);
-    }
-
-    /**
-     * Mengambil pengaturan pertama.
-     */
-    public function first(): ?Setting
-    {
-        return $this->repository->first();
     }
 
     /**
@@ -76,27 +76,18 @@ class SettingService
         ?UploadedFile $logo = null
     ): Setting {
 
-        /*
-        |--------------------------------------------------------------------------
-        | Upload logo baru
-        |--------------------------------------------------------------------------
-        */
-
         if ($logo) {
 
-            // Hapus logo lama
             if ($setting->logo) {
                 $this->deleteFile(
                     $setting->logo
                 );
             }
 
-            // Simpan logo baru
             $data['logo'] = $this->storeLogo($logo);
 
         } else {
 
-            // Jangan ubah logo jika tidak ada file baru
             unset($data['logo']);
         }
 
@@ -113,23 +104,11 @@ class SettingService
         Setting $setting
     ): bool {
 
-        /*
-        |--------------------------------------------------------------------------
-        | Hapus logo
-        |--------------------------------------------------------------------------
-        */
-
         if ($setting->logo) {
             $this->deleteFile(
                 $setting->logo
             );
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | Hapus database
-        |--------------------------------------------------------------------------
-        */
 
         return $this->repository->delete(
             $setting
@@ -138,9 +117,6 @@ class SettingService
 
     /**
      * Menyimpan logo.
-     *
-     * Lokasi:
-     * public/settings
      */
     protected function storeLogo(
         UploadedFile $file
@@ -150,12 +126,6 @@ class SettingService
             'settings'
         );
 
-        /*
-        |--------------------------------------------------------------------------
-        | Buat folder
-        |--------------------------------------------------------------------------
-        */
-
         if (!File::exists($directory)) {
             File::makeDirectory(
                 $directory,
@@ -163,12 +133,6 @@ class SettingService
                 true
             );
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | Nama file
-        |--------------------------------------------------------------------------
-        */
 
         $originalName = pathinfo(
             $file->getClientOriginalName(),
@@ -188,22 +152,10 @@ class SettingService
             '.' .
             $extension;
 
-        /*
-        |--------------------------------------------------------------------------
-        | Pindahkan file
-        |--------------------------------------------------------------------------
-        */
-
         $file->move(
             $directory,
             $filename
         );
-
-        /*
-        |--------------------------------------------------------------------------
-        | Path database
-        |--------------------------------------------------------------------------
-        */
 
         return 'settings/' . $filename;
     }

@@ -3,11 +3,11 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use App\Models\Setting;
 use App\Repositories\RuleRepository;
 use App\Repositories\AccommodationCategoryRepository;
 use App\Repositories\AccommodationRepository;
-
-
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,8 +30,6 @@ class AppServiceProvider extends ServiceProvider
             AccommodationRepository::class,
             AccommodationRepository::class
         );
-
-
     }
 
     /**
@@ -39,6 +37,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        View::composer('*', function ($view) {
+            $view->with('setting', Setting::query()->first());
+        });
     }
 }

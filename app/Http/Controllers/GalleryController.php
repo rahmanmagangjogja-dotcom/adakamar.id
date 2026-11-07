@@ -50,7 +50,7 @@ class GalleryController extends Controller
                     'required',
                     'image',
                     'mimes:jpg,jpeg,png,gif,webp',
-                    'max:5120',
+                    'max:1048576',
                 ],
 
                 'sort_order' => [
@@ -64,7 +64,7 @@ class GalleryController extends Controller
                     'boolean',
                 ],
             ]);
-
+            
             /*
             |--------------------------------------------------------------------------
             | Checkbox

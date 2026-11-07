@@ -43,11 +43,11 @@ class AccommodationCategoryRepository
                             'like',
                             '%' . $keyword . '%'
                         )
-                        ->orWhere(
-                            'slug',
-                            'like',
-                            '%' . $keyword . '%'
-                        );
+                            ->orWhere(
+                                'slug',
+                                'like',
+                                '%' . $keyword . '%'
+                            );
                     });
                 }
             )

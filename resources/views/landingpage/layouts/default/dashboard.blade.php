@@ -2,13 +2,21 @@
 
 @section('main')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
-    @include('landingpage.layouts.partials.navbar-dashboard')
 
-    <!-- Main Content -->
-    <main class="pt-16 bg-gray-50 dark:bg-gray-900">
+    @php
+      $isHeroPage = request()->routeIs('landingpage') || request()->is('/');
+      $homeUrl = Route::has('landingpage') ? route('landingpage') : url('/');
+      $navHref = function($id) use ($isHeroPage, $homeUrl) {
+          return $isHeroPage ? '#' . $id : $homeUrl . '#' . $id;
+      };
+    @endphp
+
+    @include('landingpage.layouts.partials.navbar-dashboard', compact('isHeroPage', 'homeUrl', 'navHref'))
+
+    <!-- Main Content - TANPA padding & background -->
+    <main>
         @yield('content')
     </main>
 
-    @include('landingpage.layouts.partials.footer-dashboard')
+    @include('landingpage.layouts.partials.footer-dashboard', compact('isHeroPage', 'homeUrl', 'navHref'))
 @endsection

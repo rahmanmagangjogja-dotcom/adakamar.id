@@ -4,7 +4,8 @@ namespace App\Services;
 
 use App\Repositories\BannerRepository;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class BannerService
 {
@@ -24,6 +25,16 @@ class BannerService
     }
 
     /**
+     * Mengambil banner untuk Hero Section.
+     *
+     * Mengambil banner terbaru.
+     */
+    public function getHero()
+    {
+        return $this->repository->getAll()->first();
+    }
+
+    /**
      * Mengambil satu banner berdasarkan ID.
      */
     public function findById(int $id)
@@ -40,10 +51,7 @@ class BannerService
             isset($data['image']) &&
             $data['image'] instanceof UploadedFile
         ) {
-            $data['image'] = $data['image']->store(
-                'banners',
-                'public'
-            );
+            $data['image'] = $this->uploadImage($data['image']);
         }
 
         return $this->repository->create($data);
@@ -56,38 +64,24 @@ class BannerService
     {
         $banner = $this->repository->findById($id);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Upload Image Baru
-        |--------------------------------------------------------------------------
-        */
+        if (!$banner) {
+            throw new \Exception('Banner tidak ditemukan.');
+        }
 
+        /**
+         * Jika upload image baru
+         */
         if (
             isset($data['image']) &&
             $data['image'] instanceof UploadedFile
         ) {
-            /*
-            | Hapus image lama
-            */
-            if (
-                !empty($banner->image) &&
-                Storage::disk('public')->exists($banner->image)
-            ) {
-                Storage::disk('public')->delete($banner->image);
-            }
+            // Hapus image lama
+            $this->deleteImage($banner->image);
 
-            /*
-            | Simpan image baru
-            */
-            $data['image'] = $data['image']->store(
-                'banners',
-                'public'
-            );
+            // Upload image baru
+            $data['image'] = $this->uploadImage($data['image']);
         } else {
-            /*
-            | Jika tidak upload image baru,
-            | jangan ubah image yang lama.
-            */
+            // Pertahankan image lama
             unset($data['image']);
         }
 
@@ -104,25 +98,72 @@ class BannerService
     {
         $banner = $this->repository->findById($id);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Hapus Image
-        |--------------------------------------------------------------------------
-        */
+        if (!$banner) {
+            throw new \Exception('Banner tidak ditemukan.');
+        }
 
-        if (
-            !empty($banner->image) &&
-            Storage::disk('public')->exists($banner->image)
-        ) {
-            Storage::disk('public')->delete($banner->image);
+        // Hapus image
+        $this->deleteImage($banner->image);
+
+        // Hapus data banner
+        return $this->repository->delete($id);
+    }
+
+    /**
+     * Upload image ke public/banner.
+     */
+    protected function uploadImage(UploadedFile $file): string
+    {
+        $folder = public_path('banner');
+
+        // Buat folder jika belum ada
+        if (!File::exists($folder)) {
+            File::makeDirectory(
+                $folder,
+                0755,
+                true
+            );
         }
 
         /*
-        |--------------------------------------------------------------------------
-        | Hapus Data
-        |--------------------------------------------------------------------------
+        | Nama file dibuat unik agar tidak bentrok.
         */
+        $filename =
+            time() . '_' .
+            Str::random(10) . '.' .
+            $file->getClientOriginalExtension();
 
-        return $this->repository->delete($id);
+        /*
+        | Pindahkan file langsung ke:
+        | public/banner/
+        */
+        $file->move(
+            $folder,
+            $filename
+        );
+
+        /*
+        | Path yang disimpan ke database.
+        |
+        | Contoh:
+        | banner/1234567890_abc123.jpg
+        */
+        return 'banner/' . $filename;
+    }
+
+    /**
+     * Menghapus image dari public/banner.
+     */
+    protected function deleteImage(?string $path): void
+    {
+        if (empty($path)) {
+            return;
+        }
+
+        $filePath = public_path($path);
+
+        if (File::exists($filePath)) {
+            File::delete($filePath);
+        }
     }
 }

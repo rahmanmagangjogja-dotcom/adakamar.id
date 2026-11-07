@@ -5,167 +5,439 @@
             onclick="closeDetailPenginapanModal()"></div>
 
         <div
-            class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-800 sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
-            <div class="px-6 py-4 border-b border-[#FFD4D4] dark:border-gray-700">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-semibold text-[#E60000] dark:text-[#FF6B6B] flex items-center gap-2">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                        </svg>
-                        <span id="detailTitle">Detail Penginapan</span>
+            class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-gradient-to-br from-white via-[#F7F9FC] to-[#E6F4FF] rounded-xl shadow-2xl dark:from-gray-800 dark:via-gray-800 dark:to-gray-900 sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+
+            {{-- ===== HEADER MODAL — GRADIENT ===== --}}
+            <div class="relative overflow-hidden px-6 py-4 bg-gradient-to-r from-[#0194F3] via-[#0194F3] to-[#0064D2]">
+                {{-- Pattern dots subtle --}}
+                <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle, white 1.5px, transparent 1.5px); background-size: 20px 20px;"></div>
+                {{-- Blob dekoratif --}}
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl pointer-events-none"></div>
+
+                <div class="relative flex items-center justify-between">
+                    <h3 class="text-xl font-semibold text-white flex items-center gap-2">
+                        <i data-lucide="clipboard-list" class="w-6 h-6"></i>
+                        <span id="detailPenginapanTitle">Detail Penginapan</span>
                     </h3>
                     <button type="button" onclick="closeDetailPenginapanModal()"
-                        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
+                        class="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-all">
+                        <i data-lucide="x" class="w-5 h-5"></i>
                     </button>
                 </div>
             </div>
 
             <div class="px-6 py-4 max-h-[70vh] overflow-y-auto">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Kolom Kiri: Thumbnail & Galeri -->
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                                    <path fill-rule="evenodd"
-                                        d="M4 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm2 0v10h8V5H6z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                Thumbnail
-                            </label>
-                            <img id="detailThumbnail" src="#" alt="Thumbnail"
-                                class="w-full h-56 object-cover rounded-lg border-2 border-[#FFD4D4] dark:border-gray-600 bg-[#FFF5F5] dark:bg-gray-700">
+
+                <!-- Tab Navigation — GRADIENT ACTIVE + IKON -->
+                <div class="mb-6 rounded-xl bg-gradient-to-r from-white via-[#F7F9FC] to-[#E6F4FF] dark:from-gray-800 dark:via-gray-800 dark:to-gray-700 p-2 shadow-inner">
+                    <ul class="flex flex-wrap gap-1 text-sm font-medium text-center" id="detailPenginapanTab"
+                        role="tablist">
+                        <li role="presentation">
+                            <button
+                                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#0194F3] to-[#0064D2] text-white shadow-md shadow-[#0194F3]/30 transition-all duration-200"
+                                data-tab="detail-utama" type="button" onclick="switchDetailTab('detail-utama')">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                Informasi
+                            </button>
+                        </li>
+                        <li role="presentation">
+                            <button
+                                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-[#687176] dark:text-gray-400 hover:bg-white hover:text-[#0194F3] dark:hover:bg-gray-700 dark:hover:text-[#33ADFF] transition-all duration-200"
+                                data-tab="detail-kontak" type="button" onclick="switchDetailTab('detail-kontak')">
+                                <i data-lucide="phone" class="w-4 h-4"></i>
+                                Kontak & Sosmed
+                            </button>
+                        </li>
+                        <li role="presentation">
+                            <button
+                                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-[#687176] dark:text-gray-400 hover:bg-white hover:text-[#0194F3] dark:hover:bg-gray-700 dark:hover:text-[#33ADFF] transition-all duration-200"
+                                data-tab="detail-lokasi" type="button" onclick="switchDetailTab('detail-lokasi')">
+                                <i data-lucide="map-pin" class="w-4 h-4"></i>
+                                Lokasi
+                            </button>
+                        </li>
+                        <li role="presentation">
+                            <button
+                                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-[#687176] dark:text-gray-400 hover:bg-white hover:text-[#0194F3] dark:hover:bg-gray-700 dark:hover:text-[#33ADFF] transition-all duration-200"
+                                data-tab="detail-media" type="button" onclick="switchDetailTab('detail-media')">
+                                <i data-lucide="image" class="w-4 h-4"></i>
+                                Media
+                            </button>
+                        </li>
+                        <li role="presentation">
+                            <button
+                                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-[#687176] dark:text-gray-400 hover:bg-white hover:text-[#0194F3] dark:hover:bg-gray-700 dark:hover:text-[#33ADFF] transition-all duration-200"
+                                data-tab="detail-fasilitas" type="button" onclick="switchDetailTab('detail-fasilitas')">
+                                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                Fasilitas
+                            </button>
+                        </li>
+                        <li role="presentation">
+                            <button
+                                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-[#687176] dark:text-gray-400 hover:bg-white hover:text-[#0194F3] dark:hover:bg-gray-700 dark:hover:text-[#33ADFF] transition-all duration-200"
+                                data-tab="detail-seo" type="button" onclick="switchDetailTab('detail-seo')">
+                                <i data-lucide="search" class="w-4 h-4"></i>
+                                SEO
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="space-y-6">
+
+                    {{-- ============ TAB 1: INFORMASI ============ --}}
+                    <div id="detail-utama" class="detail-tab-content">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {{-- Thumbnail --}}
+                            <div>
+                                <label class="block text-sm font-medium text-[#0F294D] dark:text-gray-300 mb-2">
+                                    Thumbnail
+                                </label>
+                                <img id="detailThumbnail" src="#" alt="Thumbnail"
+                                    class="w-full h-56 object-cover rounded-lg border-2 border-[#B3E0FF] dark:border-gray-600 bg-gradient-to-br from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-700 dark:to-gray-700">
+                            </div>
+
+                            {{-- Informasi --}}
+                            <div class="space-y-3">
+                                <div class="bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-700 dark:to-gray-700/50 p-3 rounded-lg border border-[#B3E0FF]/50 dark:border-gray-600/50">
+                                    <label
+                                        class="block text-xs font-medium text-[#687176] dark:text-gray-400 uppercase tracking-wider">Nama
+                                        Penginapan</label>
+                                    <p class="text-[#0F294D] dark:text-white font-medium text-lg" id="detailTitle">-</p>
+                                </div>
+
+                                <div class="bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-700 dark:to-gray-700/50 p-3 rounded-lg border border-[#B3E0FF]/50 dark:border-gray-600/50">
+                                    <label
+                                        class="block text-xs font-medium text-[#687176] dark:text-gray-400 uppercase tracking-wider">Kategori</label>
+                                    <p class="text-[#0F294D] dark:text-white font-medium" id="detailCategory">-</p>
+                                </div>
+
+                                <div class="bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-700 dark:to-gray-700/50 p-3 rounded-lg border border-[#B3E0FF]/50 dark:border-gray-600/50">
+                                    <label
+                                        class="block text-xs font-medium text-[#687176] dark:text-gray-400 uppercase tracking-wider">Status</label>
+                                    <p id="detailStatus"></p>
+                                </div>
+
+                                <div class="bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-700 dark:to-gray-700/50 p-3 rounded-lg border border-[#B3E0FF]/50 dark:border-gray-600/50">
+                                    <label
+                                        class="block text-xs font-medium text-[#687176] dark:text-gray-400 uppercase tracking-wider">Alamat</label>
+                                    <p class="text-[#0F294D] dark:text-white text-sm" id="detailAddress">-</p>
+                                </div>
+
+                                <div class="bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-700 dark:to-gray-700/50 p-3 rounded-lg border border-[#B3E0FF]/50 dark:border-gray-600/50">
+                                    <label
+                                        class="block text-xs font-medium text-[#687176] dark:text-gray-400 uppercase tracking-wider">Harga
+                                        / Malam</label>
+                                    <p class="text-[#0194F3] dark:text-[#33ADFF] font-bold text-lg" id="detailPrice">-
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                Galeri Foto
-                            </label>
-                            <div id="detailGallery" class="grid grid-cols-2 gap-2"></div>
+                        {{-- Detail Kamar --}}
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
+                            <div class="bg-gradient-to-br from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-700 dark:to-gray-700/50 p-3 rounded-lg text-center border border-[#B3E0FF]/50 dark:border-gray-600/50">
+                                <p class="text-xs text-[#687176] dark:text-gray-400 uppercase mb-1">Kapasitas</p>
+                                <p class="text-sm font-bold text-[#0F294D] dark:text-white" id="detailCapacity">-</p>
+                            </div>
+                            <div class="bg-gradient-to-br from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-700 dark:to-gray-700/50 p-3 rounded-lg text-center border border-[#B3E0FF]/50 dark:border-gray-600/50">
+                                <p class="text-xs text-[#687176] dark:text-gray-400 uppercase mb-1">Kamar</p>
+                                <p class="text-sm font-bold text-[#0F294D] dark:text-white" id="detailBedroom">-</p>
+                            </div>
+                            <div class="bg-gradient-to-br from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-700 dark:to-gray-700/50 p-3 rounded-lg text-center border border-[#B3E0FF]/50 dark:border-gray-600/50">
+                                <p class="text-xs text-[#687176] dark:text-gray-400 uppercase mb-1">K. Mandi</p>
+                                <p class="text-sm font-bold text-[#0F294D] dark:text-white" id="detailBathroom">-</p>
+                            </div>
+                            <div class="bg-gradient-to-br from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-700 dark:to-gray-700/50 p-3 rounded-lg text-center border border-[#B3E0FF]/50 dark:border-gray-600/50">
+                                <p class="text-xs text-[#687176] dark:text-gray-400 uppercase mb-1">Ukuran</p>
+                                <p class="text-sm font-bold text-[#0F294D] dark:text-white" id="detailSize">-</p>
+                            </div>
+                        </div>
+
+                        {{-- Deskripsi --}}
+                        <div class="mt-6 bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-700 dark:to-gray-700/50 p-4 rounded-lg border border-[#B3E0FF]/50 dark:border-gray-600/50">
+                            <label
+                                class="block text-xs font-medium text-[#687176] dark:text-gray-400 uppercase tracking-wider mb-2">Deskripsi</label>
+                            <p class="text-[#0F294D] dark:text-white text-sm whitespace-pre-line" id="detailDescription">
+                                -</p>
                         </div>
                     </div>
 
-                    <!-- Kolom Kanan: Informasi -->
-                    <div class="space-y-3">
-                        <div class="bg-[#FFF5F5] dark:bg-gray-700/50 p-3 rounded-lg">
-                            <label
-                                class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Kategori</label>
-                            <p class="text-gray-900 dark:text-white font-medium" id="detailCategory">-</p>
-                        </div>
+                    {{-- ============ TAB 2: KONTAK & SOSMED ============ --}}
+                    <div id="detail-kontak" class="detail-tab-content hidden">
+                        <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                            <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                            Kontak & Sosial Media
+                        </h4>
 
-                        <div class="bg-[#FFF5F5] dark:bg-gray-700/50 p-3 rounded-lg">
-                            <label
-                                class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Harga
-                                per Malam</label>
-                            <p class="text-gray-900 dark:text-white font-bold text-[#E60000] text-lg" id="detailPrice">-
-                            </p>
-                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                        <div class="bg-[#FFF5F5] dark:bg-gray-700/50 p-3 rounded-lg">
-                            <label
-                                class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Alamat</label>
-                            <p class="text-gray-900 dark:text-white" id="detailAddress">-</p>
-                        </div>
+                            {{-- Kontak --}}
+                            <div class="sm:col-span-2">
+                                <h5 class="text-sm font-semibold text-[#0F294D] dark:text-gray-300 mb-3">Kontak</h5>
+                                <div class="space-y-2">
 
-                        <div class="grid grid-cols-2 gap-2">
-                            <div class="bg-[#FFF5F5] dark:bg-gray-700/50 p-3 rounded-lg">
-                                <label
-                                    class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Kapasitas</label>
-                                <p class="text-gray-900 dark:text-white font-medium" id="detailCapacity">-</p>
+                                    {{-- Telepon --}}
+                                    <div id="detailPhoneContainer"
+                                        class="flex items-center gap-2 p-3 bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-700 dark:to-gray-700/50 rounded-lg border border-[#B3E0FF]/50 dark:border-gray-600/50">
+                                        <i data-lucide="phone" class="w-5 h-5 text-[#0194F3] flex-shrink-0"></i>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-xs text-[#687176] dark:text-gray-400">No. Telepon</p>
+                                            <p class="text-sm font-medium text-[#0F294D] dark:text-white truncate"
+                                                id="detailPhone">-</p>
+                                        </div>
+                                    </div>
+
+                                    {{-- WhatsApp --}}
+                                    <div id="detailWhatsappContainer"
+                                        class="flex items-center gap-2 p-3 bg-gradient-to-r from-[#E8F8EE] to-[#F0FDF4] dark:from-[#25D366]/10 dark:to-gray-700/50 rounded-lg border border-[#25D366]/30 dark:border-[#25D366]/20">
+                                        <i data-lucide="message-circle" class="w-5 h-5 text-[#25D366] flex-shrink-0"></i>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-xs text-[#128C7E] dark:text-gray-400">No. WhatsApp</p>
+                                            <p class="text-sm font-medium text-[#0F294D] dark:text-white truncate"
+                                                id="detailWhatsapp">-</p>
+                                        </div>
+                                    </div>
+
+                                    {{-- Email --}}
+                                    <div id="detailEmailContainer"
+                                        class="flex items-center gap-2 p-3 bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-700 dark:to-gray-700/50 rounded-lg border border-[#B3E0FF]/50 dark:border-gray-600/50">
+                                        <i data-lucide="mail" class="w-5 h-5 text-[#0194F3] flex-shrink-0"></i>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-xs text-[#687176] dark:text-gray-400">Email</p>
+                                            <p class="text-sm font-medium text-[#0F294D] dark:text-white truncate"
+                                                id="detailEmail">-</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="bg-[#FFF5F5] dark:bg-gray-700/50 p-3 rounded-lg">
-                                <label
-                                    class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Kamar
-                                    Tidur</label>
-                                <p class="text-gray-900 dark:text-white font-medium" id="detailBedroom">-</p>
+
+                            {{-- Sosial Media --}}
+                            <div class="sm:col-span-2">
+                                <h5 class="text-sm font-semibold text-[#0F294D] dark:text-gray-300 mb-3">Sosial Media</h5>
+                                <div id="detailSosmedContainer" class="flex flex-wrap gap-3">
+                                    {{-- Facebook --}}
+                                    <a id="detailFacebookBtn" href="#" target="_blank" rel="noopener noreferrer"
+                                        class="hidden items-center gap-2 px-4 py-2 bg-[#1877F2] text-white rounded-lg hover:bg-[#0A66C2] transition-colors">
+                                        <i data-lucide="facebook" class="w-5 h-5"></i>
+                                        <span class="text-sm font-medium">Facebook</span>
+                                    </a>
+
+                                    {{-- Instagram --}}
+                                    <a id="detailInstagramBtn" href="#" target="_blank" rel="noopener noreferrer"
+                                        class="hidden items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#E1306C] to-[#C13584] text-white rounded-lg hover:opacity-90 transition-opacity">
+                                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                                        <span class="text-sm font-medium">Instagram</span>
+                                    </a>
+
+                                    {{-- YouTube --}}
+                                    <a id="detailYoutubeBtn" href="#" target="_blank" rel="noopener noreferrer"
+                                        class="hidden items-center gap-2 px-4 py-2 bg-[#FF0000] text-white rounded-lg hover:bg-[#CC0000] transition-colors">
+                                        <i data-lucide="youtube" class="w-5 h-5"></i>
+                                        <span class="text-sm font-medium">YouTube</span>
+                                    </a>
+
+                                    {{-- X (Twitter) --}}
+                                    <a id="detailXBtn" href="#" target="_blank" rel="noopener noreferrer"
+                                        class="hidden items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
+                                        <i data-lucide="twitter" class="w-5 h-5"></i>
+                                        <span class="text-sm font-medium">X</span>
+                                    </a>
+
+                                    {{-- TikTok --}}
+                                    <a id="detailTiktokBtn" href="#" target="_blank" rel="noopener noreferrer"
+                                        class="hidden items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
+                                        <i data-lucide="music-2" class="w-5 h-5"></i>
+                                        <span class="text-sm font-medium">TikTok</span>
+                                    </a>
+                                </div>
+                                <p id="detailNoSosmed" class="hidden text-sm text-[#687176] dark:text-gray-400 italic">
+                                    Tidak ada sosial media yang tersedia.
+                                </p>
                             </div>
-                            <div class="bg-[#FFF5F5] dark:bg-gray-700/50 p-3 rounded-lg">
-                                <label
-                                    class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Kamar
-                                    Mandi</label>
-                                <p class="text-gray-900 dark:text-white font-medium" id="detailBathroom">-</p>
+
+                        </div>
+                    </div>
+
+                    {{-- ============ TAB 3: LOKASI ============ --}}
+                    <div id="detail-lokasi" class="detail-tab-content hidden">
+                        <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                            <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                            Lokasi
+                        </h4>
+
+                        <div class="space-y-3 mb-4">
+                            <div class="bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-700 dark:to-gray-700/50 p-3 rounded-lg border border-[#B3E0FF]/50 dark:border-gray-600/50">
+                                <p class="text-xs text-[#687176] dark:text-gray-400 uppercase mb-1">Alamat Lengkap</p>
+                                <p class="text-sm text-[#0F294D] dark:text-white" id="detailAddressFull">-</p>
                             </div>
-                            <div class="bg-[#FFF5F5] dark:bg-gray-700/50 p-3 rounded-lg">
-                                <label
-                                    class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Ukuran</label>
-                                <p class="text-gray-900 dark:text-white font-medium" id="detailSize">-</p>
+
+                            <div id="detailGoogleMapsLinkContainer" class="hidden">
+                                <a id="detailGoogleMapsLink" href="#" target="_blank" rel="noopener noreferrer"
+                                    class="inline-flex items-center gap-2 text-sm text-[#0194F3] hover:text-[#0064D2] dark:text-[#33ADFF] dark:hover:text-[#0194F3] font-medium">
+                                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                                    Buka di Google Maps
+                                </a>
                             </div>
                         </div>
 
-                        <div class="bg-[#FFF5F5] dark:bg-gray-700/50 p-3 rounded-lg">
-                            <label
-                                class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</label>
-                            <p id="detailStatus"></p>
+                        <div id="detailMapContainer"
+                            class="hidden rounded-xl overflow-hidden border border-[#B3E0FF] dark:border-gray-700">
+                            <div id="detailMapEmbed"></div>
                         </div>
 
-                        <div class="bg-[#FFF5F5] dark:bg-gray-700/50 p-3 rounded-lg">
-                            <label
-                                class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Deskripsi</label>
-                            <p class="text-gray-900 dark:text-white text-sm leading-relaxed" id="detailDescription">-
-                            </p>
-                        </div>
+                        <p id="detailNoMap"
+                            class="hidden text-sm text-[#687176] dark:text-gray-400 italic text-center py-8">
+                            Tidak ada peta lokasi yang tersedia.
+                        </p>
+                    </div>
 
-                        <div class="bg-[#FFF5F5] dark:bg-gray-700/50 p-3 rounded-lg">
-                            <label
-                                class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Fasilitas</label>
-                            <div id="detailFacilities" class="flex flex-wrap gap-1.5"></div>
+                    {{-- ============ TAB 4: MEDIA ============ --}}
+                    <div id="detail-media" class="detail-tab-content hidden">
+                        <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                            <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                            Galeri Foto
+                        </h4>
+                        <div id="detailGalleryContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                         </div>
+                        <p id="detailNoGallery"
+                            class="hidden text-sm text-[#687176] dark:text-gray-400 italic text-center py-8">
+                            Tidak ada foto galeri.
+                        </p>
+                    </div>
 
-                        <div class="bg-[#FFF5F5] dark:bg-gray-700/50 p-3 rounded-lg">
-                            <label
-                                class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Aturan</label>
-                            <div id="detailRules" class="flex flex-wrap gap-1.5"></div>
+                    {{-- ============ TAB 5: FASILITAS & ATURAN ============ --}}
+                    <div id="detail-fasilitas" class="detail-tab-content hidden">
+                        <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                            <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                            Fasilitas
+                        </h4>
+                        <div id="detailFacilitiesContainer" class="flex flex-wrap gap-2 mb-6">
+                        </div>
+                        <p id="detailNoFacilities" class="hidden text-sm text-[#687176] dark:text-gray-400 italic mb-6">
+                            Tidak ada fasilitas.
+                        </p>
+
+                        <h4
+                            class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 pt-4 border-t border-[#B3E0FF] dark:border-gray-700 flex items-center gap-2">
+                            <span class="w-1 h-5 bg-gradient-to-b from-red-500 to-red-700 rounded-full"></span>
+                            Aturan Penginapan
+                        </h4>
+                        <div id="detailRulesContainer" class="flex flex-wrap gap-2">
+                        </div>
+                        <p id="detailNoRules" class="hidden text-sm text-[#687176] dark:text-gray-400 italic">
+                            Tidak ada aturan.
+                        </p>
+                    </div>
+
+                    {{-- ============ TAB 6: SEO ============ --}}
+                    <div id="detail-seo" class="detail-tab-content hidden">
+                        <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                            <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                            SEO (Search Engine Optimization)
+                        </h4>
+
+                        <div class="space-y-3">
+                            <div class="bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-700 dark:to-gray-700/50 p-4 rounded-lg border border-[#B3E0FF]/50 dark:border-gray-600/50">
+                                <p class="text-xs text-[#687176] dark:text-gray-400 uppercase mb-1">Meta Title</p>
+                                <p class="text-sm text-[#0F294D] dark:text-white" id="detailMetaTitle">-</p>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-700 dark:to-gray-700/50 p-4 rounded-lg border border-[#B3E0FF]/50 dark:border-gray-600/50">
+                                <p class="text-xs text-[#687176] dark:text-gray-400 uppercase mb-1">Meta Description</p>
+                                <p class="text-sm text-[#0F294D] dark:text-white" id="detailMetaDescription">-</p>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-700 dark:to-gray-700/50 p-4 rounded-lg border border-[#B3E0FF]/50 dark:border-gray-600/50">
+                                <p class="text-xs text-[#687176] dark:text-gray-400 uppercase mb-1">Slug</p>
+                                <p class="text-sm font-mono text-[#0F294D] dark:text-white break-all" id="detailSlug">-
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="px-6 py-4 border-t border-[#FFD4D4] dark:border-gray-700">
-                <div class="flex justify-end">
-                    <button type="button" onclick="closeDetailPenginapanModal()"
-                        class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 hover:text-[#E60000] focus:ring-4 focus:ring-[#FFD4D4] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 transition-colors">
-                        <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                        Tutup
-                    </button>
-                </div>
+            {{-- ===== FOOTER — GRADIENT ===== --}}
+            <div class="px-6 py-4 bg-gradient-to-r from-white via-[#F7F9FC] to-[#E6F4FF] dark:from-gray-800 dark:via-gray-800 dark:to-gray-900 border-t border-[#B3E0FF] dark:border-gray-700 flex justify-end">
+                <button type="button" onclick="closeDetailPenginapanModal()"
+                    class="inline-flex items-center gap-2 text-[#0194F3] bg-white border-2 border-[#0194F3] hover:bg-[#0194F3] hover:text-white focus:ring-4 focus:ring-[#B3E0FF] font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-[#33ADFF] dark:border-[#33ADFF] dark:hover:bg-[#33ADFF] dark:hover:text-white transition-all duration-200">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                    Tutup
+                </button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    // ========== HELPER ==========
+    function renderLucideSafeDetail() {
+        if (window.renderLucide) {
+            window.renderLucide();
+        } else if (window.lucide) {
+            lucide.createIcons();
+        }
+    }
+
+    // ========== TAB FUNCTION — GRADIENT ACTIVE ==========
+    function switchDetailTab(tabId) {
+        document.querySelectorAll('.detail-tab-content').forEach(el => el.classList.add('hidden'));
+        document.getElementById(tabId)?.classList.remove('hidden');
+
+        document.querySelectorAll('#detailPenginapanTab button').forEach(btn => {
+            btn.classList.remove(
+                'bg-gradient-to-r', 'from-[#0194F3]', 'to-[#0064D2]',
+                'text-white', 'shadow-md', 'shadow-[#0194F3]/30'
+            );
+            btn.classList.add(
+                'text-[#687176]', 'dark:text-gray-400',
+                'hover:bg-white', 'hover:text-[#0194F3]',
+                'dark:hover:bg-gray-700', 'dark:hover:text-[#33ADFF]'
+            );
+        });
+
+        const activeBtn = document.querySelector(`#detailPenginapanTab button[data-tab="${tabId}"]`);
+        if (activeBtn) {
+            activeBtn.classList.remove(
+                'text-[#687176]', 'dark:text-gray-400',
+                'hover:bg-white', 'hover:text-[#0194F3]',
+                'dark:hover:bg-gray-700', 'dark:hover:text-[#33ADFF]'
+            );
+            activeBtn.classList.add(
+                'bg-gradient-to-r', 'from-[#0194F3]', 'to-[#0064D2]',
+                'text-white', 'shadow-md', 'shadow-[#0194F3]/30'
+            );
+        }
+
+        // Re-render Lucide untuk icon di tab yang baru aktif
+        renderLucideSafeDetail();
+    }
+
+    // ========== OPEN/CLOSE MODAL ==========
     function openDetailPenginapanModal(id) {
-        const url = '{{ route('accommodations.show', '') }}/' + id;
+        const url = '{{ route('accommodations.show', ':id') }}'.replace(':id', id);
 
         document.getElementById('detailPenginapanModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
-        document.getElementById('detailTitle').textContent = 'Loading...';
+        switchDetailTab('detail-utama');
+
+        document.getElementById('detailPenginapanTitle').textContent = 'Memuat data...';
 
         const thumbnailImg = document.getElementById('detailThumbnail');
         thumbnailImg.src = '{{ asset('landingpage/home.png') }}';
-        thumbnailImg.classList.add('opacity-50');
+
+        // Render Lucide awal
+        renderLucideSafeDetail();
 
         fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
             .then(response => {
                 if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
                 return response.json();
@@ -173,156 +445,219 @@
             .then(data => {
                 if (!data.success) throw new Error('Data penginapan tidak ditemukan.');
 
-                const accommodation = data.data;
+                const acc = data.data;
+                console.log('Detail accommodation:', acc);
 
-                console.log('Data accommodation:', accommodation); // Untuk debugging
+                // ========== HEADER ==========
+                document.getElementById('detailPenginapanTitle').textContent = acc.title || 'Detail Penginapan';
 
-                // Mapping untuk kategori, fasilitas, aturan
-                const categoryMap = @json($categories->pluck('name', 'id'));
-                const facilityMap = @json($facilities->pluck('name', 'id'));
-                const ruleMap = @json($rules->pluck('name', 'id'));
-
-                // Set judul
-                document.getElementById('detailTitle').textContent = accommodation.title || 'Detail Penginapan';
-
-                // Set informasi
-                document.getElementById('detailCategory').textContent = categoryMap[accommodation.category_id] || '-';
-                document.getElementById('detailPrice').textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(accommodation.price || 0);
-                document.getElementById('detailAddress').textContent = accommodation.address || '-';
-                document.getElementById('detailCapacity').textContent = accommodation.capacity ? accommodation.capacity + ' Orang' : '-';
-                document.getElementById('detailBedroom').textContent = accommodation.bedroom ? accommodation.bedroom + ' Kamar' : '-';
-                document.getElementById('detailBathroom').textContent = accommodation.bathroom ? accommodation.bathroom + ' Kamar' : '-';
-                document.getElementById('detailSize').textContent = accommodation.size ? accommodation.size + ' m²' : '-';
-                document.getElementById('detailDescription').textContent = accommodation.description || '-';
-
-                // Status
-                const statusColors = {
-                    'Available': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-                    'Full': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
-                    'Maintenance': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
-                };
-                const statusText = accommodation.status || '-';
-                document.getElementById('detailStatus').innerHTML = `
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColors[statusText] || 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'}">
-                    ${statusText}
-                </span>
-            `;
-
-                // Thumbnail
-                thumbnailImg.classList.remove('opacity-50');
-                if (accommodation.thumbnail) {
-                    let thumbnailPath = accommodation.thumbnail.replace(/^public\//, '');
-                    thumbnailImg.src = '{{ asset('') }}' + thumbnailPath;
+                // ========== TAB 1: INFORMASI ==========
+                if (acc.thumbnail) {
+                    thumbnailImg.src = '{{ asset('') }}' + acc.thumbnail.replace(/^public\//, '');
                 } else {
                     thumbnailImg.src = '{{ asset('landingpage/home.png') }}';
                 }
 
-                // ========== GALLERY ==========
-                const galleryContainer = document.getElementById('detailGallery');
+                document.getElementById('detailTitle').textContent = acc.title || '-';
+                document.getElementById('detailCategory').textContent = acc.category?.name || '-';
+                document.getElementById('detailAddress').textContent = acc.address || '-';
+                document.getElementById('detailPrice').textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(acc.price || 0) + ' / malam';
+                document.getElementById('detailCapacity').textContent = (acc.capacity || 0) + ' Orang';
+                document.getElementById('detailBedroom').textContent = acc.bedroom || 0;
+                document.getElementById('detailBathroom').textContent = acc.bathroom || 0;
+                document.getElementById('detailSize').textContent = acc.size || '-';
+                document.getElementById('detailDescription').textContent = acc.description || '-';
+                document.getElementById('detailAddressFull').textContent = acc.address || '-';
+
+                // Status Badge — palet biru
+                const statusColors = {
+                    'Available': 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-[#0194F3] to-[#0064D2] text-white shadow-sm',
+                    'Full': 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#0064D2]/20 text-[#0064D2] dark:bg-[#0064D2]/30 dark:text-[#33ADFF]',
+                    'Maintenance': 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-[#E6F4FF] to-[#B3E0FF] text-[#0194F3] dark:from-[#33ADFF]/20 dark:to-[#33ADFF]/10 dark:text-[#B3E0FF]'
+                };
+                const statusClass = statusColors[acc.status] ||
+                    'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#E6F4FF] text-[#0194F3] dark:bg-gray-700 dark:text-gray-300';
+                document.getElementById('detailStatus').innerHTML =
+                    `<span class="${statusClass}">${acc.status || '-'}</span>`;
+
+                // ========== TAB 2: KONTAK & SOSMED ==========
+                document.getElementById('detailPhone').textContent = acc.phone || '-';
+                document.getElementById('detailWhatsapp').textContent = acc.whatsapp || '-';
+                document.getElementById('detailEmail').textContent = acc.email || '-';
+
+                document.getElementById('detailPhoneContainer').style.display = acc.phone ? 'flex' : 'none';
+                document.getElementById('detailWhatsappContainer').style.display = acc.whatsapp ? 'flex' : 'none';
+                document.getElementById('detailEmailContainer').style.display = acc.email ? 'flex' : 'none';
+
+                const sosmedMap = [{
+                        key: 'facebook',
+                        id: 'detailFacebookBtn'
+                    },
+                    {
+                        key: 'instagram',
+                        id: 'detailInstagramBtn'
+                    },
+                    {
+                        key: 'youtube',
+                        id: 'detailYoutubeBtn'
+                    },
+                    {
+                        key: 'x',
+                        id: 'detailXBtn'
+                    },
+                    {
+                        key: 'tiktok',
+                        id: 'detailTiktokBtn'
+                    }
+                ];
+
+                let hasSosmed = false;
+
+                sosmedMap.forEach(({
+                    key,
+                    id
+                }) => {
+                    const el = document.getElementById(id);
+                    const value = acc[key];
+                    if (value && value.trim() !== '') {
+                        el.href = value;
+                        el.classList.remove('hidden');
+                        el.classList.add('inline-flex');
+                        hasSosmed = true;
+                    } else {
+                        el.classList.add('hidden');
+                        el.classList.remove('inline-flex');
+                    }
+                });
+
+                document.getElementById('detailNoSosmed').classList.toggle('hidden', hasSosmed);
+
+                // ========== TAB 3: LOKASI ==========
+                const mapContainer = document.getElementById('detailMapContainer');
+                const mapEmbed = document.getElementById('detailMapEmbed');
+                const noMap = document.getElementById('detailNoMap');
+                const mapsLinkContainer = document.getElementById('detailGoogleMapsLinkContainer');
+                const mapsLink = document.getElementById('detailGoogleMapsLink');
+
+                if (acc.maps_embed && acc.maps_embed.trim() !== '') {
+                    let embed = acc.maps_embed.trim();
+
+                    if (embed.startsWith('<iframe')) {
+                        embed = embed.replace(/\s*width="[^"]*"/i, '');
+                        embed = embed.replace(/\s*height="[^"]*"/i, '');
+                        embed = embed.replace(/\s*style="[^"]*"/i, '');
+                        embed = embed.replace(/<iframe/i, '<iframe class="w-full h-72 sm:h-96 border-0 block"');
+                    } else if (embed.startsWith('http') || embed.startsWith('//')) {
+                        embed =
+                            `<iframe src="${embed}" class="w-full h-72 sm:h-96 border-0 block" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+                    } else {
+                        embed =
+                            `<iframe src="${embed}" class="w-full h-72 sm:h-96 border-0 block" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+                    }
+
+                    mapEmbed.innerHTML = embed;
+                    mapContainer.classList.remove('hidden');
+                    noMap.classList.add('hidden');
+                } else {
+                    mapContainer.classList.add('hidden');
+                    noMap.classList.remove('hidden');
+                }
+
+                if (acc.google_maps_url && acc.google_maps_url.trim() !== '') {
+                    mapsLink.href = acc.google_maps_url;
+                    mapsLinkContainer.classList.remove('hidden');
+                } else {
+                    mapsLinkContainer.classList.add('hidden');
+                }
+
+                // ========== TAB 4: MEDIA / GALLERY ==========
+                const galleryContainer = document.getElementById('detailGalleryContainer');
+                const noGallery = document.getElementById('detailNoGallery');
                 galleryContainer.innerHTML = '';
 
-                // Cek apakah ada gallery (bisa dari relasi gallery atau images)
-                let galleryData = [];
-                if (accommodation.gallery && accommodation.gallery.length > 0) {
-                    galleryData = accommodation.gallery;
-                } else if (accommodation.images && accommodation.images.length > 0) {
-                    galleryData = accommodation.images;
-                }
-
-                if (galleryData.length > 0) {
-                    galleryData.forEach(image => {
-                        let imagePath = image.image || image;
-                        imagePath = imagePath.replace(/^public\//, '');
-
-                        const div = document.createElement('div');
-                        div.className = 'relative group overflow-hidden rounded-lg';
-                        div.innerHTML = `
-                        <img src="{{ asset('') }}${imagePath}" 
-                             alt="Galeri" 
-                             class="w-full h-24 object-cover rounded-lg border border-[#FFD4D4] dark:border-gray-600 hover:scale-105 transition-transform duration-300 cursor-pointer"
-                             onerror="this.src='{{ asset('landingpage/home.png') }}'"
-                             onclick="window.open(this.src, '_blank')">
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-lg">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5"></path>
-                            </svg>
-                        </div>
-                    `;
-                        galleryContainer.appendChild(div);
+                if (acc.images && acc.images.length > 0) {
+                    acc.images.forEach(img => {
+                        const imageUrl = img.image ? '{{ asset('') }}' + img.image.replace(/^public\//,
+                            '') : '';
+                        if (imageUrl) {
+                            const div = document.createElement('div');
+                            div.className = 'relative group overflow-hidden rounded-lg';
+                            div.innerHTML = `
+                            <img src="${imageUrl}" alt="Galeri"
+                                class="w-full h-32 object-cover rounded-lg border-2 border-[#B3E0FF] dark:border-gray-600 hover:scale-105 transition-transform duration-300">
+                        `;
+                            galleryContainer.appendChild(div);
+                        }
                     });
+                    noGallery.classList.add('hidden');
                 } else {
-                    galleryContainer.innerHTML = `
-                    <div class="col-span-full text-center py-6 text-gray-400 dark:text-gray-500 border-2 border-dashed border-[#FFD4D4] dark:border-gray-600 rounded-lg">
-                        <svg class="w-10 h-10 mx-auto mb-2 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                        <p class="text-sm">Tidak ada foto galeri</p>
-                    </div>
-                `;
+                    noGallery.classList.remove('hidden');
                 }
 
-                // ========== FACILITIES ==========
-                const facilitiesContainer = document.getElementById('detailFacilities');
+                // ========== TAB 5: FASILITAS & ATURAN ==========
+                const facilitiesContainer = document.getElementById('detailFacilitiesContainer');
+                const noFacilities = document.getElementById('detailNoFacilities');
                 facilitiesContainer.innerHTML = '';
 
-                // Cek apakah ada facilities (bisa dari facility_ids atau facilities relasi)
-                let facilityIds = [];
-                if (accommodation.facility_ids && accommodation.facility_ids.length > 0) {
-                    facilityIds = accommodation.facility_ids;
-                } else if (accommodation.facilities && accommodation.facilities.length > 0) {
-                    facilityIds = accommodation.facilities.map(f => f.id);
-                }
-
-                if (facilityIds.length > 0) {
-                    facilityIds.forEach(id => {
+                if (acc.facilities && acc.facilities.length > 0) {
+                    acc.facilities.forEach(f => {
                         const span = document.createElement('span');
-                        span.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
-                        span.textContent = facilityMap[id] || 'Fasilitas';
+                        span.className =
+                            'inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] dark:from-[#0194F3]/20 dark:to-[#0194F3]/10 text-[#0194F3] dark:text-[#33ADFF] rounded-full text-xs font-medium border border-[#B3E0FF] dark:border-[#33ADFF]/30';
+
+                        // Icon Lucide dari fasilitas, fallback ke "check"
+                        const iconName = f.icon && /^[a-z0-9-]+$/i.test(f.icon) ? f.icon : 'check';
+
+                        span.innerHTML = `
+                        <i data-lucide="${iconName}" class="w-3.5 h-3.5"></i>
+                        ${f.name}
+                    `;
                         facilitiesContainer.appendChild(span);
                     });
+                    noFacilities.classList.add('hidden');
                 } else {
-                    facilitiesContainer.innerHTML = `<span class="text-sm text-gray-400 dark:text-gray-500">Tidak ada fasilitas</span>`;
+                    noFacilities.classList.remove('hidden');
                 }
 
-                // ========== RULES ==========
-                const rulesContainer = document.getElementById('detailRules');
+                const rulesContainer = document.getElementById('detailRulesContainer');
+                const noRules = document.getElementById('detailNoRules');
                 rulesContainer.innerHTML = '';
 
-                // Cek apakah ada rules (bisa dari rule_ids atau rules relasi)
-                let ruleIds = [];
-                if (accommodation.rule_ids && accommodation.rule_ids.length > 0) {
-                    ruleIds = accommodation.rule_ids;
-                } else if (accommodation.rules && accommodation.rules.length > 0) {
-                    ruleIds = accommodation.rules.map(r => r.id);
-                }
-
-                if (ruleIds.length > 0) {
-                    ruleIds.forEach(id => {
+                // ATURAN — pakai warna MERAH (warning style)
+                if (acc.rules && acc.rules.length > 0) {
+                    acc.rules.forEach(r => {
                         const span = document.createElement('span');
-                        span.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
-                        span.textContent = ruleMap[id] || 'Aturan';
+                        span.className =
+                            'inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-full text-xs font-medium border border-red-200 dark:border-red-800/50';
+                        span.innerHTML = `
+                        <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i>
+                        ${r.name}
+                    `;
                         rulesContainer.appendChild(span);
                     });
+                    noRules.classList.add('hidden');
                 } else {
-                    rulesContainer.innerHTML = `<span class="text-sm text-gray-400 dark:text-gray-500">Tidak ada aturan</span>`;
+                    noRules.classList.remove('hidden');
                 }
+
+                // ========== TAB 6: SEO ==========
+                document.getElementById('detailMetaTitle').textContent = acc.meta_title || '-';
+                document.getElementById('detailMetaDescription').textContent = acc.meta_description || '-';
+                document.getElementById('detailSlug').textContent = acc.slug || '-';
+
+                // ========== RENDER LUCIDE SETELAH DATA TERISI ==========
+                renderLucideSafeDetail();
             })
             .catch(error => {
                 console.error('Error:', error);
-                document.getElementById('detailTitle').textContent = 'Error!';
-                thumbnailImg.classList.remove('opacity-50');
-
+                document.getElementById('detailPenginapanTitle').textContent = 'Error!';
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal!',
-                    text: 'Gagal mengambil data penginapan: ' + error.message,
+                    text: 'Gagal mengambil data: ' + error.message,
                     timer: 3000,
                     showConfirmButton: false
                 });
-
-                setTimeout(() => {
-                    closeDetailPenginapanModal();
-                }, 3000);
             });
     }
 
@@ -331,17 +666,20 @@
         document.body.style.overflow = 'auto';
     }
 
-    document.addEventListener('keydown', function (e) {
+    document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             const modal = document.getElementById('detailPenginapanModal');
-            if (modal && !modal.classList.contains('hidden')) {
-                closeDetailPenginapanModal();
-            }
+            if (modal && !modal.classList.contains('hidden')) closeDetailPenginapanModal();
         }
     });
 
-    document.querySelector('#detailPenginapanModal .fixed.inset-0')?.addEventListener('click', function (e) {
+    document.querySelector('#detailPenginapanModal .fixed.inset-0')?.addEventListener('click', function(e) {
         if (e.target === this) closeDetailPenginapanModal();
+    });
+
+    // Render Lucide saat halaman pertama load
+    document.addEventListener('DOMContentLoaded', function() {
+        renderLucideSafeDetail();
     });
 </script>
 
@@ -366,12 +704,12 @@
     }
 
     #detailPenginapanModal .max-h-\[70vh\]::-webkit-scrollbar-track {
-        background: #f1f1f1;
+        background: #E6F4FF;
         border-radius: 3px;
     }
 
     #detailPenginapanModal .max-h-\[70vh\]::-webkit-scrollbar-thumb {
-        background: #E60000;
+        background: linear-gradient(180deg, #0194F3, #0064D2);
         border-radius: 3px;
     }
 
@@ -380,35 +718,6 @@
     }
 
     .dark #detailPenginapanModal .max-h-\[70vh\]::-webkit-scrollbar-thumb {
-        background: #FF6B6B;
-    }
-
-    #detailGallery .group:hover img {
-        transform: scale(1.05);
-    }
-
-    #detailGallery .group .absolute {
-        border-radius: 0.5rem;
-    }
-
-    #detailStatus .inline-flex {
-        animation: fadeIn 0.3s ease-out;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: scale(0.9);
-        }
-
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-    #detailThumbnail.opacity-50 {
-        opacity: 0.5;
-        transition: opacity 0.3s ease;
+        background: linear-gradient(180deg, #33ADFF, #0194F3);
     }
 </style>

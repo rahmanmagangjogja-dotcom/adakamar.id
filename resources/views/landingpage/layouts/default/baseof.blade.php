@@ -3,6 +3,9 @@
 
 <head>
   @include('landingpage.layouts.partials.header')
+
+  {{-- ===== LUCIDE ICONS ===== --}}
+  <script src="https://unpkg.com/lucide@0.507.0/dist/umd/lucide.min.js"></script>
 </head>
 
 @php
@@ -61,6 +64,18 @@
 
   {{-- Script dari setiap halaman --}}
   @stack('scripts')
+
+  {{-- ===== INIT LUCIDE GLOBAL ===== --}}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.lucide) lucide.createIcons();
+    });
+
+    // Helper global — bisa dipanggil dari mana saja
+    window.renderLucide = function () {
+      if (window.lucide) lucide.createIcons();
+    };
+  </script>
 
 </body>
 

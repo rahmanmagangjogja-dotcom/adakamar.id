@@ -48,6 +48,11 @@ class FacilityController extends Controller
                 'max:255',
                 'unique:facilities,name',
             ],
+            'icon' => [
+                'required',
+                'string',
+                'max:100',
+            ],
             'description' => [
                 'nullable',
                 'string',
@@ -60,6 +65,9 @@ class FacilityController extends Controller
             'name.required' => 'Nama fasilitas wajib diisi.',
             'name.unique' => 'Nama fasilitas sudah digunakan.',
             'name.max' => 'Nama fasilitas maksimal 255 karakter.',
+            'icon.required' => 'Icon fasilitas wajib dipilih.',
+            'icon.string' => 'Format icon tidak valid.',
+            'icon.max' => 'Nama icon maksimal 100 karakter.',
         ]);
 
         $this->service->create($validated);
@@ -94,6 +102,11 @@ class FacilityController extends Controller
                 'max:255',
                 'unique:facilities,name,' . $facility->id,
             ],
+            'icon' => [
+                'required',
+                'string',
+                'max:100',
+            ],
             'description' => [
                 'nullable',
                 'string',
@@ -106,6 +119,9 @@ class FacilityController extends Controller
             'name.required' => 'Nama fasilitas wajib diisi.',
             'name.unique' => 'Nama fasilitas sudah digunakan.',
             'name.max' => 'Nama fasilitas maksimal 255 karakter.',
+            'icon.required' => 'Icon fasilitas wajib dipilih.',
+            'icon.string' => 'Format icon tidak valid.',
+            'icon.max' => 'Nama icon maksimal 100 karakter.',
         ]);
 
         $this->service->update($facility, $validated);

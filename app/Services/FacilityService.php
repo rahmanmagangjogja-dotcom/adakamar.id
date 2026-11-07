@@ -42,6 +42,7 @@ class FacilityService
         return DB::transaction(function () use ($data) {
             return $this->repository->create([
                 'name' => $data['name'],
+                'icon' => $data['icon'],
                 'description' => $data['description'] ?? null,
                 'is_active' => $data['is_active'] ?? true,
             ]);
@@ -56,6 +57,7 @@ class FacilityService
         return DB::transaction(function () use ($facility, $data) {
             return $this->repository->update($facility, [
                 'name' => $data['name'],
+                'icon' => $data['icon'],
                 'description' => $data['description'] ?? null,
                 'is_active' => $data['is_active'] ?? $facility->is_active,
             ]);

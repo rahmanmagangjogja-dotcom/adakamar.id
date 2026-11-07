@@ -5,11 +5,21 @@
             onclick="closeAddArticleModal()"></div>
 
         <div
-            class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-800 sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
-            <div class="px-6 py-4 border-b border-[#FFD4D4] dark:border-gray-700">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-semibold text-[#E60000] dark:text-[#FF6B6B]">
-                        <svg class="w-6 h-6 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
+            class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-gradient-to-br from-white via-[#F7F9FC] to-[#E6F4FF] rounded-xl shadow-2xl dark:from-gray-800 dark:via-gray-800 dark:to-gray-900 sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+
+            {{-- ===== HEADER MODAL — GRADIENT ===== --}}
+            <div class="relative overflow-hidden px-6 py-4 bg-gradient-to-r from-[#0194F3] via-[#0194F3] to-[#0064D2]">
+                {{-- Pattern dots subtle --}}
+                <div class="absolute inset-0 opacity-10 pointer-events-none"
+                    style="background-image: radial-gradient(circle, white 1.5px, transparent 1.5px); background-size: 20px 20px;">
+                </div>
+                {{-- Blob dekoratif --}}
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl pointer-events-none">
+                </div>
+
+                <div class="relative flex items-center justify-between">
+                    <h3 class="text-xl font-semibold text-white flex items-center gap-2">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                             <path
                                 d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm2 0v10h12V5H4z" />
                             <path d="M6 7a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1z" />
@@ -18,8 +28,8 @@
                         Tambah Artikel
                     </h3>
                     <button type="button" onclick="closeAddArticleModal()"
-                        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
@@ -28,43 +38,107 @@
             </div>
 
             <div class="px-6 py-4 max-h-[70vh] overflow-y-auto">
-                <form action="{{ route('articles.store') }}" method="POST" enctype="multipart/form-data"
-                    id="addArticleForm">
+                <form id="addArticleForm" enctype="multipart/form-data">
                     @csrf
+
+                    <!-- Tab Navigation — GRADIENT ACTIVE -->
+                    <div
+                        class="mb-6 rounded-xl bg-gradient-to-r from-white via-[#F7F9FC] to-[#E6F4FF] dark:from-gray-800 dark:via-gray-800 dark:to-gray-700 p-2 shadow-inner">
+                        <ul class="flex flex-wrap gap-1 text-sm font-medium text-center" id="addArticleTab"
+                            role="tablist">
+                            <li role="presentation">
+                                <button
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#0194F3] to-[#0064D2] text-white shadow-md shadow-[#0194F3]/30 transition-all duration-200"
+                                    data-tab="add-artikel-utama" role="tab" type="button"
+                                    onclick="switchAddArticleTab('add-artikel-utama')">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M2 4a1 1 0 011-1h14a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V4zm2 0v12h12V4H4z" />
+                                        <path d="M5 6h10v2H5V6zm0 4h10v2H5v-2zm0 4h6v2H5v-2z" />
+                                    </svg>
+                                    Informasi Utama
+                                </button>
+                            </li>
+                            <li role="presentation">
+                                <button
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-[#687176] dark:text-gray-400 hover:bg-white hover:text-[#0194F3] dark:hover:bg-gray-700 dark:hover:text-[#33ADFF] transition-all duration-200"
+                                    data-tab="add-artikel-media" role="tab" type="button"
+                                    onclick="switchAddArticleTab('add-artikel-media')">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    Media
+                                </button>
+                            </li>
+                            <li role="presentation">
+                                <button
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-[#687176] dark:text-gray-400 hover:bg-white hover:text-[#0194F3] dark:hover:bg-gray-700 dark:hover:text-[#33ADFF] transition-all duration-200"
+                                    data-tab="add-artikel-seo" role="tab" type="button"
+                                    onclick="switchAddArticleTab('add-artikel-seo')">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                    </svg>
+                                    SEO
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Tab Content -->
                     <div class="space-y-6">
-                        <!-- Informasi Artikel -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Informasi Artikel
+                        <!-- Tab 1: Informasi Utama -->
+                        <div id="add-artikel-utama" class="add-article-tab-content">
+                            <h4
+                                class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                                <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                Informasi Artikel
                             </h4>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <!-- Judul -->
                                 <div class="sm:col-span-2">
                                     <label for="addTitle"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Judul <span
-                                            class="text-red-500">*</span></label>
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Judul
+                                        <span class="text-red-500">*</span></label>
                                     <input type="text" name="title" id="addTitle"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="Masukkan judul artikel" required>
                                     <span class="text-red-500 text-xs error-message" id="add_title_error"></span>
                                 </div>
 
                                 <!-- Slug -->
                                 <div class="sm:col-span-2">
-                                    <label for="addSlug"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Slug</label>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <label for="addSlug"
+                                            class="text-sm font-medium text-[#0F294D] dark:text-white">Slug</label>
+                                        <button type="button" onclick="generateAddSlugFromTitle()"
+                                            class="text-xs text-[#0194F3] hover:text-[#0064D2] dark:text-[#33ADFF] dark:hover:text-[#B3E0FF] font-medium">
+                                            <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                                                </path>
+                                            </svg>
+                                            Generate dari Judul
+                                        </button>
+                                    </div>
                                     <input type="text" name="slug" id="addSlug"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
-                                        placeholder="Auto-generate dari judul">
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="Kosongkan untuk auto-generate">
+                                    <p class="mt-1 text-xs text-[#687176] dark:text-gray-400">Biarkan kosong untuk
+                                        auto-generate atau edit sesuai keinginan</p>
                                     <span class="text-red-500 text-xs error-message" id="add_slug_error"></span>
                                 </div>
 
                                 <!-- Kategori -->
                                 <div>
                                     <label for="addCategory"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kategori
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Kategori
                                         <span class="text-red-500">*</span></label>
                                     <select name="category_id" id="addCategory" required
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]">
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200">
                                         <option value="">Pilih Kategori</option>
                                         @if(isset($categories) && $categories->count())
                                             @foreach($categories as $category)
@@ -78,32 +152,32 @@
                                 <!-- Status -->
                                 <div>
                                     <label for="addStatus"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Status
                                         <span class="text-red-500">*</span></label>
                                     <select name="status" id="addStatus" required
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]">
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200">
                                         <option value="Draft">Draft</option>
                                         <option value="Published">Published</option>
                                     </select>
                                     <span class="text-red-500 text-xs error-message" id="add_status_error"></span>
                                 </div>
 
-                                <!-- Published At - hanya tanggal -->
+                                <!-- Published At -->
                                 <div>
                                     <label for="addPublishedAt"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Tanggal
                                         Publikasi</label>
                                     <input type="date" name="published_at" id="addPublishedAt"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]">
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200">
                                     <span class="text-red-500 text-xs error-message" id="add_published_at_error"></span>
                                 </div>
 
                                 <!-- Excerpt -->
                                 <div class="sm:col-span-2">
                                     <label for="addExcerpt"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ringkasan</label>
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Ringkasan</label>
                                     <textarea name="excerpt" id="addExcerpt" rows="2"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="Masukkan ringkasan artikel"></textarea>
                                     <span class="text-red-500 text-xs error-message" id="add_excerpt_error"></span>
                                 </div>
@@ -111,24 +185,30 @@
                                 <!-- Content -->
                                 <div class="sm:col-span-2">
                                     <label for="addContent"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Konten
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Konten
                                         <span class="text-red-500">*</span></label>
                                     <textarea name="content" id="addContent" rows="6"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="Masukkan konten artikel" required></textarea>
                                     <span class="text-red-500 text-xs error-message" id="add_content_error"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Thumbnail -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Thumbnail</h4>
+                        <!-- Tab 2: Media (Thumbnail) -->
+                        <div id="add-artikel-media" class="add-article-tab-content hidden">
+                            <h4
+                                class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                                <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                Thumbnail
+                            </h4>
+                            <p class="text-sm text-[#687176] dark:text-gray-400 mb-3">Upload thumbnail artikel
+                                (Opsional)</p>
                             <div class="flex flex-col items-center">
                                 <!-- Preview Image -->
                                 <div id="addThumbnailPreviewContainer" class="hidden relative w-full">
                                     <img id="addThumbnailPreview" src="#" alt="Preview Thumbnail"
-                                        class="w-full h-48 object-cover rounded-lg border-2 border-[#FFD4D4] dark:border-gray-600">
+                                        class="w-full h-48 object-cover rounded-lg border-2 border-[#B3E0FF] dark:border-gray-600">
                                     <div
                                         class="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-3 py-1.5 rounded-lg">
                                         <span id="addThumbnailFileName"></span>
@@ -142,11 +222,9 @@
                                                 d="M6 18L18 6M6 6l12 12"></path>
                                         </svg>
                                     </button>
+                                    {{-- Badge "Terupload" — biru --}}
                                     <div
-                                        class="absolute inset-0 bg-green-500/10 border-2 border-green-500 rounded-lg pointer-events-none">
-                                    </div>
-                                    <div
-                                        class="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded-lg">
+                                        class="absolute top-2 left-2 bg-gradient-to-r from-[#0194F3] to-[#0064D2] text-white text-xs px-2 py-1 rounded-lg shadow-md">
                                         <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -158,20 +236,21 @@
 
                                 <!-- Upload Area -->
                                 <div id="addThumbnailUploadArea"
-                                    class="w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-[#FFF5F5] border-[#FFD4D4] hover:bg-[#FFE8E8] dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 transition-colors">
+                                    class="w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gradient-to-br from-[#E6F4FF] to-[#F0F9FF] border-[#B3E0FF] hover:from-[#B3E0FF] hover:to-[#E6F4FF] dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:hover:border-[#33ADFF] transition-colors">
                                     <label for="addThumbnailUpload"
                                         class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
                                         <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                            <svg class="w-8 h-8 mb-2 text-[#FF6B6B] dark:text-gray-400" fill="none"
+                                            <svg class="w-8 h-8 mb-2 text-[#0194F3] dark:text-gray-400" fill="none"
                                                 stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                             </svg>
-                                            <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">
-                                                <span class="font-semibold">Klik untuk upload</span> thumbnail
+                                            <p class="mb-1 text-sm text-[#687176] dark:text-gray-400">
+                                                <span class="font-semibold text-[#0194F3]">Klik untuk upload</span>
+                                                thumbnail
                                             </p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG, WEBP (Maks.
-                                                5MB)</p>
+                                            <p class="text-xs text-[#687176] dark:text-gray-400">PNG, JPG, WEBP (Maks.
+                                                100MB)</p>
                                         </div>
                                         <input type="file" id="addThumbnailUpload" name="thumbnail" accept="image/*"
                                             class="hidden">
@@ -182,35 +261,39 @@
                             </div>
                         </div>
 
-                        <!-- SEO -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">SEO</h4>
+                        <!-- Tab 3: SEO -->
+                        <div id="add-artikel-seo" class="add-article-tab-content hidden">
+                            <h4
+                                class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                                <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                SEO (Search Engine Optimization)
+                            </h4>
                             <div class="grid grid-cols-1 gap-4">
                                 <div>
                                     <label for="addMetaTitle"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Meta
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Meta
                                         Title</label>
                                     <input type="text" name="meta_title" id="addMetaTitle"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="Meta Title">
                                     <span class="text-red-500 text-xs error-message" id="add_meta_title_error"></span>
                                 </div>
                                 <div>
                                     <label for="addMetaDescription"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Meta
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Meta
                                         Description</label>
                                     <textarea name="meta_description" id="addMetaDescription" rows="2"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="Meta Description"></textarea>
                                     <span class="text-red-500 text-xs error-message"
                                         id="add_meta_description_error"></span>
                                 </div>
                                 <div>
                                     <label for="addMetaKeywords"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Meta
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Meta
                                         Keywords</label>
                                     <input type="text" name="meta_keywords" id="addMetaKeywords"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="Meta Keywords (pisahkan dengan koma)">
                                     <span class="text-red-500 text-xs error-message"
                                         id="add_meta_keywords_error"></span>
@@ -219,10 +302,11 @@
                         </div>
                     </div>
 
+                    {{-- ===== FOOTER — GRADIENT ===== --}}
                     <div
-                        class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-6 pt-4 border-t border-[#FFD4D4] dark:border-gray-700">
-                        <button type="submit"
-                            class="text-white bg-[#E60000] hover:bg-[#B71C1C] focus:ring-4 focus:ring-[#FFD4D4] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#FF6B6B] dark:hover:bg-[#E60000] dark:focus:ring-[#FF6B6B] w-full sm:w-auto">
+                        class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-6 pt-4 border-t border-[#B3E0FF] dark:border-gray-700 bg-gradient-to-r from-transparent via-[#F7F9FC]/50 to-transparent dark:via-gray-800/50 -mx-6 px-6 pb-2">
+                        <button type="button" onclick="submitAddArticle()"
+                            class="text-white bg-gradient-to-r from-[#0194F3] to-[#0064D2] hover:from-[#0064D2] hover:to-[#0194F3] focus:ring-4 focus:ring-[#B3E0FF] font-medium rounded-lg text-sm px-5 py-2.5 text-center shadow-md shadow-[#0194F3]/30 w-full sm:w-auto transition-all duration-200">
                             <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 4v16m8-8H4"></path>
@@ -230,7 +314,7 @@
                             Simpan Artikel
                         </button>
                         <button type="button" onclick="closeAddArticleModal()"
-                            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 hover:text-[#E60000] focus:ring-4 focus:ring-[#FFD4D4] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 w-full sm:w-auto">
+                            class="text-[#0194F3] bg-white border-2 border-[#0194F3] focus:outline-none hover:bg-[#0194F3] hover:text-white focus:ring-4 focus:ring-[#B3E0FF] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-800 dark:text-[#33ADFF] dark:border-[#33ADFF] dark:hover:bg-[#33ADFF] dark:hover:text-white w-full sm:w-auto transition-all duration-200">
                             Batal
                         </button>
                     </div>
@@ -241,6 +325,63 @@
 </div>
 
 <script>
+    // ========== KONSTANTA BATAS UKURAN ==========
+    const ADD_ARTICLE_MAX_IMAGE_SIZE = 104857600; // 100 MB
+    const ADD_ARTICLE_MAX_IMAGE_SIZE_LABEL = '100 MB';
+
+    // ========== HELPER ==========
+    function formatAddArticleFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function isValidAddArticleImageType(file) {
+        var validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        return validTypes.indexOf(file.type) !== -1;
+    }
+
+    function isValidAddArticleFileSize(file) {
+        return file.size <= ADD_ARTICLE_MAX_IMAGE_SIZE;
+    }
+
+    // ========== TAB FUNCTION — GRADIENT ACTIVE ==========
+    function switchAddArticleTab(tabId) {
+        document.querySelectorAll('.add-article-tab-content').forEach(el => {
+            el.classList.add('hidden');
+        });
+
+        const selectedTab = document.getElementById(tabId);
+        if (selectedTab) {
+            selectedTab.classList.remove('hidden');
+        }
+
+        document.querySelectorAll('#addArticleTab button').forEach(btn => {
+            btn.classList.remove(
+                'bg-gradient-to-r', 'from-[#0194F3]', 'to-[#0064D2]',
+                'text-white', 'shadow-md', 'shadow-[#0194F3]/30'
+            );
+            btn.classList.add(
+                'text-[#687176]', 'dark:text-gray-400',
+                'hover:bg-white', 'hover:text-[#0194F3]',
+                'dark:hover:bg-gray-700', 'dark:hover:text-[#33ADFF]'
+            );
+        });
+
+        const activeBtn = document.querySelector(`#addArticleTab button[data-tab="${tabId}"]`);
+        if (activeBtn) {
+            activeBtn.classList.remove(
+                'text-[#687176]', 'dark:text-gray-400',
+                'hover:bg-white', 'hover:text-[#0194F3]',
+                'dark:hover:bg-gray-700', 'dark:hover:text-[#33ADFF]'
+            );
+            activeBtn.classList.add(
+                'bg-gradient-to-r', 'from-[#0194F3]', 'to-[#0064D2]',
+                'text-white', 'shadow-md', 'shadow-[#0194F3]/30'
+            );
+        }
+    }
+
     // ========== OPEN/CLOSE MODAL ==========
     function openAddArticleModal() {
         document.getElementById('addArticleModal').classList.remove('hidden');
@@ -249,16 +390,18 @@
         document.getElementById('addThumbnailPreviewContainer').classList.add('hidden');
         document.getElementById('addThumbnailUploadArea').classList.remove('hidden');
 
-        // Set tanggal hari ini otomatis
+        document.querySelectorAll('#addArticleForm .error-message').forEach(function (el) {
+            el.textContent = '';
+        });
+
+        switchAddArticleTab('add-artikel-utama');
+
         var today = new Date();
         var year = today.getFullYear();
         var month = String(today.getMonth() + 1).padStart(2, '0');
         var day = String(today.getDate()).padStart(2, '0');
         document.getElementById('addPublishedAt').value = year + '-' + month + '-' + day;
 
-        document.querySelectorAll('#addArticleForm .error-message').forEach(function (el) {
-            el.textContent = '';
-        });
         setTimeout(function () {
             document.getElementById('addTitle').focus();
         }, 100);
@@ -269,9 +412,41 @@
         document.body.style.overflow = 'auto';
     }
 
+    // ========== SLUG GENERATOR ==========
+    function generateAddSlugFromTitle() {
+        const title = document.getElementById('addTitle').value.trim();
+        const slugInput = document.getElementById('addSlug');
+
+        if (!title) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: 'Masukkan judul artikel terlebih dahulu'
+            });
+            document.getElementById('addTitle').focus();
+            return;
+        }
+
+        const slug = title.toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-');
+
+        slugInput.value = slug;
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Slug telah digenerate dari judul artikel',
+            timer: 1500,
+            showConfirmButton: false
+        });
+    }
+
     // ========== THUMBNAIL ==========
     document.addEventListener('DOMContentLoaded', function () {
         var upload = document.getElementById('addThumbnailUpload');
+        var uploadArea = document.getElementById('addThumbnailUploadArea');
         var previewContainer = document.getElementById('addThumbnailPreviewContainer');
         var preview = document.getElementById('addThumbnailPreview');
         var fileName = document.getElementById('addThumbnailFileName');
@@ -281,20 +456,20 @@
             upload.addEventListener('change', function (e) {
                 var file = e.target.files[0];
                 if (file) {
-                    if (file.size > 5 * 1024 * 1024) {
+                    if (!isValidAddArticleFileSize(file)) {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Gagal!',
-                            text: 'Ukuran file maksimal 5MB'
+                            title: 'Ukuran File Terlalu Besar!',
+                            html: 'Ukuran file: <b>' + formatAddArticleFileSize(file.size) + '</b><br>' +
+                                'Maksimal yang diizinkan: <b>' + ADD_ARTICLE_MAX_IMAGE_SIZE_LABEL + '</b>'
                         });
                         this.value = '';
                         return;
                     }
-                    var validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-                    if (validTypes.indexOf(file.type) === -1) {
+                    if (!isValidAddArticleImageType(file)) {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Gagal!',
+                            title: 'Format Tidak Didukung!',
                             text: 'Format file harus JPG, JPEG, PNG, GIF atau WEBP.'
                         });
                         this.value = '';
@@ -303,15 +478,10 @@
                     var reader = new FileReader();
                     reader.onload = function (event) {
                         preview.src = event.target.result;
-                        document.getElementById('addThumbnailUploadArea').classList.add('hidden');
+                        uploadArea.classList.add('hidden');
                         previewContainer.classList.remove('hidden');
                         fileName.textContent = file.name;
-                        var sizeInKB = (file.size / 1024).toFixed(2);
-                        if (sizeInKB > 1024) {
-                            fileSize.textContent = (sizeInKB / 1024).toFixed(2) + ' MB';
-                        } else {
-                            fileSize.textContent = sizeInKB + ' KB';
-                        }
+                        fileSize.textContent = formatAddArticleFileSize(file.size);
                     };
                     reader.readAsDataURL(file);
                 }
@@ -333,15 +503,152 @@
 
         if (titleInput && slugInput) {
             titleInput.addEventListener('input', function () {
-                var slug = this.value
-                    .toLowerCase()
-                    .replace(/[^a-z0-9\s-]/g, '')
-                    .replace(/\s+/g, '-')
-                    .replace(/-+/g, '-');
-                slugInput.value = slug;
+                if (slugInput.value === '') {
+                    var slug = this.value
+                        .toLowerCase()
+                        .replace(/[^a-z0-9\s-]/g, '')
+                        .replace(/\s+/g, '-')
+                        .replace(/-+/g, '-');
+                    slugInput.value = slug;
+                }
             });
         }
     });
+
+    // ========== SUBMIT FUNCTION ==========
+    window.submitAddArticle = async function () {
+        console.log('=== SUBMIT ARTICLE ===');
+
+        document.querySelectorAll('#addArticleForm .error-message').forEach(el => el.textContent = '');
+
+        const title = document.getElementById('addTitle').value.trim();
+        const category = document.getElementById('addCategory').value;
+        const content = document.getElementById('addContent').value.trim();
+
+        if (!title) {
+            document.getElementById('add_title_error').textContent = 'Judul wajib diisi';
+            Swal.fire({ icon: 'warning', title: 'Peringatan!', text: 'Judul wajib diisi' });
+            document.getElementById('addTitle').focus();
+            return;
+        }
+
+        if (!category) {
+            document.getElementById('add_category_id_error').textContent = 'Kategori wajib dipilih';
+            Swal.fire({ icon: 'warning', title: 'Peringatan!', text: 'Kategori wajib dipilih' });
+            document.getElementById('addCategory').focus();
+            return;
+        }
+
+        if (!content) {
+            document.getElementById('add_content_error').textContent = 'Konten wajib diisi';
+            Swal.fire({ icon: 'warning', title: 'Peringatan!', text: 'Konten wajib diisi' });
+            document.getElementById('addContent').focus();
+            return;
+        }
+
+        const thumbnailInput = document.getElementById('addThumbnailUpload');
+        const thumbnailFile = thumbnailInput.files[0];
+        if (thumbnailFile && !isValidAddArticleFileSize(thumbnailFile)) {
+            document.getElementById('add_thumbnail_error').textContent =
+                'Ukuran thumbnail maksimal ' + ADD_ARTICLE_MAX_IMAGE_SIZE_LABEL;
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran Thumbnail Terlalu Besar!',
+                html: 'Ukuran: <b>' + formatAddArticleFileSize(thumbnailFile.size) + '</b><br>' +
+                    'Maksimal: <b>' + ADD_ARTICLE_MAX_IMAGE_SIZE_LABEL + '</b>'
+            });
+            return;
+        }
+
+        console.log('Validasi berhasil');
+
+        const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        if (!csrfMeta) {
+            Swal.fire({ icon: 'error', title: 'Error!', text: 'CSRF token tidak ditemukan.' });
+            return;
+        }
+
+        const csrfToken = csrfMeta.getAttribute('content');
+        const form = document.getElementById('addArticleForm');
+        const formData = new FormData(form);
+
+        Swal.fire({
+            title: 'Menyimpan...',
+            text: 'Mohon tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        try {
+            const response = await fetch('{{ route('articles.store') }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            });
+
+            console.log('HTTP Status:', response.status);
+
+            const contentType = response.headers.get('content-type') || '';
+            let data;
+
+            if (contentType.includes('application/json')) {
+                data = await response.json();
+            } else {
+                const text = await response.text();
+                console.error('Response bukan JSON:', text);
+                throw new Error(`Server mengembalikan response bukan JSON. HTTP ${response.status}`);
+            }
+
+            console.log('Response JSON:', data);
+
+            if (response.ok && data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: data.message || 'Artikel berhasil ditambahkan!',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    closeAddArticleModal();
+                    location.reload();
+                });
+                return;
+            }
+
+            if (data.errors) {
+                Object.keys(data.errors).forEach(key => {
+                    const errorEl = document.getElementById('add_' + key + '_error');
+                    if (errorEl) {
+                        errorEl.textContent = Array.isArray(data.errors[key]) ? data.errors[key][0] : data.errors[key];
+                    }
+                });
+                const firstError = Object.values(data.errors)[0];
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validasi Gagal!',
+                    text: Array.isArray(firstError) ? firstError[0] : firstError
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: data.message || 'Gagal menambahkan artikel'
+                });
+            }
+
+        } catch (error) {
+            console.error('=== ERROR SUBMIT ===', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Terjadi kesalahan: ' + error.message
+            });
+        }
+    };
 
     // Close modal with Escape key
     document.addEventListener('keydown', function (e) {
@@ -381,12 +688,12 @@
     }
 
     #addArticleModal .max-h-\[70vh\]::-webkit-scrollbar-track {
-        background: #f1f1f1;
+        background: #E6F4FF;
         border-radius: 3px;
     }
 
     #addArticleModal .max-h-\[70vh\]::-webkit-scrollbar-thumb {
-        background: #E60000;
+        background: linear-gradient(180deg, #0194F3, #0064D2);
         border-radius: 3px;
     }
 
@@ -395,7 +702,7 @@
     }
 
     .dark #addArticleModal .max-h-\[70vh\]::-webkit-scrollbar-thumb {
-        background: #FF6B6B;
+        background: linear-gradient(180deg, #33ADFF, #0194F3);
     }
 
     #addThumbnailPreviewContainer {

@@ -256,6 +256,60 @@ class SettingController extends Controller
         }
     }
 
+    public function show($id)
+    {
+        try {
+            $setting = $this->service->findById($id);
+
+            if (!$setting) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data pengaturan tidak ditemukan.'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $setting->id,
+                    'site_name' => $setting->site_name,
+                    'tagline' => $setting->tagline,
+                    'about' => $setting->about,
+
+                    'logo' => $setting->logo,
+                    'logo_url' => $setting->logo
+                        ? asset($setting->logo)
+                        : null,
+
+                    'address' => $setting->address,
+                    'phone' => $setting->phone,
+                    'whatsapp' => $setting->whatsapp,
+                    'email' => $setting->email,
+
+                    'maps_embed' => $setting->maps_embed,
+
+                    'facebook' => $setting->facebook,
+                    'instagram' => $setting->instagram,
+                    'x' => $setting->x,
+                    'youtube' => $setting->youtube,
+                    'tiktok' => $setting->tiktok,
+
+                    'meta_title' => $setting->meta_title,
+                    'meta_description' => $setting->meta_description,
+                    'meta_keywords' => $setting->meta_keywords,
+
+                    'footer_description' => $setting->footer_description,
+                    'copyright' => $setting->copyright,
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
     /**
      * Hapus pengaturan.
      */
@@ -364,7 +418,7 @@ class SettingController extends Controller
                 'nullable',
                 'image',
                 'mimes:jpg,jpeg,png,webp',
-                'max:20480',
+                'max:1048576',
             ],
 
             // Kontak
@@ -486,7 +540,7 @@ class SettingController extends Controller
                 'Logo harus berformat JPG, JPEG, PNG, atau WEBP.',
 
             'logo.max' =>
-                'Ukuran logo maksimal 20MB.',
+                'Ukuran logo maksimal 1GB.',
 
             'phone.max' =>
                 'Nomor telepon maksimal 20 karakter.',

@@ -8,9 +8,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class AccommodationCategoryController extends Controller
 {
+    /**
+     * Batas ukuran thumbnail dalam KB (satuan rule `max` Laravel).
+     * 102400 KB = 100 MB.
+     */
+    private const THUMBNAIL_MAX_KB = 102400; // 100 MB
+    private const THUMBNAIL_MAX_MB = 100;
+
     protected AccommodationCategoryService $service;
 
     public function __construct(
@@ -44,42 +52,29 @@ class AccommodationCategoryController extends Controller
             $this->validationMessages()
         );
 
-        /*
-        |--------------------------------------------------------------------------
-        | Bersihkan slug
-        |--------------------------------------------------------------------------
-        */
+        // Bersihkan slug + pastikan tidak kosong setelah dibersihkan
+        $validated['slug'] = $this->normalizeSlug($validated['slug']);
 
-        $validated['slug'] = Str::slug(
-            $validated['slug']
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | Upload thumbnail
-        |--------------------------------------------------------------------------
-        */
-
+        // Upload thumbnail
         if ($request->hasFile('thumbnail')) {
             $validated['thumbnail'] = $this->storeThumbnail(
                 $request->file('thumbnail')
             );
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Simpan kategori melalui service
-        |--------------------------------------------------------------------------
-        */
-
-        $this->service->create($validated);
+        // Simpan; jika service gagal, hapus file yang terlanjur diupload
+        try {
+            $this->service->create($validated);
+        } catch (\Throwable $e) {
+            if (!empty($validated['thumbnail'])) {
+                $this->deleteFile($validated['thumbnail']);
+            }
+            throw $e;
+        }
 
         return redirect()
             ->route('accommodation-categories.index')
-            ->with(
-                'success',
-                'Kategori berhasil ditambahkan.'
-            );
+            ->with('success', 'Kategori berhasil ditambahkan.');
     }
 
     /**
@@ -115,60 +110,45 @@ class AccommodationCategoryController extends Controller
             $this->validationMessages()
         );
 
-        /*
-        |--------------------------------------------------------------------------
-        | Bersihkan slug
-        |--------------------------------------------------------------------------
-        */
+        // Bersihkan slug
+        $validated['slug'] = $this->normalizeSlug($validated['slug']);
 
-        $validated['slug'] = Str::slug(
-            $validated['slug']
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | Upload thumbnail baru
-        |--------------------------------------------------------------------------
-        */
-
+        // Upload thumbnail baru
         if ($request->hasFile('thumbnail')) {
 
-            /*
-            | Hapus thumbnail lama.
-            */
+            $oldThumbnail = $accommodationCategory->thumbnail;
 
-            if ($accommodationCategory->thumbnail) {
-                $this->deleteFile(
-                    $accommodationCategory->thumbnail
-                );
-            }
-
-            /*
-            | Simpan thumbnail baru.
-            */
-
+            // Simpan thumbnail baru dulu
             $validated['thumbnail'] = $this->storeThumbnail(
                 $request->file('thumbnail')
             );
+
+            try {
+                $this->service->update($accommodationCategory, $validated);
+
+                // Update sukses → hapus thumbnail lama
+                if ($oldThumbnail) {
+                    $this->deleteFile($oldThumbnail);
+                }
+            } catch (\Throwable $e) {
+                // Rollback: hapus thumbnail baru
+                if (!empty($validated['thumbnail'])) {
+                    $this->deleteFile($validated['thumbnail']);
+                }
+                throw $e;
+            }
+
+            return redirect()
+                ->route('accommodation-categories.index')
+                ->with('success', 'Kategori berhasil diperbarui.');
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Update kategori melalui service
-        |--------------------------------------------------------------------------
-        */
-
-        $this->service->update(
-            $accommodationCategory,
-            $validated
-        );
+        // Tanpa ganti thumbnail
+        $this->service->update($accommodationCategory, $validated);
 
         return redirect()
             ->route('accommodation-categories.index')
-            ->with(
-                'success',
-                'Kategori berhasil diperbarui.'
-            );
+            ->with('success', 'Kategori berhasil diperbarui.');
     }
 
     /**
@@ -177,34 +157,15 @@ class AccommodationCategoryController extends Controller
     public function destroy(
         AccommodationCategory $accommodationCategory
     ) {
-        /*
-        |--------------------------------------------------------------------------
-        | Hapus thumbnail
-        |--------------------------------------------------------------------------
-        */
-
         if ($accommodationCategory->thumbnail) {
-            $this->deleteFile(
-                $accommodationCategory->thumbnail
-            );
+            $this->deleteFile($accommodationCategory->thumbnail);
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Hapus kategori melalui service.
-        |--------------------------------------------------------------------------
-        */
-
-        $this->service->delete(
-            $accommodationCategory
-        );
+        $this->service->delete($accommodationCategory);
 
         return redirect()
             ->route('accommodation-categories.index')
-            ->with(
-                'success',
-                'Kategori berhasil dihapus.'
-            );
+            ->with('success', 'Kategori berhasil dihapus.');
     }
 
     /**
@@ -230,12 +191,13 @@ class AccommodationCategoryController extends Controller
                 'nullable',
                 'image',
                 'mimes:jpg,jpeg,png,webp',
-                'max:20480',
+                'max:' . self::THUMBNAIL_MAX_KB, // 100 MB
             ],
 
             'description' => [
                 'nullable',
                 'string',
+                'max:5000',
             ],
         ];
     }
@@ -257,24 +219,21 @@ class AccommodationCategoryController extends Controller
                 'required',
                 'string',
                 'max:255',
-                Rule::unique(
-                    'accommodation_categories',
-                    'slug'
-                )->ignore(
-                    $accommodationCategory->id
-                ),
+                Rule::unique('accommodation_categories', 'slug')
+                    ->ignore($accommodationCategory->id),
             ],
 
             'thumbnail' => [
                 'nullable',
                 'image',
                 'mimes:jpg,jpeg,png,webp',
-                'max:20480',
+                'max:' . self::THUMBNAIL_MAX_KB, // 100 MB
             ],
 
             'description' => [
                 'nullable',
                 'string',
+                'max:5000',
             ],
         ];
     }
@@ -284,87 +243,54 @@ class AccommodationCategoryController extends Controller
      */
     protected function validationMessages(): array
     {
+        $maxMb = self::THUMBNAIL_MAX_MB;
+
         return [
-            'name.required' =>
-                'Nama kategori wajib diisi.',
-
-            'slug.required' =>
-                'Slug wajib diisi.',
-
-            'slug.unique' =>
-                'Slug tersebut sudah digunakan.',
-
-            'thumbnail.image' =>
-                'File harus berupa gambar.',
-
-            'thumbnail.mimes' =>
-                'Format gambar harus JPG, JPEG, PNG, atau WEBP.',
-
-            'thumbnail.max' =>
-                'Ukuran gambar maksimal 20MB.',
+            'name.required' => 'Nama kategori wajib diisi.',
+            'slug.required' => 'Slug wajib diisi.',
+            'slug.unique' => 'Slug tersebut sudah digunakan.',
+            'thumbnail.image' => 'File harus berupa gambar.',
+            'thumbnail.mimes' => 'Format gambar harus JPG, JPEG, PNG, atau WEBP.',
+            'thumbnail.max' => "Ukuran gambar maksimal {$maxMb} MB.",
+            'thumbnail.uploaded' => 'Gambar gagal diupload. Cek konfigurasi upload_max_filesize & post_max_size pada server.',
         ];
     }
 
     /**
+     * Normalisasi slug & pastikan tidak kosong.
+     */
+    protected function normalizeSlug(string $raw): string
+    {
+        $slug = Str::slug($raw);
+
+        if (empty($slug)) {
+            throw ValidationException::withMessages([
+                'slug' => 'Slug tidak valid. Gunakan huruf, angka, atau tanda hubung.',
+            ]);
+        }
+
+        return $slug;
+    }
+
+    /**
      * Simpan thumbnail kategori.
-     *
-     * File:
-     * public/kategori
-     *
-     * Database:
-     * kategori/nama-file.jpg
+     * File: public/kategori
+     * Database: kategori/nama-file.jpg
      */
     protected function storeThumbnail($file): string
     {
         $folder = public_path('kategori');
 
-        /*
-        |--------------------------------------------------------------------------
-        | Buat folder jika belum ada.
-        |--------------------------------------------------------------------------
-        */
-
         if (!File::exists($folder)) {
-            File::makeDirectory(
-                $folder,
-                0755,
-                true
-            );
+            if (!File::makeDirectory($folder, 0755, true) && !File::exists($folder)) {
+                throw new \RuntimeException('Gagal membuat folder kategori.');
+            }
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Nama file unik.
-        |--------------------------------------------------------------------------
-        */
+        $extension = strtolower($file->getClientOriginalExtension());
+        $filename = Str::uuid() . '.' . $extension;
 
-        $extension = strtolower(
-            $file->getClientOriginalExtension()
-        );
-
-        $filename =
-            time() .
-            '_' .
-            Str::random(10) .
-            '.' .
-            $extension;
-
-        /*
-        |--------------------------------------------------------------------------
-        | Pindahkan file.
-        |--------------------------------------------------------------------------
-        */
-
-        $file->move(
-            $folder,
-            $filename
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | Path yang disimpan di database.
-        |--------------------------------------------------------------------------
-        */
+        $file->move($folder, $filename);
 
         return 'kategori/' . $filename;
     }
@@ -374,9 +300,7 @@ class AccommodationCategoryController extends Controller
      */
     protected function deleteFile(string $path): void
     {
-        $file = public_path(
-            ltrim($path, '/')
-        );
+        $file = public_path(ltrim($path, '/'));
 
         if (File::exists($file)) {
             File::delete($file);

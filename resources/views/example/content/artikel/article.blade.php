@@ -3,22 +3,39 @@
 
     @include('example.layouts.partials.artikel.modal_add_article')
     @include('example.layouts.partials.artikel.modal_edit_article')
+    @include('example.layouts.partials.artikel.modal_detail_article')
 
+    {{-- ===== HEADER — GRADIENT SEPERTI SIDEBAR ===== --}}
     <div
-        class="p-4 bg-white block sm:flex items-center justify-between border-b border-[#E60000] lg:mt-1.5 dark:bg-gray-800 dark:border-[#FF6B6B]">
-        <div class="w-full mb-1">
+        class="relative overflow-hidden p-4 bg-gradient-to-br from-white via-[#F7F9FC] to-[#E6F4FF] block sm:flex items-center justify-between shadow-lg shadow-[#0194F3]/10 dark:from-gray-800 dark:via-gray-800 dark:to-gray-900 dark:shadow-black/40 lg:mt-1.5">
+        {{-- Pattern dots subtle --}}
+        <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(circle, #0194F3 1.5px, transparent 1.5px); background-size: 24px 24px;"></div>
+        {{-- Blob dekoratif --}}
+        <div class="absolute -top-16 -right-16 w-48 h-48 bg-[#0194F3]/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-16 -left-16 w-40 h-40 bg-[#33ADFF]/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative w-full mb-1">
             <div class="mb-4">
-                <h1 class="text-xl font-semibold text-[#E60000] sm:text-2xl dark:text-[#FF6B6B]">Daftar Artikel</h1>
+                <h1 class="text-xl font-semibold text-[#0194F3] sm:text-2xl dark:text-[#33ADFF] flex items-center gap-2">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 2h8v2H6V6zm0 4h8v2H6v-2zm0 4h8v2H6v-2z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Daftar Artikel
+                </h1>
             </div>
 
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
-                <!-- Bagian Kiri: Search -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <!-- Bagian Kiri: Search + Filter Status -->
                 <div class="flex items-center w-full sm:w-auto flex-wrap gap-2">
-                    <form class="flex-1 sm:flex-none" action="{{ route('articles.index') }}" method="GET"
-                        id="searchForm">
-                        <div class="relative w-full sm:w-64 xl:w-96">
+                    <form class="flex-1 sm:flex-none flex flex-col sm:flex-row items-stretch sm:items-center gap-2"
+                        action="{{ route('articles.index') }}" method="GET" id="searchForm">
+
+                        {{-- Search Input --}}
+                        <div class="relative w-full sm:w-64 xl:w-80">
                             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg class="w-4 h-4 text-[#FF6B6B] dark:text-gray-400" fill="currentColor"
+                                <svg class="w-4 h-4 text-[#0194F3] dark:text-gray-400" fill="currentColor"
                                     viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd"
                                         d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
@@ -26,16 +43,42 @@
                                 </svg>
                             </div>
                             <input type="text" name="keyword" id="search-input" value="{{ request('keyword') }}"
-                                class="bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                class="bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full pl-10 p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                 placeholder="Cari artikel...">
                         </div>
+
+                        {{-- Filter Status --}}
+                        <div class="relative w-full sm:w-52">
+                            <select name="status" id="status-filter"
+                                class="bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 pr-10 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] appearance-none cursor-pointer transition-all duration-200">
+                                <option value="">Semua Status</option>
+                                <option value="Published" {{ request('status') == 'Published' ? 'selected' : '' }}>
+                                    Published
+                                </option>
+                                <option value="Draft" {{ request('status') == 'Draft' ? 'selected' : '' }}>
+                                    Draft
+                                </option>
+                            </select>
+
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-[#0194F3] dark:text-gray-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="hidden">Cari</button>
                     </form>
-                    @if (request('keyword'))
+
+                    {{-- Tombol Reset Filter --}}
+                    @if (request('keyword') || request('status'))
                         <a href="{{ route('articles.index') }}"
-                            class="text-sm text-[#E60000] hover:text-[#B71C1C] dark:text-[#FF6B6B] dark:hover:text-[#FF6B6B]">
-                            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                                </path>
+                            class="inline-flex items-center gap-1 text-sm text-[#0194F3] hover:text-[#0064D2] dark:text-[#33ADFF] px-3 py-2 rounded-lg hover:bg-gradient-to-r hover:from-[#E6F4FF] hover:to-[#F0F9FF] dark:hover:bg-gray-700 transition-colors whitespace-nowrap font-medium">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
                             </svg>
                             Hapus Filter
                         </a>
@@ -45,7 +88,7 @@
                 <!-- Bagian Kanan: Tombol Tambah -->
                 <div class="flex items-center w-full sm:w-auto sm:justify-end">
                     <button onclick="openAddArticleModal()"
-                        class="text-white bg-[#E60000] hover:bg-[#B71C1C] focus:ring-4 focus:ring-[#FFD4D4] font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-[#FF6B6B] dark:hover:bg-[#E60000] focus:outline-none dark:focus:ring-[#FF6B6B] inline-flex items-center w-full sm:w-auto justify-center">
+                        class="text-white bg-gradient-to-r from-[#0194F3] to-[#0064D2] hover:from-[#0064D2] hover:to-[#0194F3] focus:ring-4 focus:ring-[#B3E0FF] font-medium rounded-lg text-sm px-5 py-2.5 shadow-md shadow-[#0194F3]/30 focus:outline-none inline-flex items-center w-full sm:w-auto justify-center transition-all duration-200">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
@@ -53,82 +96,115 @@
                     </button>
                 </div>
             </div>
+
+            {{-- Info Filter Aktif --}}
+            @if (request('keyword') || request('status'))
+                <div class="mt-3 flex flex-wrap items-center gap-2 text-xs text-[#687176] dark:text-gray-400">
+                    <span>Filter aktif:</span>
+
+                    @if (request('keyword'))
+                        <span
+                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] dark:from-[#0194F3]/20 dark:to-[#0194F3]/10 text-[#0194F3] dark:text-[#33ADFF] border border-[#B3E0FF] dark:border-[#33ADFF]/30 font-medium">
+                            🔍 "{{ request('keyword') }}"
+                        </span>
+                    @endif
+
+                    @if (request('status'))
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-[#0194F3] to-[#0064D2] text-white border border-[#0194F3] font-medium shadow-sm">
+                            📄 {{ request('status') }}
+                        </span>
+                    @endif
+                </div>
+            @endif
         </div>
     </div>
 
     <div class="flex flex-col">
-        <div class="overflow-x-auto">
+
+        <!-- ========== DESKTOP TABLE — GRADIENT ========== -->
+        <div class="hidden md:block overflow-x-auto bg-gradient-to-br from-white via-[#F7F9FC] to-[#E6F4FF] dark:from-gray-800 dark:via-gray-800 dark:to-gray-900">
             <div class="inline-block min-w-full align-middle">
-                <div class="overflow-hidden shadow">
-                    <table class="min-w-full divide-y divide-[#FFD4D4] table-fixed dark:divide-gray-600">
-                        <thead class="bg-[#FFF5F5] dark:bg-gray-700">
+                <div class="overflow-hidden shadow-lg shadow-[#0194F3]/5">
+                    <table class="min-w-full divide-y divide-[#B3E0FF] table-fixed dark:divide-gray-600">
+                        <thead class="bg-gradient-to-r from-[#0194F3] via-[#0194F3] to-[#0064D2] dark:from-[#0194F3] dark:via-[#0194F3] dark:to-[#0064D2]">
                             <tr>
                                 <th scope="col"
-                                    class="p-4 text-xs font-medium text-left text-[#E60000] uppercase dark:text-[#FF6B6B] w-[60px]">
+                                    class="p-4 text-xs font-medium text-left text-white uppercase w-[60px]">
                                     No
                                 </th>
                                 <th scope="col"
-                                    class="p-4 text-xs font-medium text-left text-[#E60000] uppercase dark:text-[#FF6B6B] w-[150px]">
+                                    class="p-4 text-xs font-medium text-left text-white uppercase w-[120px]">
                                     Thumbnail
                                 </th>
                                 <th scope="col"
-                                    class="p-4 text-xs font-medium text-left text-[#E60000] uppercase dark:text-[#FF6B6B]">
+                                    class="p-4 text-xs font-medium text-left text-white uppercase">
                                     Judul
                                 </th>
                                 <th scope="col"
-                                    class="p-4 text-xs font-medium text-left text-[#E60000] uppercase dark:text-[#FF6B6B]">
+                                    class="p-4 text-xs font-medium text-left text-white uppercase">
                                     Kategori
                                 </th>
                                 <th scope="col"
-                                    class="p-4 text-xs font-medium text-left text-[#E60000] uppercase dark:text-[#FF6B6B] w-[100px]">
+                                    class="p-4 text-xs font-medium text-left text-white uppercase w-[100px]">
                                     Status
                                 </th>
                                 <th scope="col"
-                                    class="p-4 text-xs font-medium text-left text-[#E60000] uppercase dark:text-[#FF6B6B] w-[180px]">
+                                    class="p-4 text-xs font-medium text-left text-white uppercase w-[220px]">
                                     Aksi
                                 </th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-[#FFD4D4] dark:bg-gray-800 dark:divide-gray-700"
+                        <tbody class="divide-y divide-[#B3E0FF] dark:divide-gray-700"
                             id="table-body">
                             @forelse($articles as $index => $article)
-                                <tr data-id="{{ $article->id }}">
-                                    <td class="p-4 text-xs text-gray-500 dark:text-gray-400 text-center">
+                                <tr data-id="{{ $article->id }}"
+                                    class="bg-white/70 hover:bg-gradient-to-r hover:from-[#E6F4FF] hover:to-[#F0F9FF] dark:bg-gray-800/70 dark:hover:from-gray-700 dark:hover:to-gray-700 transition-all duration-200">
+                                    <td class="p-4 text-xs text-[#687176] dark:text-gray-400 text-center">
                                         {{ $articles->firstItem() + $index }}
                                     </td>
-                                    <td class="p-4 text-xs">
+                                    <td class="p-4 align-middle">
                                         @if ($article->thumbnail)
-                                            <img src="{{ asset($article->thumbnail) }}" alt="{{ $article->title }}"
-                                                class="w-24 h-16 object-cover rounded-lg border border-[#FFD4D4] dark:border-gray-600">
+                                            <div style="width:80px;height:45px;min-width:80px;min-height:45px;aspect-ratio:16/9;overflow:hidden;border-radius:0.5rem;background:#f3f4f6;border:1px solid #B3E0FF;flex-shrink:0;">
+                                                <img src="{{ asset($article->thumbnail) }}"
+                                                    alt="{{ $article->title }}"
+                                                    loading="lazy"
+                                                    style="display:block;width:100%;height:100%;object-fit:cover;object-position:center;">
+                                            </div>
                                         @else
-                                            <span class="text-gray-400 text-xs">Tidak ada foto</span>
+                                            <div style="width:80px;height:45px;min-width:80px;min-height:45px;aspect-ratio:16/9;background:linear-gradient(135deg,#E6F4FF,#B3E0FF);border-radius:0.5rem;display:flex;align-items:center;justify-content:center;color:#0194F3;font-size:10px;flex-shrink:0;">
+                                                No Image
+                                            </div>
                                         @endif
                                     </td>
-                                    <td class="p-4 text-xs text-gray-900 dark:text-white font-medium max-w-[200px] truncate">
+                                    <td class="p-4 text-xs text-[#0F294D] dark:text-white font-medium max-w-[200px] truncate">
                                         {{ $article->title }}
                                     </td>
-                                    <td class="p-4 text-xs text-gray-500 dark:text-gray-400">
+                                    <td class="p-4 text-xs text-[#687176] dark:text-gray-400">
                                         {{ $article->category->name ?? '-' }}
                                     </td>
                                     <td class="p-4 text-xs">
                                         @if($article->status == 'Published')
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-[#0194F3] to-[#0064D2] text-white shadow-sm">
                                                 Published
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-[#E6F4FF] to-[#B3E0FF] text-[#0194F3] dark:from-[#33ADFF]/20 dark:to-[#33ADFF]/10 dark:text-[#B3E0FF]">
                                                 Draft
                                             </span>
                                         @endif
                                     </td>
                                     <td class="p-4 text-xs">
                                         <div class="flex items-center gap-1.5">
+                                            <button onclick="openDetailArticleModal({{ $article->id }})"
+                                                class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-center text-white bg-gradient-to-r from-[#33ADFF] to-[#0194F3] hover:from-[#0194F3] hover:to-[#0064D2] focus:ring-4 focus:ring-[#B3E0FF] rounded-lg shadow-sm min-w-[55px] transition-all duration-200">
+                                                Detail
+                                            </button>
                                             <button onclick="openEditArticleModal({{ $article->id }})"
-                                                class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-center text-white bg-[#3B82F6] hover:bg-[#2563EB] focus:ring-4 focus:ring-[#93C5FD] rounded-lg dark:bg-[#3B82F6] dark:hover:bg-[#2563EB] dark:focus:ring-[#93C5FD] min-w-[55px]">
+                                                class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-center text-white bg-gradient-to-r from-[#0194F3] to-[#0064D2] hover:from-[#0064D2] hover:to-[#0194F3] focus:ring-4 focus:ring-[#B3E0FF] rounded-lg shadow-sm min-w-[55px] transition-all duration-200">
                                                 Edit
                                             </button>
                                             <button
-                                                class="delete-btn inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-center text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 rounded-lg dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-800 min-w-[55px]"
+                                                class="delete-btn inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-center text-white bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 focus:ring-4 focus:ring-red-300 rounded-lg shadow-sm min-w-[55px] transition-all duration-200"
                                                 data-id="{{ $article->id }}" data-name="{{ $article->title }}">
                                                 Hapus
                                             </button>
@@ -137,9 +213,9 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center p-6 text-gray-500 dark:text-gray-400">
-                                        @if (request('keyword'))
-                                            Tidak ada artikel dengan judul "{{ request('keyword') }}"
+                                    <td colspan="6" class="text-center p-6 text-[#687176] dark:text-gray-400 bg-white/70 dark:bg-gray-800/70">
+                                        @if (request('keyword') || request('status'))
+                                            Tidak ada artikel yang sesuai dengan filter yang dipilih.
                                         @else
                                             Belum ada data artikel.
                                         @endif
@@ -151,25 +227,107 @@
                 </div>
             </div>
         </div>
+
+        <!-- ========== MOBILE CARD — GRADIENT SEPERTI SIDEBAR ========== -->
+        <div class="md:hidden p-3 space-y-3 bg-gradient-to-br from-white via-[#F7F9FC] to-[#E6F4FF] dark:from-gray-800 dark:via-gray-800 dark:to-gray-900">
+            @forelse($articles as $index => $article)
+                <div class="relative overflow-hidden border border-[#B3E0FF] dark:border-gray-600 rounded-xl bg-gradient-to-br from-white via-[#F7F9FC] to-[#E6F4FF] dark:from-gray-800 dark:via-gray-800 dark:to-gray-700 shadow-lg shadow-[#0194F3]/10 hover:shadow-xl hover:shadow-[#0194F3]/20 transition-all duration-300">
+                    {{-- Blob dekoratif --}}
+                    <div class="absolute -top-8 -right-8 w-24 h-24 bg-[#0194F3]/10 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="absolute -bottom-8 -left-8 w-20 h-20 bg-[#33ADFF]/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                    {{-- Thumbnail full width di atas card --}}
+                    @if ($article->thumbnail)
+                        <div class="relative w-full h-40 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                            <img src="{{ asset($article->thumbnail) }}" alt="{{ $article->title }}"
+                                loading="lazy"
+                                class="w-full h-full object-cover">
+                        </div>
+                    @else
+                        <div class="relative w-full h-40 bg-gradient-to-br from-[#E6F4FF] to-[#B3E0FF] dark:from-gray-700 dark:to-gray-600 flex items-center justify-center">
+                            <span class="text-[#0194F3] dark:text-gray-400 text-xs">Tidak ada gambar</span>
+                        </div>
+                    @endif
+
+                    <div class="relative p-3">
+                        {{-- Nomor + Status --}}
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <span class="text-[10px] text-[#687176] dark:text-gray-400">
+                                #{{ $articles->firstItem() + $index }}
+                            </span>
+                            @if($article->status == 'Published')
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-gradient-to-r from-[#0194F3] to-[#0064D2] text-white shadow-sm">
+                                    Published
+                                </span>
+                            @else
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-gradient-to-r from-[#E6F4FF] to-[#B3E0FF] text-[#0194F3] dark:from-[#33ADFF]/20 dark:to-[#33ADFF]/10 dark:text-[#B3E0FF]">
+                                    Draft
+                                </span>
+                            @endif
+                        </div>
+
+                        {{-- Judul --}}
+                        <h3 class="text-sm font-semibold text-[#0F294D] dark:text-white mb-1 leading-snug break-words">
+                            {{ $article->title }}
+                        </h3>
+
+                        {{-- Kategori --}}
+                        <p class="text-xs text-[#687176] dark:text-gray-400 mb-3">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] dark:from-[#0194F3]/20 dark:to-[#0194F3]/10 text-[#0194F3] dark:text-[#33ADFF] text-[10px] font-medium border border-[#B3E0FF] dark:border-[#33ADFF]/30">
+                                {{ $article->category->name ?? '-' }}
+                            </span>
+                        </p>
+
+                        {{-- Aksi: 3 tombol full-width --}}
+                        <div class="grid grid-cols-3 gap-2 pt-3 border-t border-[#B3E0FF]/60 dark:border-gray-600">
+                            <button onclick="openDetailArticleModal({{ $article->id }})"
+                                class="inline-flex items-center justify-center px-2 py-2 text-xs font-medium text-white bg-gradient-to-r from-[#33ADFF] to-[#0194F3] hover:from-[#0194F3] hover:to-[#0064D2] rounded-lg shadow-sm transition-all duration-200">
+                                Detail
+                            </button>
+                            <button onclick="openEditArticleModal({{ $article->id }})"
+                                class="inline-flex items-center justify-center px-2 py-2 text-xs font-medium text-white bg-gradient-to-r from-[#0194F3] to-[#0064D2] hover:from-[#0064D2] hover:to-[#0194F3] rounded-lg shadow-sm transition-all duration-200">
+                                Edit
+                            </button>
+                            <button
+                                class="delete-btn inline-flex items-center justify-center px-2 py-2 text-xs font-medium text-white bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 rounded-lg shadow-sm transition-all duration-200"
+                                data-id="{{ $article->id }}" data-name="{{ $article->title }}">
+                                Hapus
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="text-center p-6 text-[#687176] dark:text-gray-400 text-sm bg-gradient-to-br from-white to-[#F7F9FC] dark:from-gray-800 dark:to-gray-700 rounded-xl">
+                    @if (request('keyword') || request('status'))
+                        Tidak ada artikel yang sesuai dengan filter yang dipilih.
+                    @else
+                        Belum ada data artikel.
+                    @endif
+                </div>
+            @endforelse
+        </div>
     </div>
 
-    <!-- Pagination -->
+    <!-- Pagination — GRADIENT SEPERTI SIDEBAR -->
     @if (method_exists($articles, 'hasPages') && $articles->hasPages())
-        <div class="p-4 bg-white border-t border-[#FFD4D4] dark:bg-gray-800 dark:border-gray-700">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="text-sm text-gray-500 dark:text-gray-400">
+        <div class="relative overflow-hidden p-3 sm:p-4 bg-gradient-to-r from-white via-[#F7F9FC] to-[#E6F4FF] dark:from-gray-800 dark:via-gray-800 dark:to-gray-900 shadow-inner">
+            {{-- Pattern dots subtle --}}
+            <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(circle, #0194F3 1.5px, transparent 1.5px); background-size: 24px 24px;"></div>
+
+            <div class="relative flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div class="text-xs sm:text-sm text-[#687176] dark:text-gray-400 text-center sm:text-left">
                     Menampilkan
-                    <span class="font-semibold text-gray-900 dark:text-white">{{ $articles->firstItem() ?? 0 }}</span>
-                    - <span class="font-semibold text-gray-900 dark:text-white">{{ $articles->lastItem() ?? 0 }}</span>
-                    dari <span class="font-semibold text-gray-900 dark:text-white">{{ $articles->total() }}</span>
+                    <span class="font-semibold text-[#0F294D] dark:text-white">{{ $articles->firstItem() ?? 0 }}</span>
+                    - <span class="font-semibold text-[#0F294D] dark:text-white">{{ $articles->lastItem() ?? 0 }}</span>
+                    dari <span class="font-semibold text-[#0F294D] dark:text-white">{{ $articles->total() }}</span>
                     data
-                    @if (request('keyword'))
-                        <span class="text-[#E60000] dark:text-[#FF6B6B]">
-                            (Hasil pencarian: "{{ request('keyword') }}")
+                    @if (request('keyword') || request('status'))
+                        <span class="text-[#0194F3] dark:text-[#33ADFF] block sm:inline">
+                            (Hasil filter)
                         </span>
                     @endif
                 </div>
-                <div>
+                <div class="w-full sm:w-auto flex justify-center sm:justify-end">
                     {{ $articles->appends(request()->query())->links() }}
                 </div>
             </div>
@@ -238,6 +396,15 @@
             });
         }
 
+        // ========== FILTER STATUS ==========
+        const statusFilter = document.getElementById('status-filter');
+
+        if (statusFilter) {
+            statusFilter.addEventListener('change', function () {
+                searchForm.submit();
+            });
+        }
+
         // ========== DELETE CONFIRMATION ==========
         const deleteButtons = document.querySelectorAll('.delete-btn');
 
@@ -254,7 +421,7 @@
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
-                    cancelButtonColor: '#E60000',
+                    cancelButtonColor: '#0194F3',
                     confirmButtonText: 'Ya, hapus!',
                     cancelButtonText: 'Batal',
                     reverseButtons: true
@@ -279,23 +446,48 @@
 </script>
 
 <style>
-    .dark .bg-\[\#FFF5F5\] {
+    .dark .bg-\[\#E6F4FF\] {
         background-color: #1f2937 !important;
     }
 
-    .dark .border-\[\#FFD4D4\] {
+    .dark .border-\[\#B3E0FF\] {
         border-color: #374151 !important;
     }
 
-    .dark .text-\[\#E60000\] {
-        color: #FF6B6B !important;
+    .dark .text-\[\#0194F3\] {
+        color: #33ADFF !important;
     }
 
+    /* Anti-gepeng: img di tabel */
+    #table-body td img {
+        object-fit: cover !important;
+        object-position: center !important;
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /* Scrollbar horizontal tabel */
+    .overflow-x-auto::-webkit-scrollbar {
+        height: 6px;
+    }
+    .overflow-x-auto::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .overflow-x-auto::-webkit-scrollbar-thumb {
+        background: #B3E0FF;
+        border-radius: 3px;
+    }
+    .dark .overflow-x-auto::-webkit-scrollbar-thumb {
+        background: #4B5563;
+    }
+
+    /* ===== PAGINATION ===== */
     .pagination {
         display: flex;
-        gap: 6px;
+        gap: 4px;
         flex-wrap: wrap;
-        justify-content: flex-end;
+        justify-content: center;
     }
 
     .pagination .page-item {
@@ -306,92 +498,95 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 6px 14px;
+        padding: 6px 12px;
         border-radius: 8px;
         font-size: 13px;
         font-weight: 500;
-        color: #E60000;
-        background-color: #FFF5F5;
-        border: 1px solid #FFD4D4;
+        color: #0194F3;
+        background: linear-gradient(135deg, #E6F4FF, #F0F9FF);
+        border: 1px solid #B3E0FF;
         transition: all 0.2s ease;
         text-decoration: none;
         min-width: 36px;
     }
 
     .pagination .page-link:hover {
-        background-color: #E60000;
-        border-color: #E60000;
+        background: linear-gradient(135deg, #0194F3, #0064D2);
+        border-color: #0194F3;
         color: #ffffff;
         text-decoration: none;
+        box-shadow: 0 4px 8px rgba(1, 148, 243, 0.3);
     }
 
     .pagination .active .page-link {
-        background-color: #E60000;
-        border-color: #E60000;
+        background: linear-gradient(135deg, #0194F3, #0064D2);
+        border-color: #0194F3;
         color: #ffffff;
+        box-shadow: 0 4px 10px rgba(1, 148, 243, 0.4);
     }
 
     .pagination .active .page-link:hover {
-        background-color: #B71C1C;
-        border-color: #B71C1C;
+        background: linear-gradient(135deg, #0064D2, #0194F3);
+        border-color: #0064D2;
         color: #ffffff;
     }
 
     .pagination .disabled .page-link {
         opacity: 0.5;
         cursor: not-allowed;
-        background-color: #f3f4f6;
+        background: #f3f4f6;
         color: #9CA3AF;
         pointer-events: none;
     }
 
     .dark .pagination .page-link {
-        background-color: #1f2937;
+        background: linear-gradient(135deg, #1f2937, #374151);
         border-color: #374151;
-        color: #FF6B6B;
+        color: #33ADFF;
     }
 
     .dark .pagination .page-link:hover {
-        background-color: #FF6B6B;
-        border-color: #FF6B6B;
+        background: linear-gradient(135deg, #33ADFF, #0194F3);
+        border-color: #33ADFF;
         color: #ffffff;
     }
 
     .dark .pagination .active .page-link {
-        background-color: #FF6B6B;
-        border-color: #FF6B6B;
+        background: linear-gradient(135deg, #33ADFF, #0194F3);
+        border-color: #33ADFF;
         color: #ffffff;
     }
 
     .dark .pagination .active .page-link:hover {
-        background-color: #E60000;
-        border-color: #E60000;
+        background: linear-gradient(135deg, #0194F3, #0064D2);
+        border-color: #0194F3;
         color: #ffffff;
     }
 
     .dark .pagination .disabled .page-link {
-        background-color: #374151;
+        background: #374151;
         color: #6B7280;
     }
 
     @media (max-width: 640px) {
         .pagination {
             justify-content: center;
+            gap: 3px;
         }
 
         .pagination .page-link {
-            padding: 4px 10px;
+            padding: 5px 10px;
             font-size: 12px;
-            min-width: 30px;
+            min-width: 32px;
         }
     }
 
-    #table-body tr:hover {
-        background-color: #FFF5F5;
-        transition: background-color 0.2s ease;
-    }
+    /* ===== TABLE HOVER (inline di <tr>) ===== */
 
-    .dark #table-body tr:hover {
-        background-color: #374151;
+    /* Mobile card hover */
+    @media (hover: hover) and (max-width: 767px) {
+        .md\:hidden > div:hover {
+            box-shadow: 0 8px 16px -4px rgba(1, 148, 243, 0.25);
+        }
     }
 </style>

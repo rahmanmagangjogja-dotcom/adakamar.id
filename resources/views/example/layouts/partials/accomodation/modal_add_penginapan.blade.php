@@ -5,22 +5,23 @@
             onclick="closeAddPenginapanModal()"></div>
 
         <div
-            class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-800 sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
-            <div class="px-6 py-4 border-b border-[#FFD4D4] dark:border-gray-700">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-semibold text-[#E60000] dark:text-[#FF6B6B]">
-                        <svg class="w-6 h-6 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                        </svg>
+            class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-gradient-to-br from-white via-[#F7F9FC] to-[#E6F4FF] rounded-xl shadow-2xl dark:from-gray-800 dark:via-gray-800 dark:to-gray-900 sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+
+            {{-- ===== HEADER MODAL — GRADIENT ===== --}}
+            <div class="relative overflow-hidden px-6 py-4 bg-gradient-to-r from-[#0194F3] via-[#0194F3] to-[#0064D2]">
+                {{-- Pattern dots subtle --}}
+                <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle, white 1.5px, transparent 1.5px); background-size: 20px 20px;"></div>
+                {{-- Blob dekoratif --}}
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl pointer-events-none"></div>
+
+                <div class="relative flex items-center justify-between">
+                    <h3 class="text-xl font-semibold text-white flex items-center gap-2">
+                        <i data-lucide="building-2" class="w-6 h-6"></i>
                         Tambah Penginapan Baru
                     </h3>
                     <button type="button" onclick="closeAddPenginapanModal()"
-                        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
+                        class="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-all">
+                        <i data-lucide="x" class="w-5 h-5"></i>
                     </button>
                 </div>
             </div>
@@ -28,22 +29,75 @@
             <div class="px-6 py-4 max-h-[70vh] overflow-y-auto">
                 <form id="addPenginapanForm" enctype="multipart/form-data">
                     @csrf
+
+                    <!-- Tab Navigation — GRADIENT ACTIVE -->
+                    <div class="mb-6 rounded-xl bg-gradient-to-r from-white via-[#F7F9FC] to-[#E6F4FF] dark:from-gray-800 dark:via-gray-800 dark:to-gray-700 p-2 shadow-inner">
+                        <ul class="flex flex-wrap gap-1 text-sm font-medium text-center" id="addPenginapanTab"
+                            role="tablist">
+                            <li role="presentation">
+                                <button
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#0194F3] to-[#0064D2] text-white shadow-md shadow-[#0194F3]/30 transition-all duration-200"
+                                    data-tab="add-utama" role="tab" type="button" onclick="switchAddTab('add-utama')">
+                                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                                    Informasi Utama
+                                </button>
+                            </li>
+                            <li role="presentation">
+                                <button
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-[#687176] dark:text-gray-400 hover:bg-white hover:text-[#0194F3] dark:hover:bg-gray-700 dark:hover:text-[#33ADFF] transition-all duration-200"
+                                    data-tab="add-kontak" role="tab" type="button" onclick="switchAddTab('add-kontak')">
+                                    <i data-lucide="phone" class="w-4 h-4"></i>
+                                    Kontak & Sosmed
+                                </button>
+                            </li>
+                            <li role="presentation">
+                                <button
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-[#687176] dark:text-gray-400 hover:bg-white hover:text-[#0194F3] dark:hover:bg-gray-700 dark:hover:text-[#33ADFF] transition-all duration-200"
+                                    data-tab="add-maps" role="tab" type="button" onclick="switchAddTab('add-maps')">
+                                    <i data-lucide="map-pin" class="w-4 h-4"></i>
+                                    Lokasi & Maps
+                                </button>
+                            </li>
+                            <li role="presentation">
+                                <button
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-[#687176] dark:text-gray-400 hover:bg-white hover:text-[#0194F3] dark:hover:bg-gray-700 dark:hover:text-[#33ADFF] transition-all duration-200"
+                                    data-tab="add-media" role="tab" type="button" onclick="switchAddTab('add-media')">
+                                    <i data-lucide="image" class="w-4 h-4"></i>
+                                    Media & SEO
+                                </button>
+                            </li>
+                            <li role="presentation">
+                                <button
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-[#687176] dark:text-gray-400 hover:bg-white hover:text-[#0194F3] dark:hover:bg-gray-700 dark:hover:text-[#33ADFF] transition-all duration-200"
+                                    data-tab="add-fasilitas" role="tab" type="button"
+                                    onclick="switchAddTab('add-fasilitas')">
+                                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                    Fasilitas & Aturan
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Tab Content -->
                     <div class="space-y-6">
-                        <!-- Informasi Penginapan -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Informasi
-                                Penginapan</h4>
+
+                        {{-- ============ TAB 1: INFORMASI UTAMA ============ --}}
+                        <div id="add-utama" class="add-tab-content">
+                            <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                                <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                Informasi Penginapan
+                            </h4>
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <!-- Kategori -->
                                 <div class="sm:col-span-2">
                                     <label for="addCategory"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kategori
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Kategori
                                         <span class="text-red-500">*</span></label>
                                     <select id="addCategory" name="category_id" required
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]">
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200">
                                         <option value="">Pilih Kategori</option>
-                                        @if(isset($categories) && $categories->count())
-                                            @foreach($categories as $category)
+                                        @if (isset($categories) && $categories->count())
+                                            @foreach ($categories as $category)
                                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
                                             @endforeach
                                         @endif
@@ -54,45 +108,38 @@
                                 <!-- Title -->
                                 <div class="sm:col-span-2 lg:col-span-3">
                                     <label for="addTitle"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Nama
                                         Penginapan <span class="text-red-500">*</span></label>
                                     <input type="text" name="title" id="addTitle"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="Masukkan nama penginapan" required>
                                     <span class="text-red-500 text-xs error-message" id="add_title_error"></span>
                                 </div>
 
-                                <!-- Slug (Auto-generated with edit option) -->
+                                <!-- Slug -->
                                 <div class="col-span-full">
                                     <div class="flex items-center justify-between mb-2">
                                         <label for="addSlug"
-                                            class="text-sm font-medium text-gray-900 dark:text-white">Slug</label>
+                                            class="text-sm font-medium text-[#0F294D] dark:text-white">Slug</label>
                                         <button type="button" onclick="generateSlugFromTitle()"
-                                            class="text-xs text-[#E60000] hover:text-[#B71C1C] dark:text-[#FF6B6B] dark:hover:text-[#FF6B6B] font-medium">
-                                            <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
-                                                </path>
-                                            </svg>
+                                            class="text-xs text-[#0194F3] hover:text-[#0064D2] dark:text-[#33ADFF] dark:hover:text-[#B3E0FF] font-medium inline-flex items-center gap-1">
+                                            <i data-lucide="wand-2" class="w-3 h-3"></i>
                                             Generate dari Nama
                                         </button>
                                     </div>
                                     <input type="text" name="slug" id="addSlug"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="Kosongkan untuk auto-generate">
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Biarkan kosong untuk
-                                        auto-generate atau edit sesuai keinginan</p>
                                     <span class="text-red-500 text-xs error-message" id="add_slug_error"></span>
                                 </div>
 
                                 <!-- Address -->
                                 <div class="col-span-full">
                                     <label for="addAddress"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alamat
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Alamat
                                         <span class="text-red-500">*</span></label>
                                     <input type="text" name="address" id="addAddress"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="Masukkan alamat lengkap" required>
                                     <span class="text-red-500 text-xs error-message" id="add_address_error"></span>
                                 </div>
@@ -100,10 +147,10 @@
                                 <!-- Price -->
                                 <div>
                                     <label for="addPrice"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Harga per
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Harga per
                                         Malam <span class="text-red-500">*</span></label>
                                     <input type="number" name="price" id="addPrice"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="350000" required min="0">
                                     <span class="text-red-500 text-xs error-message" id="add_price_error"></span>
                                 </div>
@@ -111,10 +158,10 @@
                                 <!-- Capacity -->
                                 <div>
                                     <label for="addCapacity"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kapasitas
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Kapasitas
                                         (Orang) <span class="text-red-500">*</span></label>
                                     <input type="number" name="capacity" id="addCapacity"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="4" required min="1">
                                     <span class="text-red-500 text-xs error-message" id="add_capacity_error"></span>
                                 </div>
@@ -122,10 +169,10 @@
                                 <!-- Bedroom -->
                                 <div>
                                     <label for="addBedroom"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kamar Tidur
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Kamar Tidur
                                         <span class="text-red-500">*</span></label>
                                     <input type="number" name="bedroom" id="addBedroom"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="2" required min="0">
                                     <span class="text-red-500 text-xs error-message" id="add_bedroom_error"></span>
                                 </div>
@@ -133,10 +180,10 @@
                                 <!-- Bathroom -->
                                 <div>
                                     <label for="addBathroom"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kamar Mandi
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Kamar Mandi
                                         <span class="text-red-500">*</span></label>
                                     <input type="number" name="bathroom" id="addBathroom"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="1" required min="0">
                                     <span class="text-red-500 text-xs error-message" id="add_bathroom_error"></span>
                                 </div>
@@ -144,10 +191,10 @@
                                 <!-- Size -->
                                 <div>
                                     <label for="addSize"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ukuran
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Ukuran
                                         (m²)</label>
                                     <input type="text" name="size" id="addSize"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="45">
                                     <span class="text-red-500 text-xs error-message" id="add_size_error"></span>
                                 </div>
@@ -155,10 +202,10 @@
                                 <!-- Status -->
                                 <div>
                                     <label for="addStatus"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Status
                                         <span class="text-red-500">*</span></label>
                                     <select id="addStatus" name="status" required
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]">
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200">
                                         <option value="">Pilih Status</option>
                                         <option value="Available">Available</option>
                                         <option value="Full">Full</option>
@@ -170,187 +217,339 @@
                                 <!-- Description -->
                                 <div class="col-span-full">
                                     <label for="addDescription"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Deskripsi
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Deskripsi
                                         <span class="text-red-500">*</span></label>
                                     <textarea name="description" id="addDescription" rows="3"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="Masukkan deskripsi lengkap" required></textarea>
                                     <span class="text-red-500 text-xs error-message" id="add_description_error"></span>
                                 </div>
-
-                                <!-- Meta Title -->
-                                <div class="col-span-full">
-                                    <label for="addMetaTitle"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Meta
-                                        Title</label>
-                                    <input type="text" name="meta_title" id="addMetaTitle"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
-                                        placeholder="Meta Title">
-                                    <span class="text-red-500 text-xs error-message" id="add_meta_title_error"></span>
-                                </div>
-
-                                <!-- Meta Description -->
-                                <div class="col-span-full">
-                                    <label for="addMetaDescription"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Meta
-                                        Description</label>
-                                    <textarea name="meta_description" id="addMetaDescription" rows="2"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
-                                        placeholder="Meta Description"></textarea>
-                                    <span class="text-red-500 text-xs error-message"
-                                        id="add_meta_description_error"></span>
-                                </div>
                             </div>
                         </div>
 
-                        <!-- Thumbnail -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Thumbnail <span
-                                    class="text-red-500">*</span></h4>
-                            <div class="flex flex-col items-center">
-                                <!-- Upload Area -->
-                                <div id="addThumbnailUploadArea"
-                                    class="w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-[#FFF5F5] border-[#FFD4D4] hover:bg-[#FFE8E8] dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 transition-colors">
-                                    <label for="addThumbnailUpload"
-                                        class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
-                                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                            <svg class="w-8 h-8 mb-2 text-[#FF6B6B] dark:text-gray-400" fill="none"
-                                                stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                            <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">
-                                                <span class="font-semibold">Klik untuk upload</span> thumbnail
-                                            </p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG, WEBP (Maks.
-                                                5MB)</p>
-                                        </div>
-                                        <input type="file" id="addThumbnailUpload" name="thumbnail" accept="image/*"
-                                            class="hidden" required>
-                                    </label>
-                                </div>
-
-                                <!-- Preview Thumbnail (muncul setelah upload) -->
-                                <div id="addThumbnailPreviewContainer" class="hidden relative w-full">
-                                    <img id="addThumbnailPreview" src="#" alt="Preview Thumbnail"
-                                        class="w-full h-48 object-cover rounded-lg border-2 border-[#FFD4D4] dark:border-gray-600">
-                                    <div
-                                        class="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-3 py-1.5 rounded-lg">
-                                        <span id="addThumbnailFileName"></span>
-                                        <span class="mx-2">|</span>
-                                        <span id="addThumbnailFileSize"></span>
-                                    </div>
-                                    <button type="button" onclick="removeAddThumbnail()"
-                                        class="absolute top-2 right-2 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-700 transition-colors shadow-lg">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                    </button>
-                                    <div
-                                        class="absolute inset-0 bg-green-500/10 border-2 border-green-500 rounded-lg pointer-events-none">
-                                    </div>
-                                    <div
-                                        class="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded-lg">
-                                        <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M5 13l4 4L19 7"></path>
-                                        </svg>
-                                        Terupload
-                                    </div>
-                                </div>
-
-                                <span class="text-red-500 text-xs error-message" id="add_thumbnail_error"></span>
-                            </div>
-                        </div>
-
-                        <!-- Fasilitas -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Fasilitas</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Pilih fasilitas yang tersedia</p>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                                @if(isset($facilities) && $facilities->count())
-                                    @foreach($facilities as $facility)
-                                        <label class="flex items-center space-x-2">
-                                            <input type="checkbox" name="facility_ids[]" value="{{ $facility->id }}"
-                                                class="rounded border-gray-300 text-[#E60000] focus:ring-[#E60000] dark:border-gray-600 dark:bg-gray-700">
-                                            <span class="text-sm text-gray-700 dark:text-gray-300">{{ $facility->name }}</span>
-                                        </label>
-                                    @endforeach
-                                @else
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 col-span-full">Tidak ada fasilitas
-                                        tersedia</p>
-                                @endif
-                            </div>
-                            <span class="text-red-500 text-xs error-message" id="add_facility_ids_error"></span>
-                        </div>
-
-                        <!-- Aturan -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Aturan</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Pilih aturan yang berlaku</p>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                                @if(isset($rules) && $rules->count())
-                                    @foreach($rules as $rule)
-                                        <label class="flex items-center space-x-2">
-                                            <input type="checkbox" name="rule_ids[]" value="{{ $rule->id }}"
-                                                class="rounded border-gray-300 text-[#E60000] focus:ring-[#E60000] dark:border-gray-600 dark:bg-gray-700">
-                                            <span class="text-sm text-gray-700 dark:text-gray-300">{{ $rule->name }}</span>
-                                        </label>
-                                    @endforeach
-                                @else
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 col-span-full">Tidak ada aturan
-                                        tersedia</p>
-                                @endif
-                            </div>
-                            <span class="text-red-500 text-xs error-message" id="add_rule_ids_error"></span>
-                        </div>
-
-                        <!-- Galeri -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Galeri Foto
-                                <span class="text-red-500">*</span>
+                        {{-- ============ TAB 2: KONTAK & SOSIAL MEDIA ============ --}}
+                        <div id="add-kontak" class="add-tab-content hidden">
+                            <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-2 flex items-center gap-2">
+                                <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                Kontak & Sosial Media
                             </h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Upload minimal 2 dan maksimal 10
-                                foto</p>
-                            <div id="addGalleryContainer"
-                                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-4">
-                                <!-- Galeri akan ditambahkan di sini -->
+                            <p class="text-xs text-[#687176] dark:text-gray-400 mb-4">
+                                Semua field di bawah ini <strong>opsional</strong> — boleh dikosongi jika tidak ada.
+                            </p>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {{-- Telepon --}}
+                                <div>
+                                    <label for="addPhone"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">No.
+                                        Telepon</label>
+                                    <input type="text" name="phone" id="addPhone"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="(021) 1234-5678">
+                                    <span class="text-red-500 text-xs error-message" id="add_phone_error"></span>
+                                </div>
+
+                                {{-- WhatsApp --}}
+                                <div>
+                                    <label for="addWhatsapp"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">No.
+                                        WhatsApp</label>
+                                    <input type="text" name="whatsapp" id="addWhatsapp"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="0812-3456-7890">
+                                    <span class="text-red-500 text-xs error-message" id="add_whatsapp_error"></span>
+                                </div>
+
+                                {{-- Email --}}
+                                <div class="sm:col-span-2">
+                                    <label for="addEmail"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Email</label>
+                                    <input type="email" name="email" id="addEmail"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="info@adakamar.id">
+                                    <span class="text-red-500 text-xs error-message" id="add_email_error"></span>
+                                </div>
+
+                                {{-- Facebook --}}
+                                <div>
+                                    <label for="addFacebook"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Facebook</label>
+                                    <input type="text" name="facebook" id="addFacebook"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="https://facebook.com/adakamar">
+                                    <span class="text-red-500 text-xs error-message" id="add_facebook_error"></span>
+                                </div>
+
+                                {{-- Instagram --}}
+                                <div>
+                                    <label for="addInstagram"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Instagram</label>
+                                    <input type="text" name="instagram" id="addInstagram"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="https://instagram.com/adakamar">
+                                    <span class="text-red-500 text-xs error-message" id="add_instagram_error"></span>
+                                </div>
+
+                                {{-- YouTube --}}
+                                <div>
+                                    <label for="addYoutube"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">YouTube</label>
+                                    <input type="text" name="youtube" id="addYoutube"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="https://youtube.com/@adakamar">
+                                    <span class="text-red-500 text-xs error-message" id="add_youtube_error"></span>
+                                </div>
+
+                                {{-- X (Twitter) --}}
+                                <div>
+                                    <label for="addX"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">X
+                                        (Twitter)</label>
+                                    <input type="text" name="x" id="addX"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="https://x.com/adakamar">
+                                    <span class="text-red-500 text-xs error-message" id="add_x_error"></span>
+                                </div>
+
+                                {{-- TikTok --}}
+                                <div class="sm:col-span-2">
+                                    <label for="addTiktok"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">TikTok</label>
+                                    <input type="text" name="tiktok" id="addTiktok"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="https://tiktok.com/@adakamar">
+                                    <span class="text-red-500 text-xs error-message" id="add_tiktok_error"></span>
+                                </div>
                             </div>
-                            <div id="addUploadGaleriContainer">
-                                <label id="addUploadGaleriBtn"
-                                    class="cursor-pointer inline-flex items-center px-4 py-2 bg-[#E60000] text-white rounded-lg hover:bg-[#B71C1C] focus:ring-4 focus:ring-[#FFD4D4] dark:bg-[#FF6B6B] dark:hover:bg-[#E60000] dark:focus:ring-[#FF6B6B]">
-                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                        <path
-                                            d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z" />
-                                        <path d="M9 13h2v5a1 1 0 11-2 0v-5z" />
-                                    </svg>
-                                    Tambah Foto Galeri
-                                    <input type="file" id="addGalleryUpload" name="gallery[]" accept="image/*" multiple
-                                        class="hidden">
-                                </label>
-                                <span id="addGalleryCounter" class="ml-3 text-sm text-gray-500 dark:text-gray-400">0 /
-                                    10 foto</span>
+                        </div>
+
+                        {{-- ============ TAB 3: LOKASI & MAPS ============ --}}
+                        <div id="add-maps" class="add-tab-content hidden">
+                            <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                                <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                Lokasi & Google Maps
+                            </h4>
+                            <div class="grid grid-cols-1 gap-4">
+                                <div>
+                                    <label for="addMapEmbed"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Google Maps
+                                        Embed</label>
+                                    <p class="text-xs text-[#687176] dark:text-gray-400 mb-2">Salin kode embed dari
+                                        Google Maps</p>
+                                    <textarea name="maps_embed" id="addMapEmbed" rows="3"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="<iframe src='https://www.google.com/maps/embed?...'></iframe>"></textarea>
+                                    <span class="text-red-500 text-xs error-message" id="add_map_embed_error"></span>
+                                </div>
+
+                                <div>
+                                    <label for="addGoogleMapsUrl"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Google Maps
+                                        URL</label>
+                                    <input type="url" name="google_maps_url" id="addGoogleMapsUrl"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="https://maps.google.com/...">
+                                    <span class="text-red-500 text-xs error-message"
+                                        id="add_google_maps_url_error"></span>
+                                </div>
                             </div>
-                            <p id="addGalleryError" class="mt-1 text-sm text-red-600 hidden">Minimal upload 2 foto
-                                galeri</p>
-                            <span class="text-red-500 text-xs error-message" id="add_gallery_error"></span>
+                        </div>
+
+                        {{-- ============ TAB 4: MEDIA & SEO ============ --}}
+                        <div id="add-media" class="add-tab-content hidden">
+                            {{-- Thumbnail --}}
+                            <div class="mb-6">
+                                <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                                    <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                    Thumbnail <span class="text-red-500">*</span>
+                                </h4>
+                                <div class="flex flex-col items-center">
+                                    <div id="addThumbnailUploadArea"
+                                        class="w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gradient-to-br from-[#E6F4FF] to-[#F0F9FF] border-[#B3E0FF] hover:from-[#B3E0FF] hover:to-[#E6F4FF] dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:hover:border-[#33ADFF] transition-colors">
+                                        <label for="addThumbnailUpload"
+                                            class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
+                                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                                <i data-lucide="image-plus"
+                                                    class="w-8 h-8 mb-2 text-[#0194F3] dark:text-gray-400"></i>
+                                                <p class="mb-1 text-sm text-[#687176] dark:text-gray-400">
+                                                    <span class="font-semibold text-[#0194F3]">Klik untuk upload</span> thumbnail
+                                                </p>
+                                                <p class="text-xs text-[#687176] dark:text-gray-400">PNG, JPG, WEBP
+                                                    (Maks. 100MB)</p>
+                                            </div>
+                                            <input type="file" id="addThumbnailUpload" name="thumbnail" accept="image/*"
+                                                class="hidden" required>
+                                        </label>
+                                    </div>
+
+                                    <div id="addThumbnailPreviewContainer" class="hidden relative w-full">
+                                        <img id="addThumbnailPreview" src="#" alt="Preview Thumbnail"
+                                            class="w-full h-48 object-cover rounded-lg border-2 border-[#B3E0FF] dark:border-gray-600">
+                                        <div
+                                            class="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-3 py-1.5 rounded-lg">
+                                            <span id="addThumbnailFileName"></span>
+                                            <span class="mx-2">|</span>
+                                            <span id="addThumbnailFileSize"></span>
+                                        </div>
+                                        <button type="button" onclick="removeAddThumbnail()"
+                                            class="absolute top-2 right-2 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-700 transition-colors shadow-lg">
+                                            <i data-lucide="x" class="w-5 h-5"></i>
+                                        </button>
+                                        {{-- Badge "Terupload" — biru --}}
+                                        <div class="absolute top-2 left-2 bg-gradient-to-r from-[#0194F3] to-[#0064D2] text-white text-xs px-2 py-1 rounded-lg shadow-md inline-flex items-center gap-1">
+                                            <i data-lucide="check" class="w-3 h-3"></i>
+                                            Terupload
+                                        </div>
+                                    </div>
+                                    <span class="text-red-500 text-xs error-message" id="add_thumbnail_error"></span>
+                                </div>
+                            </div>
+
+                            {{-- Galeri --}}
+                            <div>
+                                <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                                    <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                    Galeri Foto <span class="text-red-500">*</span>
+                                </h4>
+                                <p class="text-sm text-[#687176] dark:text-gray-400 mb-3">
+                                    Upload minimal 2 dan maksimal 10 foto &middot; Maks. 100MB per foto (JPG, PNG, WEBP, GIF)
+                                </p>
+                                <div id="addGalleryContainer"
+                                    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-4">
+                                </div>
+                                <div id="addUploadGaleriContainer">
+                                    <label id="addUploadGaleriBtn"
+                                        class="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#0194F3] to-[#0064D2] hover:from-[#0064D2] hover:to-[#0194F3] text-white rounded-lg shadow-md shadow-[#0194F3]/30 transition-all">
+                                        <i data-lucide="upload" class="w-5 h-5"></i>
+                                        Tambah Foto Galeri
+                                        <input type="file" id="addGalleryUpload" name="gallery[]" accept="image/*"
+                                            multiple class="hidden">
+                                    </label>
+                                    <span id="addGalleryCounter" class="ml-3 text-sm text-[#687176] dark:text-gray-400">0
+                                        / 10 foto</span>
+                                </div>
+                                <p id="addGalleryError" class="mt-1 text-sm text-red-600 hidden">Minimal upload 2 foto galeri</p>
+                                <span class="text-red-500 text-xs error-message" id="add_gallery_error"></span>
+                            </div>
+
+                            {{-- SEO --}}
+                            <div class="mt-6 pt-6 border-t border-[#B3E0FF] dark:border-gray-700">
+                                <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                                    <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                    SEO (Search Engine Optimization)
+                                </h4>
+                                <div class="grid grid-cols-1 gap-4">
+                                    <div>
+                                        <label for="addMetaTitle"
+                                            class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Meta
+                                            Title</label>
+                                        <input type="text" name="meta_title" id="addMetaTitle"
+                                            class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                            placeholder="Meta Title">
+                                        <span class="text-red-500 text-xs error-message"
+                                            id="add_meta_title_error"></span>
+                                    </div>
+
+                                    <div>
+                                        <label for="addMetaDescription"
+                                            class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Meta
+                                            Description</label>
+                                        <textarea name="meta_description" id="addMetaDescription" rows="2"
+                                            class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                            placeholder="Meta Description"></textarea>
+                                        <span class="text-red-500 text-xs error-message"
+                                            id="add_meta_description_error"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- ============ TAB 5: FASILITAS & ATURAN ============ --}}
+                        <div id="add-fasilitas" class="add-tab-content hidden">
+                            <div class="mb-6">
+                                <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                                    <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                    Fasilitas
+                                </h4>
+                                <p class="text-sm text-[#687176] dark:text-gray-400 mb-3">Pilih fasilitas yang tersedia</p>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 p-4 rounded-xl bg-gradient-to-br from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-800 dark:to-gray-700 border border-[#B3E0FF] dark:border-gray-600">
+                                    @if (isset($facilities) && $facilities->count())
+                                        @foreach ($facilities as $facility)
+                                            <label
+                                                class="flex items-center gap-2 p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-[#B3E0FF] dark:hover:border-gray-500">
+                                                <input type="checkbox" name="facility_ids[]"
+                                                    value="{{ $facility->id }}"
+                                                    class="rounded border-[#B3E0FF] text-[#0194F3] focus:ring-[#0194F3] dark:border-gray-600 dark:bg-gray-700 flex-shrink-0">
+
+                                                {{-- ===== ICON FASILITAS (Lucide) ===== --}}
+                                                @if ($facility->icon)
+                                                    <span
+                                                        class="inline-flex items-center justify-center w-7 h-7 rounded-md
+                                                                 bg-white dark:bg-gray-700 border border-[#B3E0FF] dark:border-gray-600
+                                                                 flex-shrink-0"
+                                                        title="{{ $facility->icon }}">
+                                                        @include('example.layouts.partials.accomodation._icon', [
+                                                            'icon' => $facility->icon,
+                                                            'size' => 16,
+                                                        ])
+                                                    </span>
+                                                @else
+                                                    <span
+                                                        class="inline-flex items-center justify-center w-7 h-7 rounded-md
+                                                                 bg-gray-100 dark:bg-gray-600 border border-dashed border-gray-300 dark:border-gray-500
+                                                                 text-gray-400 dark:text-gray-500 flex-shrink-0"
+                                                        title="Tidak ada icon">
+                                                        <i data-lucide="minus" class="w-3 h-3"></i>
+                                                    </span>
+                                                @endif
+
+                                                <span
+                                                    class="text-sm text-[#0F294D] dark:text-gray-300 leading-tight">{{ $facility->name }}</span>
+                                            </label>
+                                        @endforeach
+                                    @else
+                                        <p class="text-sm text-[#687176] dark:text-gray-400 col-span-full">Tidak ada fasilitas tersedia</p>
+                                    @endif
+                                </div>
+                                <span class="text-red-500 text-xs error-message" id="add_facility_ids_error"></span>
+                            </div>
+
+                            <div class="pt-6 border-t border-[#B3E0FF] dark:border-gray-700">
+                                <h4 class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                                    <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                    Aturan
+                                </h4>
+                                <p class="text-sm text-[#687176] dark:text-gray-400 mb-3">Pilih aturan yang berlaku</p>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 p-4 rounded-xl bg-gradient-to-br from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-800 dark:to-gray-700 border border-[#B3E0FF] dark:border-gray-600">
+                                    @if (isset($rules) && $rules->count())
+                                        @foreach ($rules as $rule)
+                                            <label
+                                                class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                                                <input type="checkbox" name="rule_ids[]"
+                                                    value="{{ $rule->id }}"
+                                                    class="rounded border-[#B3E0FF] text-[#0194F3] focus:ring-[#0194F3] dark:border-gray-600 dark:bg-gray-700">
+                                                <span
+                                                    class="text-sm text-[#0F294D] dark:text-gray-300">{{ $rule->name }}</span>
+                                            </label>
+                                        @endforeach
+                                    @else
+                                        <p class="text-sm text-[#687176] dark:text-gray-400 col-span-full">Tidak ada aturan tersedia</p>
+                                    @endif
+                                </div>
+                                <span class="text-red-500 text-xs error-message" id="add_rule_ids_error"></span>
+                            </div>
                         </div>
                     </div>
 
-                    <div
-                        class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-6 pt-4 border-t border-[#FFD4D4] dark:border-gray-700">
+                    {{-- ===== FOOTER MODAL — GRADIENT ===== --}}
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-6 pt-4 border-t border-[#B3E0FF] dark:border-gray-700 bg-gradient-to-r from-transparent via-[#F7F9FC]/50 to-transparent dark:via-gray-800/50 -mx-6 px-6 pb-2">
                         <button type="button" onclick="submitAddPenginapan()"
-                            class="text-white bg-[#E60000] hover:bg-[#B71C1C] focus:ring-4 focus:ring-[#FFD4D4] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#FF6B6B] dark:hover:bg-[#E60000] dark:focus:ring-[#FF6B6B] w-full sm:w-auto">
-                            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4"></path>
-                            </svg>
+                            class="inline-flex items-center justify-center gap-2 text-white bg-gradient-to-r from-[#0194F3] to-[#0064D2] hover:from-[#0064D2] hover:to-[#0194F3] focus:ring-4 focus:ring-[#B3E0FF] font-medium rounded-lg text-sm px-5 py-2.5 text-center shadow-md shadow-[#0194F3]/30 w-full sm:w-auto transition-all duration-200">
+                            <i data-lucide="save" class="w-4 h-4"></i>
                             Simpan Penginapan
                         </button>
                         <button type="button" onclick="closeAddPenginapanModal()"
-                            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 hover:text-[#E60000] focus:ring-4 focus:ring-[#FFD4D4] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 w-full sm:w-auto">
+                            class="text-[#0194F3] bg-white border-2 border-[#0194F3] focus:outline-none hover:bg-[#0194F3] hover:text-white focus:ring-4 focus:ring-[#B3E0FF] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-800 dark:text-[#33ADFF] dark:border-[#33ADFF] dark:hover:bg-[#33ADFF] dark:hover:text-white w-full sm:w-auto transition-all duration-200">
                             Batal
                         </button>
                     </div>
@@ -361,36 +560,107 @@
 </div>
 
 <script>
+    // ========== KONSTANTA BATAS UKURAN ==========
+    const MAX_IMAGE_SIZE = 104857600; // 100 MB
+    const MAX_IMAGE_SIZE_LABEL = '100 MB';
+    const MAX_GALLERY_PHOTOS = 10;
+    const MIN_GALLERY_PHOTOS = 2;
+
     let addGalleryPhotos = [];
 
+    // ========== HELPER ==========
+    function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function isValidImageType(file) {
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        return validTypes.includes(file.type);
+    }
+
+    function isValidFileSize(file) {
+        return file.size <= MAX_IMAGE_SIZE;
+    }
+
+    function renderLucideSafe() {
+        if (window.renderLucide) {
+            window.renderLucide();
+        } else if (window.lucide) {
+            lucide.createIcons();
+        }
+    }
+
+    // ========== TAB FUNCTION — GRADIENT ACTIVE ==========
+    function switchAddTab(tabId) {
+        document.querySelectorAll('.add-tab-content').forEach(el => {
+            el.classList.add('hidden');
+        });
+
+        const selectedTab = document.getElementById(tabId);
+        if (selectedTab) {
+            selectedTab.classList.remove('hidden');
+        }
+
+        document.querySelectorAll('#addPenginapanTab button').forEach(btn => {
+            btn.classList.remove(
+                'bg-gradient-to-r', 'from-[#0194F3]', 'to-[#0064D2]',
+                'text-white', 'shadow-md', 'shadow-[#0194F3]/30'
+            );
+            btn.classList.add(
+                'text-[#687176]', 'dark:text-gray-400',
+                'hover:bg-white', 'hover:text-[#0194F3]',
+                'dark:hover:bg-gray-700', 'dark:hover:text-[#33ADFF]'
+            );
+        });
+
+        const activeBtn = document.querySelector(`#addPenginapanTab button[data-tab="${tabId}"]`);
+        if (activeBtn) {
+            activeBtn.classList.remove(
+                'text-[#687176]', 'dark:text-gray-400',
+                'hover:bg-white', 'hover:text-[#0194F3]',
+                'dark:hover:bg-gray-700', 'dark:hover:text-[#33ADFF]'
+            );
+            activeBtn.classList.add(
+                'bg-gradient-to-r', 'from-[#0194F3]', 'to-[#0064D2]',
+                'text-white', 'shadow-md', 'shadow-[#0194F3]/30'
+            );
+        }
+
+        // Render ulang Lucide karena icon di tab yang baru aktif mungkin belum dirender
+        renderLucideSafe();
+    }
+
     // ========== OPEN/CLOSE MODAL ==========
-    window.openAddPenginapanModal = function () {
+    window.openAddPenginapanModal = function() {
         const modal = document.getElementById('addPenginapanModal');
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
 
-        // Reset form
         const form = document.getElementById('addPenginapanForm');
         form.reset();
 
-        // Reset gallery
         addGalleryPhotos = [];
         renderAddGallery();
         updateAddGalleryCounter();
 
-        // Reset thumbnail
         document.getElementById('addThumbnailUploadArea').classList.remove('hidden');
         document.getElementById('addThumbnailPreviewContainer').classList.add('hidden');
         document.getElementById('addThumbnailUpload').value = '';
 
-        // Reset error messages
         document.querySelectorAll('#addPenginapanForm .error-message').forEach(el => el.textContent = '');
         document.getElementById('addGalleryError').classList.add('hidden');
+
+        switchAddTab('add-utama');
+
+        // Render Lucide untuk icon di modal
+        renderLucideSafe();
 
         setTimeout(() => document.getElementById('addTitle').focus(), 100);
     };
 
-    window.closeAddPenginapanModal = function () {
+    window.closeAddPenginapanModal = function() {
         document.getElementById('addPenginapanModal').classList.add('hidden');
         document.body.style.overflow = 'auto';
     };
@@ -410,24 +680,20 @@
             return;
         }
 
-        const slug = title.toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-');
-
+        const slug = title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
         slugInput.value = slug;
 
         Swal.fire({
             icon: 'success',
             title: 'Berhasil!',
-            text: 'Slug telah digenerate dari nama penginapan',
+            text: 'Slug telah digenerate',
             timer: 1500,
             showConfirmButton: false
         });
     }
 
     // ========== THUMBNAIL ==========
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const upload = document.getElementById('addThumbnailUpload');
         const uploadArea = document.getElementById('addThumbnailUploadArea');
         const previewContainer = document.getElementById('addThumbnailPreviewContainer');
@@ -436,66 +702,42 @@
         const fileSize = document.getElementById('addThumbnailFileSize');
 
         if (upload) {
-            upload.addEventListener('change', function (e) {
+            upload.addEventListener('change', function(e) {
                 const file = e.target.files[0];
-
-                // Reset jika user memilih lebih dari 1 file
-                if (e.target.files.length > 1) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Peringatan!',
-                        text: 'Hanya boleh upload 1 foto thumbnail. Foto pertama yang akan digunakan.'
-                    });
-                    const firstFile = e.target.files[0];
-                    const dt = new DataTransfer();
-                    dt.items.add(firstFile);
-                    this.files = dt.files;
-                }
-
                 if (file) {
-                    if (file.size > 5 * 1024 * 1024) {
+                    if (!isValidFileSize(file)) {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Gagal!',
-                            text: 'Ukuran file maksimal 5MB'
+                            title: 'Ukuran File Terlalu Besar!',
+                            html: `Ukuran file: <b>${formatFileSize(file.size)}</b><br>Maksimal yang diizinkan: <b>${MAX_IMAGE_SIZE_LABEL}</b>`
                         });
                         this.value = '';
                         return;
                     }
-                    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-                    if (!validTypes.includes(file.type)) {
+                    if (!isValidImageType(file)) {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Gagal!',
+                            title: 'Format Tidak Didukung!',
                             text: 'Format file harus JPG, JPEG, PNG, GIF atau WEBP.'
                         });
                         this.value = '';
                         return;
                     }
-
-                    // Tampilkan preview
                     const reader = new FileReader();
-                    reader.onload = function (event) {
+                    reader.onload = function(event) {
                         preview.src = event.target.result;
-                        // Sembunyikan upload area, tampilkan preview
                         uploadArea.classList.add('hidden');
                         previewContainer.classList.remove('hidden');
-
-                        // Tampilkan info file
                         fileName.textContent = file.name;
-                        const sizeInKB = (file.size / 1024).toFixed(2);
-                        if (sizeInKB > 1024) {
-                            fileSize.textContent = (sizeInKB / 1024).toFixed(2) + ' MB';
-                        } else {
-                            fileSize.textContent = sizeInKB + ' KB';
-                        }
+                        fileSize.textContent = formatFileSize(file.size);
+                        renderLucideSafe();
                     };
                     reader.readAsDataURL(file);
                 }
             });
         }
 
-        window.removeAddThumbnail = function () {
+        window.removeAddThumbnail = function() {
             document.getElementById('addThumbnailUpload').value = '';
             document.getElementById('addThumbnailUploadArea').classList.remove('hidden');
             document.getElementById('addThumbnailPreviewContainer').classList.add('hidden');
@@ -507,9 +749,8 @@
     function updateAddGalleryCounter() {
         const counter = document.getElementById('addGalleryCounter');
         const uploadBtn = document.getElementById('addUploadGaleriBtn');
-        const maxPhotos = 10;
-        counter.textContent = `${addGalleryPhotos.length} / ${maxPhotos} foto`;
-        if (addGalleryPhotos.length >= maxPhotos) {
+        counter.textContent = `${addGalleryPhotos.length} / ${MAX_GALLERY_PHOTOS} foto`;
+        if (addGalleryPhotos.length >= MAX_GALLERY_PHOTOS) {
             uploadBtn.style.opacity = '0.5';
             uploadBtn.style.cursor = 'not-allowed';
             document.getElementById('addGalleryUpload').disabled = true;
@@ -518,10 +759,8 @@
             uploadBtn.style.cursor = 'pointer';
             document.getElementById('addGalleryUpload').disabled = false;
         }
-        // Validasi minimal 2 foto
-        const errorEl = document.getElementById('addGalleryError');
-        if (addGalleryPhotos.length >= 2) {
-            errorEl.classList.add('hidden');
+        if (addGalleryPhotos.length >= MIN_GALLERY_PHOTOS) {
+            document.getElementById('addGalleryError').classList.add('hidden');
         }
         if (addGalleryPhotos.length > 0) {
             document.getElementById('add_gallery_error').textContent = '';
@@ -533,78 +772,78 @@
         container.innerHTML = '';
         if (addGalleryPhotos.length === 0) {
             container.innerHTML = `
-                <div class="col-span-full text-center py-8 text-gray-400 dark:text-gray-500 border-2 border-dashed border-[#FFD4D4] dark:border-gray-600 rounded-lg">
-                    <svg class="w-12 h-12 mx-auto mb-2 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
+                <div class="col-span-full text-center py-8 text-[#687176] dark:text-gray-500 border-2 border-dashed border-[#B3E0FF] dark:border-gray-600 rounded-lg bg-gradient-to-br from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-800 dark:to-gray-700">
+                    <div class="flex justify-center mb-2">
+                        <i data-lucide="image" class="w-12 h-12 text-[#0194F3]"></i>
+                    </div>
                     <p>Belum ada foto galeri</p>
                     <p class="text-xs">Minimal 2 foto</p>
                 </div>
             `;
+            renderLucideSafe();
             return;
         }
         addGalleryPhotos.forEach((photo, index) => {
             const div = document.createElement('div');
             div.className = 'relative group';
             div.innerHTML = `
-                <img src="${photo.url}" alt="Galeri ${index + 1}" class="w-full h-32 object-cover rounded-lg border-2 border-[#FFD4D4] dark:border-gray-600">
+                <img src="${photo.url}" alt="Galeri ${index + 1}" class="w-full h-32 object-cover rounded-lg border-2 border-[#B3E0FF] dark:border-gray-600">
                 <button type="button" onclick="removeAddGalleryPhoto(${index})" class="absolute top-2 right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-700 transition-colors opacity-0 group-hover:opacity-100">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
+                    <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
-                <span class="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">${index + 1}</span>
+                <span class="absolute bottom-2 left-2 bg-gradient-to-r from-[#0194F3] to-[#0064D2] text-white text-xs px-2 py-1 rounded">${index + 1}</span>
             `;
             container.appendChild(div);
         });
+        renderLucideSafe();
     }
 
     function removeAddGalleryPhoto(index) {
         addGalleryPhotos.splice(index, 1);
         renderAddGallery();
         updateAddGalleryCounter();
-        if (addGalleryPhotos.length < 2) {
+        if (addGalleryPhotos.length < MIN_GALLERY_PHOTOS) {
             document.getElementById('addGalleryError').classList.remove('hidden');
         }
     }
 
     function addAddGalleryPhoto(file) {
-        if (addGalleryPhotos.length >= 10) {
+        if (addGalleryPhotos.length >= MAX_GALLERY_PHOTOS) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Peringatan!',
-                text: 'Maksimal 10 foto galeri!'
+                text: `Maksimal ${MAX_GALLERY_PHOTOS} foto galeri!`
             });
             return;
         }
-        if (file.size > 5 * 1024 * 1024) {
+        if (!isValidFileSize(file)) {
             Swal.fire({
                 icon: 'error',
-                title: 'Gagal!',
-                text: 'Ukuran file maksimal 5MB'
+                title: 'Ukuran File Terlalu Besar!',
+                html: `File: <b>${file.name}</b><br>Ukuran: <b>${formatFileSize(file.size)}</b><br>Maksimal: <b>${MAX_IMAGE_SIZE_LABEL}</b> per foto.`
             });
             return;
         }
-        const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        if (!validTypes.includes(file.type)) {
+        if (!isValidImageType(file)) {
             Swal.fire({
                 icon: 'error',
-                title: 'Gagal!',
-                text: 'Format file harus JPG, JPEG, PNG, GIF atau WEBP.'
+                title: 'Format Tidak Didukung!',
+                text: `"${file.name}" bukan format gambar yang didukung (JPG, JPEG, PNG, GIF, WEBP).`
             });
             return;
         }
         const reader = new FileReader();
-        reader.onload = function (event) {
+        reader.onload = function(event) {
             const img = new Image();
-            img.onload = function () {
+            img.onload = function() {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
                 const targetWidth = 240;
                 const targetHeight = 160;
                 const imgRatio = img.width / img.height;
                 const targetRatio = targetWidth / targetHeight;
-                let cropWidth, cropHeight, offsetX = 0, offsetY = 0;
+                let cropWidth, cropHeight, offsetX = 0,
+                    offsetY = 0;
                 if (imgRatio > targetRatio) {
                     cropHeight = img.height;
                     cropWidth = img.height * targetRatio;
@@ -618,10 +857,14 @@
                 canvas.height = targetHeight;
                 ctx.drawImage(img, offsetX, offsetY, cropWidth, cropHeight, 0, 0, targetWidth, targetHeight);
                 const imageDataUrl = canvas.toDataURL('image/jpeg', 0.9);
-                addGalleryPhotos.push({ id: Date.now() + addGalleryPhotos.length, url: imageDataUrl, file: file });
+                addGalleryPhotos.push({
+                    id: Date.now() + addGalleryPhotos.length,
+                    url: imageDataUrl,
+                    file: file
+                });
                 renderAddGallery();
                 updateAddGalleryCounter();
-                if (addGalleryPhotos.length >= 2) {
+                if (addGalleryPhotos.length >= MIN_GALLERY_PHOTOS) {
                     document.getElementById('addGalleryError').classList.add('hidden');
                 }
             };
@@ -630,10 +873,10 @@
         reader.readAsDataURL(file);
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const upload = document.getElementById('addGalleryUpload');
         if (upload) {
-            upload.addEventListener('change', function (e) {
+            upload.addEventListener('change', function(e) {
                 const files = e.target.files;
                 for (let i = 0; i < files.length; i++) {
                     addAddGalleryPhoto(files[i]);
@@ -642,29 +885,36 @@
             });
         }
 
-        // Drag and drop untuk galeri add
         const container = document.getElementById('addUploadGaleriContainer');
         if (container) {
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                container.addEventListener(eventName, function (e) { e.preventDefault(); e.stopPropagation(); });
+                container.addEventListener(eventName, function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
             });
-            container.addEventListener('dragover', function () { this.classList.add('ring-4', 'ring-[#E60000]', 'ring-offset-2', 'rounded-lg'); });
-            container.addEventListener('dragleave', function () { this.classList.remove('ring-4', 'ring-[#E60000]', 'ring-offset-2', 'rounded-lg'); });
-            container.addEventListener('drop', function (e) {
-                this.classList.remove('ring-4', 'ring-[#E60000]', 'ring-offset-2', 'rounded-lg');
+            container.addEventListener('dragover', function() {
+                this.classList.add('ring-4', 'ring-[#0194F3]', 'ring-offset-2', 'rounded-lg');
+            });
+            container.addEventListener('dragleave', function() {
+                this.classList.remove('ring-4', 'ring-[#0194F3]', 'ring-offset-2', 'rounded-lg');
+            });
+            container.addEventListener('drop', function(e) {
+                this.classList.remove('ring-4', 'ring-[#0194F3]', 'ring-offset-2', 'rounded-lg');
                 const files = e.dataTransfer.files;
-                for (let i = 0; i < files.length; i++) { addAddGalleryPhoto(files[i]); }
+                for (let i = 0; i < files.length; i++) {
+                    addAddGalleryPhoto(files[i]);
+                }
             });
         }
 
-        // Auto generate slug on title input
         const titleInput = document.getElementById('addTitle');
         const slugInput = document.getElementById('addSlug');
         if (titleInput && slugInput) {
-            titleInput.addEventListener('input', function () {
-                // Hanya auto-generate jika slug kosong
+            titleInput.addEventListener('input', function() {
                 if (slugInput.value === '') {
-                    const slug = this.value.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
+                    const slug = this.value.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-')
+                        .replace(/-+/g, '-');
                     slugInput.value = slug;
                 }
             });
@@ -674,14 +924,10 @@
     });
 
     // ========== SUBMIT FUNCTION ==========
-    window.submitAddPenginapan = async function () {
-        console.log('=== SUBMIT PENGINAPAN ===');
-
-        // Reset error messages
+    window.submitAddPenginapan = async function() {
         document.querySelectorAll('#addPenginapanForm .error-message').forEach(el => el.textContent = '');
         document.getElementById('addGalleryError').classList.add('hidden');
 
-        // Validasi field
         const category = document.getElementById('addCategory').value;
         const title = document.getElementById('addTitle').value.trim();
         const address = document.getElementById('addAddress').value.trim();
@@ -693,7 +939,6 @@
         const description = document.getElementById('addDescription').value.trim();
         const thumbnail = document.getElementById('addThumbnailUpload').files[0];
 
-        // Validasi Kategori
         if (!category) {
             document.getElementById('add_category_id_error').textContent = 'Kategori wajib dipilih';
             Swal.fire({
@@ -704,7 +949,6 @@
             document.getElementById('addCategory').focus();
             return;
         }
-
         if (!title) {
             document.getElementById('add_title_error').textContent = 'Nama penginapan wajib diisi';
             Swal.fire({
@@ -715,7 +959,6 @@
             document.getElementById('addTitle').focus();
             return;
         }
-
         if (!address) {
             document.getElementById('add_address_error').textContent = 'Alamat wajib diisi';
             Swal.fire({
@@ -726,51 +969,46 @@
             document.getElementById('addAddress').focus();
             return;
         }
-
         if (!price || Number(price) <= 0) {
-            document.getElementById('add_price_error').textContent = 'Harga wajib diisi dan harus lebih dari 0';
+            document.getElementById('add_price_error').textContent = 'Harga wajib diisi';
             Swal.fire({
                 icon: 'warning',
                 title: 'Peringatan!',
-                text: 'Harga wajib diisi dan harus lebih dari 0'
+                text: 'Harga wajib diisi'
             });
             document.getElementById('addPrice').focus();
             return;
         }
-
         if (!capacity || Number(capacity) <= 0) {
-            document.getElementById('add_capacity_error').textContent = 'Kapasitas wajib diisi dan harus lebih dari 0';
+            document.getElementById('add_capacity_error').textContent = 'Kapasitas wajib diisi';
             Swal.fire({
                 icon: 'warning',
                 title: 'Peringatan!',
-                text: 'Kapasitas wajib diisi dan harus lebih dari 0'
+                text: 'Kapasitas wajib diisi'
             });
             document.getElementById('addCapacity').focus();
             return;
         }
-
         if (bedroom === '' || Number(bedroom) < 0) {
-            document.getElementById('add_bedroom_error').textContent = 'Kamar tidur wajib diisi dan minimal 0';
+            document.getElementById('add_bedroom_error').textContent = 'Kamar tidur wajib diisi';
             Swal.fire({
                 icon: 'warning',
                 title: 'Peringatan!',
-                text: 'Kamar tidur wajib diisi dan minimal 0'
+                text: 'Kamar tidur wajib diisi'
             });
             document.getElementById('addBedroom').focus();
             return;
         }
-
         if (bathroom === '' || Number(bathroom) < 0) {
-            document.getElementById('add_bathroom_error').textContent = 'Kamar mandi wajib diisi dan minimal 0';
+            document.getElementById('add_bathroom_error').textContent = 'Kamar mandi wajib diisi';
             Swal.fire({
                 icon: 'warning',
                 title: 'Peringatan!',
-                text: 'Kamar mandi wajib diisi dan minimal 0'
+                text: 'Kamar mandi wajib diisi'
             });
             document.getElementById('addBathroom').focus();
             return;
         }
-
         if (!status) {
             document.getElementById('add_status_error').textContent = 'Status wajib dipilih';
             Swal.fire({
@@ -781,7 +1019,6 @@
             document.getElementById('addStatus').focus();
             return;
         }
-
         if (!description) {
             document.getElementById('add_description_error').textContent = 'Deskripsi wajib diisi';
             Swal.fire({
@@ -792,7 +1029,6 @@
             document.getElementById('addDescription').focus();
             return;
         }
-
         if (!thumbnail) {
             document.getElementById('add_thumbnail_error').textContent = 'Thumbnail wajib diupload';
             Swal.fire({
@@ -802,50 +1038,39 @@
             });
             return;
         }
-
-        if (addGalleryPhotos.length < 2) {
+        if (!isValidFileSize(thumbnail)) {
+            document.getElementById('add_thumbnail_error').textContent =
+                `Ukuran thumbnail maksimal ${MAX_IMAGE_SIZE_LABEL}`;
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran Thumbnail Terlalu Besar!',
+                html: `Ukuran: <b>${formatFileSize(thumbnail.size)}</b><br>Maksimal: <b>${MAX_IMAGE_SIZE_LABEL}</b>`
+            });
+            return;
+        }
+        if (addGalleryPhotos.length < MIN_GALLERY_PHOTOS) {
             document.getElementById('addGalleryError').classList.remove('hidden');
-            document.getElementById('add_gallery_error').textContent = 'Minimal upload 2 foto galeri';
+            document.getElementById('add_gallery_error').textContent =
+                `Minimal upload ${MIN_GALLERY_PHOTOS} foto galeri`;
             Swal.fire({
                 icon: 'warning',
                 title: 'Peringatan!',
-                text: 'Minimal upload 2 foto galeri'
+                text: `Minimal upload ${MIN_GALLERY_PHOTOS} foto galeri`
             });
             return;
         }
 
-        console.log('Validasi berhasil');
-
-        // Cek CSRF
-        const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-        if (!csrfMeta) {
-            console.error('CSRF meta tag tidak ditemukan');
-            Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: 'CSRF token tidak ditemukan. Tambahkan <meta name="csrf-token"...> di <head>.'
-            });
-            return;
-        }
-
-        const csrfToken = csrfMeta.getAttribute('content');
-        console.log('CSRF token ditemukan');
-
-        // Siapkan FormData
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         const form = document.getElementById('addPenginapanForm');
         const formData = new FormData(form);
-
-        // Hapus gallery dari input asli
         formData.delete('gallery[]');
 
-        // Tambahkan gallery dari array
         addGalleryPhotos.forEach(photo => {
             if (photo.file) {
                 formData.append('gallery[]', photo.file);
             }
         });
 
-        // Tampilkan loading
         Swal.fire({
             title: 'Menyimpan...',
             text: 'Mohon tunggu sebentar',
@@ -855,10 +1080,7 @@
             }
         });
 
-        // Submit
         try {
-            console.log('Mengirim POST ke:', '{{ route('accommodations.store') }}');
-
             const response = await fetch('{{ route('accommodations.store') }}', {
                 method: 'POST',
                 headers: {
@@ -868,8 +1090,6 @@
                 },
                 body: formData
             });
-
-            console.log('HTTP Status:', response.status);
 
             const contentType = response.headers.get('content-type') || '';
             let data;
@@ -882,9 +1102,6 @@
                 throw new Error(`Server mengembalikan response bukan JSON. HTTP ${response.status}`);
             }
 
-            console.log('Response JSON:', data);
-
-            // Success
             if (response.ok && data.success) {
                 Swal.fire({
                     icon: 'success',
@@ -899,12 +1116,13 @@
                 return;
             }
 
-            // Validation Error
             if (data.errors) {
                 Object.keys(data.errors).forEach(key => {
-                    const errorEl = document.getElementById('add_' + key + '_error');
+                    const normalizedKey = key.replace(/\.\d+/g, '');
+                    const errorEl = document.getElementById('add_' + normalizedKey + '_error');
                     if (errorEl) {
-                        errorEl.textContent = Array.isArray(data.errors[key]) ? data.errors[key][0] : data.errors[key];
+                        errorEl.textContent = Array.isArray(data.errors[key]) ? data.errors[key][0] : data
+                            .errors[key];
                     }
                 });
                 const firstError = Object.values(data.errors)[0];
@@ -920,7 +1138,6 @@
                     text: data.message || 'Gagal menambahkan penginapan'
                 });
             }
-
         } catch (error) {
             console.error('=== ERROR SUBMIT ===', error);
             Swal.fire({
@@ -931,8 +1148,7 @@
         }
     };
 
-    // Close modal with Escape key
-    document.addEventListener('keydown', function (e) {
+    document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             const modal = document.getElementById('addPenginapanModal');
             if (modal && !modal.classList.contains('hidden')) {
@@ -941,8 +1157,13 @@
         }
     });
 
-    document.querySelector('#addPenginapanModal .fixed.inset-0')?.addEventListener('click', function (e) {
+    document.querySelector('#addPenginapanModal .fixed.inset-0')?.addEventListener('click', function(e) {
         if (e.target === this) closeAddPenginapanModal();
+    });
+
+    // Render Lucide saat halaman pertama load
+    document.addEventListener('DOMContentLoaded', function() {
+        renderLucideSafe();
     });
 </script>
 
@@ -967,12 +1188,12 @@
     }
 
     #addPenginapanModal .max-h-\[70vh\]::-webkit-scrollbar-track {
-        background: #f1f1f1;
+        background: #E6F4FF;
         border-radius: 3px;
     }
 
     #addPenginapanModal .max-h-\[70vh\]::-webkit-scrollbar-thumb {
-        background: #E60000;
+        background: linear-gradient(180deg, #0194F3, #0064D2);
         border-radius: 3px;
     }
 
@@ -981,7 +1202,7 @@
     }
 
     .dark #addPenginapanModal .max-h-\[70vh\]::-webkit-scrollbar-thumb {
-        background: #FF6B6B;
+        background: linear-gradient(180deg, #33ADFF, #0194F3);
     }
 
     #addGalleryContainer .group:hover button {

@@ -25,7 +25,8 @@ class FacilityRepository
             ->when($keyword, function ($query) use ($keyword) {
                 $query->where(function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%")
-                        ->orWhere('description', 'like', "%{$keyword}%");
+                        ->orWhere('description', 'like', "%{$keyword}%")
+                        ->orWhere('icon', 'like', "%{$keyword}%");
                 });
             })
             ->latest('id')
@@ -64,6 +65,6 @@ class FacilityRepository
      */
     public function delete(Facility $facility): bool
     {
-        return $facility->delete();
+        return (bool) $facility->delete();
     }
 }

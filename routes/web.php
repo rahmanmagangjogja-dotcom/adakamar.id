@@ -12,8 +12,10 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\SettingController;
-
-
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\AccommodationRatingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,21 +23,61 @@ use App\Http\Controllers\SettingController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    return view('landingpage.index');
-})->name('home');
+Route::get(
+    '/',
+    [LandingPageController::class, 'index']
+)->name('landingpage');
 
-Route::get('/kamar', function () {
-    return view('landingpage.content.accomodation.kamar');
-})->name('kamar');
+/*
+|--------------------------------------------------------------------------
+| Public - Penginapan
+|--------------------------------------------------------------------------
+*/
 
-Route::get('/villa', function () {
-    return view('landingpage.content.accomodation.villa');
-})->name('villa');
+Route::get(
+    '/semua-penginapan',
+    [AccommodationController::class, 'publicIndex']
+)->name('accommodationlanding.semua');
 
-Route::get('/guesthouse', function () {
-    return view('landingpage.content.accomodation.guesthouse');
-})->name('guesthouse');
+Route::get(
+    '/penginapanlanding/{slug}',
+    [AccommodationController::class, 'publicDetail']
+)->name('accommodationlanding.detail');
+
+Route::get(
+    '/kategori-penginapanlanding/{slug}',
+    [AccommodationController::class, 'byCategory']
+)->name('accommodationlanding.category');
+
+
+/*
+|--------------------------------------------------------------------------
+| Public - Artikel
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/artikel/{slug}',
+    [ArticleController::class, 'publicDetail']
+)->name('article.detail');
+
+Route::get(
+    '/semua-artikel',
+    [ArticleController::class, 'publicIndex']
+)->name('article.semua');
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Public - Rating Penginapan
+|--------------------------------------------------------------------------
+*/
+
+Route::post(
+    '/penginapanlanding/{slug}/rating',
+    [AccommodationRatingController::class, 'store']
+)->name('accommodationlanding.rating.store');
 
 
 /*
@@ -44,20 +86,50 @@ Route::get('/guesthouse', function () {
 |--------------------------------------------------------------------------
 */
 
-Route::get(
-    '/login',
-    [AuthController::class, 'showLogin']
-)->name('login');
+Route::middleware('guest')->group(function () {
 
-Route::post(
-    '/login',
-    [AuthController::class, 'login']
-)->name('login.process');
+    Route::get(
+        '/login',
+        [AuthController::class, 'showLogin']
+    )->name('login');
+
+    Route::post(
+        '/login',
+        [AuthController::class, 'login']
+    )->name('login.process');
+
+    Route::get(
+        '/forgot-password',
+        [AuthController::class, 'showForgotPassword']
+    )->name('password.request');
+
+    Route::post(
+        '/forgot-password',
+        [AuthController::class, 'sendResetLink']
+    )->name('password.email');
+
+    Route::get(
+        '/reset-password/{token}',
+        [AuthController::class, 'showResetPassword']
+    )->name('password.reset');
+
+    Route::post(
+        '/reset-password',
+        [AuthController::class, 'resetPassword']
+    )->name('password.update');
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| Logout
+|--------------------------------------------------------------------------
+*/
 
 Route::post(
     '/logout',
     [AuthController::class, 'logout']
-)->name('logout');
+)->middleware('auth')->name('logout');
 
 
 /*
@@ -66,7 +138,7 @@ Route::post(
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'prevent-back-history'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
@@ -74,9 +146,10 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/dashboard', function () {
-        return view('example.dashboard');
-    })->name('dashboard');
+    Route::get(
+        '/dashboard',
+        [DashboardController::class, 'index']
+    )->name('dashboard');
 
 
     /*
@@ -176,10 +249,10 @@ Route::middleware('auth')->group(function () {
 
 
     /*
-|--------------------------------------------------------------------------
-| Penginapan
-|--------------------------------------------------------------------------
-*/
+    |--------------------------------------------------------------------------
+    | Penginapan
+    |--------------------------------------------------------------------------
+    */
 
     Route::get(
         '/penginapan',
@@ -196,8 +269,6 @@ Route::middleware('auth')->group(function () {
         [AccommodationController::class, 'show']
     )->name('accommodations.show');
 
-    
-
     Route::put(
         '/penginapan/{id}',
         [AccommodationController::class, 'update']
@@ -210,10 +281,10 @@ Route::middleware('auth')->group(function () {
 
 
     /*
-|--------------------------------------------------------------------------
-| Kategori Artikel
-|--------------------------------------------------------------------------
-*/
+    |--------------------------------------------------------------------------
+    | Kategori Artikel
+    |--------------------------------------------------------------------------
+    */
 
     Route::get(
         '/article-categories',
@@ -242,10 +313,10 @@ Route::middleware('auth')->group(function () {
 
 
     /*
-|--------------------------------------------------------------------------
-| Artikel
-|--------------------------------------------------------------------------
-*/
+    |--------------------------------------------------------------------------
+    | Artikel
+    |--------------------------------------------------------------------------
+    */
 
     Route::get(
         '/admin/artikel',
@@ -277,102 +348,126 @@ Route::middleware('auth')->group(function () {
         [ArticleController::class, 'destroy']
     )->name('articles.destroy');
 
-/*
-|--------------------------------------------------------------------------
-| Galeri
-|--------------------------------------------------------------------------
-*/
 
-Route::get(
-    '/galeri',
-    [GalleryController::class, 'index']
-)->name('galleries.index');
+    /*
+    |--------------------------------------------------------------------------
+    | Galeri
+    |--------------------------------------------------------------------------
+    */
 
-Route::post(
-    '/galeri',
-    [GalleryController::class, 'store']
-)->name('galleries.store');
+    Route::get(
+        '/galeri',
+        [GalleryController::class, 'index']
+    )->name('galleries.index');
 
-Route::get(
-    '/galeri/{id}',
-    [GalleryController::class, 'show']
-)->name('galleries.show');
+    Route::post(
+        '/galeri',
+        [GalleryController::class, 'store']
+    )->name('galleries.store');
 
-Route::get(
-    '/galeri/{id}/edit',
-    [GalleryController::class, 'edit']
-)->name('galleries.edit');
+    Route::get(
+        '/galeri/{id}',
+        [GalleryController::class, 'show']
+    )->name('galleries.show');
 
-Route::put(
-    '/galeri/{id}',
-    [GalleryController::class, 'update']
-)->name('galleries.update');
+    Route::get(
+        '/galeri/{id}/edit',
+        [GalleryController::class, 'edit']
+    )->name('galleries.edit');
 
-Route::delete(
-    '/galeri/{id}',
-    [GalleryController::class, 'destroy']
-)->name('galleries.destroy');
+    Route::put(
+        '/galeri/{id}',
+        [GalleryController::class, 'update']
+    )->name('galleries.update');
 
-
-
-/*
-|--------------------------------------------------------------------------
-| Banner
-|--------------------------------------------------------------------------
-*/ 
-
-Route::get(
-    '/banners',
-    [BannerController::class, 'index']
-)->name('banners.index');
-
-Route::post(
-    '/banners',
-    [BannerController::class, 'store']
-)->name('banners.store');
-
-Route::get(
-    '/banners/{id}/edit',
-    [BannerController::class, 'edit']
-)->name('banners.edit');
-
-Route::put(
-    '/banners/{id}',
-    [BannerController::class, 'update']
-)->name('banners.update');
-
-Route::delete(
-    '/banners/{id}',
-    [BannerController::class, 'destroy']
-)->name('banners.destroy');
+    Route::delete(
+        '/galeri/{id}',
+        [GalleryController::class, 'destroy']
+    )->name('galleries.destroy');
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Banner
+    |--------------------------------------------------------------------------
+    */
 
-Route::get(
-    '/pengaturan',
-    [SettingController::class, 'index']
-)->name('pengaturan.index');
+    Route::get(
+        '/banners',
+        [BannerController::class, 'index']
+    )->name('banners.index');
 
-Route::post(
-    '/pengaturan',
-    [SettingController::class, 'store']
-)->name('pengaturan.store');
+    Route::post(
+        '/banners',
+        [BannerController::class, 'store']
+    )->name('banners.store');
 
-Route::get(
-    '/pengaturan/{setting}/edit',
-    [SettingController::class, 'edit']
-)->name('pengaturan.edit');
+    Route::get(
+        '/banners/{id}/edit',
+        [BannerController::class, 'edit']
+    )->name('banners.edit');
 
-Route::put(
-    '/pengaturan/{setting}',
-    [SettingController::class, 'update']
-)->name('pengaturan.update');
+    Route::put(
+        '/banners/{id}',
+        [BannerController::class, 'update']
+    )->name('banners.update');
 
-Route::delete(
-    '/pengaturan/{setting}',
-    [SettingController::class, 'destroy']
-)->name('pengaturan.destroy');
+    Route::delete(
+        '/banners/{id}',
+        [BannerController::class, 'destroy']
+    )->name('banners.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pengaturan
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/pengaturan',
+        [SettingController::class, 'index']
+    )->name('pengaturan.index');
+
+    Route::post(
+        '/pengaturan',
+        [SettingController::class, 'store']
+    )->name('pengaturan.store');
+
+    Route::get(
+        '/pengaturan/{setting}/edit',
+        [SettingController::class, 'edit']
+    )->name('pengaturan.edit');
+
+    Route::put(
+        '/pengaturan/{setting}',
+        [SettingController::class, 'update']
+    )->name('pengaturan.update');
+
+    Route::delete(
+        '/pengaturan/{setting}',
+        [SettingController::class, 'destroy']
+    )->name('pengaturan.destroy');
+
+    Route::get('/pengaturan/{id}',
+    [SettingController::class, 'show'])
+    ->name('pengaturan.show');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Profil
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/profil',
+        [ProfileController::class, 'edit']
+    )->name('profile.edit');
+
+    Route::put(
+        '/profil',
+        [ProfileController::class, 'update']
+    )->name('profile.update');
 
 });
-
-

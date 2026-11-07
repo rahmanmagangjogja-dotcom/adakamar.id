@@ -5,22 +5,24 @@
             onclick="closeEditPenginapanModal()"></div>
 
         <div
-            class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-800 sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
-            <div class="px-6 py-4 border-b border-[#FFD4D4] dark:border-gray-700">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-semibold text-[#E60000] dark:text-[#FF6B6B]">
-                        <svg class="w-6 h-6 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                        </svg>
+            class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-gradient-to-br from-white via-[#F7F9FC] to-[#E6F4FF] rounded-xl shadow-2xl dark:from-gray-800 dark:via-gray-800 dark:to-gray-900 sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+
+            {{-- ===== HEADER MODAL — GRADIENT ===== --}}
+            <div class="relative overflow-hidden px-6 py-4 bg-gradient-to-r from-[#0194F3] via-[#0194F3] to-[#0064D2]">
+                <div class="absolute inset-0 opacity-10 pointer-events-none"
+                    style="background-image: radial-gradient(circle, white 1.5px, transparent 1.5px); background-size: 20px 20px;">
+                </div>
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl pointer-events-none">
+                </div>
+
+                <div class="relative flex items-center justify-between">
+                    <h3 class="text-xl font-semibold text-white flex items-center gap-2">
+                        <i data-lucide="pencil-line" class="w-6 h-6"></i>
                         Edit Penginapan
                     </h3>
                     <button type="button" onclick="closeEditPenginapanModal()"
-                        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
+                        class="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-all">
+                        <i data-lucide="x" class="w-5 h-5"></i>
                     </button>
                 </div>
             </div>
@@ -31,22 +33,75 @@
                     @method('PUT')
                     <input type="hidden" name="id" id="editId">
 
+                    <!-- Tab Navigation — GRADIENT ACTIVE + IKON -->
+                    <div
+                        class="mb-6 rounded-xl bg-gradient-to-r from-white via-[#F7F9FC] to-[#E6F4FF] dark:from-gray-800 dark:via-gray-800 dark:to-gray-700 p-2 shadow-inner">
+                        <ul class="flex flex-wrap gap-1 text-sm font-medium text-center" id="editPenginapanTab"
+                            role="tablist">
+                            <li role="presentation">
+                                <button
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#0194F3] to-[#0064D2] text-white shadow-md shadow-[#0194F3]/30 transition-all duration-200"
+                                    data-tab="edit-utama" type="button" onclick="switchEditTab('edit-utama')">
+                                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                                    Informasi Utama
+                                </button>
+                            </li>
+                            <li role="presentation">
+                                <button
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-[#687176] dark:text-gray-400 hover:bg-white hover:text-[#0194F3] dark:hover:bg-gray-700 dark:hover:text-[#33ADFF] transition-all duration-200"
+                                    data-tab="edit-kontak" type="button" onclick="switchEditTab('edit-kontak')">
+                                    <i data-lucide="phone" class="w-4 h-4"></i>
+                                    Kontak & Sosmed
+                                </button>
+                            </li>
+                            <li role="presentation">
+                                <button
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-[#687176] dark:text-gray-400 hover:bg-white hover:text-[#0194F3] dark:hover:bg-gray-700 dark:hover:text-[#33ADFF] transition-all duration-200"
+                                    data-tab="edit-maps" type="button" onclick="switchEditTab('edit-maps')">
+                                    <i data-lucide="map-pin" class="w-4 h-4"></i>
+                                    Lokasi & Maps
+                                </button>
+                            </li>
+                            <li role="presentation">
+                                <button
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-[#687176] dark:text-gray-400 hover:bg-white hover:text-[#0194F3] dark:hover:bg-gray-700 dark:hover:text-[#33ADFF] transition-all duration-200"
+                                    data-tab="edit-media" type="button" onclick="switchEditTab('edit-media')">
+                                    <i data-lucide="image" class="w-4 h-4"></i>
+                                    Media & SEO
+                                </button>
+                            </li>
+                            <li role="presentation">
+                                <button
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-[#687176] dark:text-gray-400 hover:bg-white hover:text-[#0194F3] dark:hover:bg-gray-700 dark:hover:text-[#33ADFF] transition-all duration-200"
+                                    data-tab="edit-fasilitas" type="button" onclick="switchEditTab('edit-fasilitas')">
+                                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                    Fasilitas & Aturan
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Tab Content -->
                     <div class="space-y-6">
-                        <!-- Informasi Penginapan -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Informasi
-                                Penginapan</h4>
+
+                        {{-- ============ TAB 1: INFORMASI UTAMA ============ --}}
+                        <div id="edit-utama" class="edit-tab-content">
+                            <h4
+                                class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                                <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                Informasi Penginapan
+                            </h4>
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <!-- Kategori -->
                                 <div class="sm:col-span-2">
                                     <label for="editCategory"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kategori
-                                        <span class="text-red-500">*</span></label>
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">
+                                        Kategori <span class="text-red-500">*</span>
+                                    </label>
                                     <select id="editCategory" name="category_id" required
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]">
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200">
                                         <option value="">Pilih Kategori</option>
-                                        @if(isset($categories) && $categories->count())
-                                            @foreach($categories as $category)
+                                        @if (isset($categories) && $categories->count())
+                                            @foreach ($categories as $category)
                                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
                                             @endforeach
                                         @endif
@@ -54,114 +109,105 @@
                                     <span class="text-red-500 text-xs error-message" id="edit_category_id_error"></span>
                                 </div>
 
-                                <!-- Title -->
                                 <div class="sm:col-span-2 lg:col-span-3">
                                     <label for="editTitle"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama
-                                        Penginapan <span class="text-red-500">*</span></label>
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">
+                                        Nama Penginapan <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="text" name="title" id="editTitle"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="Masukkan nama penginapan" required>
                                     <span class="text-red-500 text-xs error-message" id="edit_title_error"></span>
                                 </div>
 
-                                <!-- Slug (Auto-generated with edit option) -->
                                 <div class="col-span-full">
                                     <div class="flex items-center justify-between mb-2">
                                         <label for="editSlug"
-                                            class="text-sm font-medium text-gray-900 dark:text-white">Slug</label>
+                                            class="text-sm font-medium text-[#0F294D] dark:text-white">Slug</label>
                                         <button type="button" onclick="generateEditSlugFromTitle()"
-                                            class="text-xs text-[#E60000] hover:text-[#B71C1C] dark:text-[#FF6B6B] dark:hover:text-[#FF6B6B] font-medium">
-                                            <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
-                                                </path>
-                                            </svg>
+                                            class="text-xs text-[#0194F3] hover:text-[#0064D2] dark:text-[#33ADFF] dark:hover:text-[#B3E0FF] font-medium inline-flex items-center gap-1">
+                                            <i data-lucide="wand-2" class="w-3 h-3"></i>
                                             Generate dari Nama
                                         </button>
                                     </div>
                                     <input type="text" name="slug" id="editSlug"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="Kosongkan untuk auto-generate">
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Biarkan kosong untuk
-                                        auto-generate atau edit sesuai keinginan</p>
                                     <span class="text-red-500 text-xs error-message" id="edit_slug_error"></span>
                                 </div>
 
-                                <!-- Address -->
                                 <div class="col-span-full">
                                     <label for="editAddress"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alamat
-                                        <span class="text-red-500">*</span></label>
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">
+                                        Alamat <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="text" name="address" id="editAddress"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="Masukkan alamat lengkap" required>
                                     <span class="text-red-500 text-xs error-message" id="edit_address_error"></span>
                                 </div>
 
-                                <!-- Price -->
                                 <div>
                                     <label for="editPrice"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Harga per
-                                        Malam <span class="text-red-500">*</span></label>
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">
+                                        Harga per Malam <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="number" name="price" id="editPrice"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="350000" required min="0">
                                     <span class="text-red-500 text-xs error-message" id="edit_price_error"></span>
                                 </div>
 
-                                <!-- Capacity -->
                                 <div>
                                     <label for="editCapacity"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kapasitas
-                                        (Orang) <span class="text-red-500">*</span></label>
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">
+                                        Kapasitas (Orang) <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="number" name="capacity" id="editCapacity"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="4" required min="1">
                                     <span class="text-red-500 text-xs error-message" id="edit_capacity_error"></span>
                                 </div>
 
-                                <!-- Bedroom -->
                                 <div>
                                     <label for="editBedroom"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kamar Tidur
-                                        <span class="text-red-500">*</span></label>
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">
+                                        Kamar Tidur <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="number" name="bedroom" id="editBedroom"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="2" required min="0">
                                     <span class="text-red-500 text-xs error-message" id="edit_bedroom_error"></span>
                                 </div>
 
-                                <!-- Bathroom -->
                                 <div>
                                     <label for="editBathroom"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kamar Mandi
-                                        <span class="text-red-500">*</span></label>
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">
+                                        Kamar Mandi <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="number" name="bathroom" id="editBathroom"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="1" required min="0">
                                     <span class="text-red-500 text-xs error-message" id="edit_bathroom_error"></span>
                                 </div>
 
-                                <!-- Size -->
                                 <div>
                                     <label for="editSize"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ukuran
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Ukuran
                                         (m²)</label>
                                     <input type="text" name="size" id="editSize"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="45">
                                     <span class="text-red-500 text-xs error-message" id="edit_size_error"></span>
                                 </div>
 
-                                <!-- Status -->
                                 <div>
                                     <label for="editStatus"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status
-                                        <span class="text-red-500">*</span></label>
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">
+                                        Status <span class="text-red-500">*</span>
+                                    </label>
                                     <select id="editStatus" name="status" required
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]">
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200">
                                         <option value="">Pilih Status</option>
                                         <option value="Available">Available</option>
                                         <option value="Full">Full</option>
@@ -170,189 +216,337 @@
                                     <span class="text-red-500 text-xs error-message" id="edit_status_error"></span>
                                 </div>
 
-                                <!-- Description -->
                                 <div class="col-span-full">
                                     <label for="editDescription"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Deskripsi
-                                        <span class="text-red-500">*</span></label>
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">
+                                        Deskripsi <span class="text-red-500">*</span>
+                                    </label>
                                     <textarea name="description" id="editDescription" rows="3"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
                                         placeholder="Masukkan deskripsi lengkap" required></textarea>
                                     <span class="text-red-500 text-xs error-message" id="edit_description_error"></span>
                                 </div>
+                            </div>
+                        </div>
 
-                                <!-- Meta Title -->
-                                <div class="col-span-full">
-                                    <label for="editMetaTitle"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Meta
-                                        Title</label>
-                                    <input type="text" name="meta_title" id="editMetaTitle"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
-                                        placeholder="Meta Title">
-                                    <span class="text-red-500 text-xs error-message" id="edit_meta_title_error"></span>
+                        {{-- ============ TAB 2: KONTAK & SOSMED ============ --}}
+                        <div id="edit-kontak" class="edit-tab-content hidden">
+                            <h4
+                                class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-2 flex items-center gap-2">
+                                <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                Kontak & Sosial Media
+                            </h4>
+                            <p class="text-xs text-[#687176] dark:text-gray-400 mb-4">
+                                Semua field di bawah ini <strong>opsional</strong> — boleh dikosongi.
+                            </p>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="editPhone"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">No.
+                                        Telepon</label>
+                                    <input type="text" name="phone" id="editPhone"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="(021) 1234-5678">
+                                    <span class="text-red-500 text-xs error-message" id="edit_phone_error"></span>
                                 </div>
 
-                                <!-- Meta Description -->
-                                <div class="col-span-full">
-                                    <label for="editMetaDescription"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Meta
-                                        Description</label>
-                                    <textarea name="meta_description" id="editMetaDescription" rows="2"
-                                        class="shadow-sm bg-[#FFF5F5] border border-[#FFD4D4] text-gray-900 sm:text-sm rounded-lg focus:ring-[#E60000] focus:border-[#E60000] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#FF6B6B] dark:focus:border-[#FF6B6B]"
-                                        placeholder="Meta Description"></textarea>
+                                <div>
+                                    <label for="editWhatsapp"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">No.
+                                        WhatsApp</label>
+                                    <input type="text" name="whatsapp" id="editWhatsapp"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="0812-3456-7890">
+                                    <span class="text-red-500 text-xs error-message" id="edit_whatsapp_error"></span>
+                                </div>
+
+                                <div class="sm:col-span-2">
+                                    <label for="editEmail"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Email</label>
+                                    <input type="email" name="email" id="editEmail"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="info@adakamar.id">
+                                    <span class="text-red-500 text-xs error-message" id="edit_email_error"></span>
+                                </div>
+
+                                <div>
+                                    <label for="editFacebook"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Facebook</label>
+                                    <input type="text" name="facebook" id="editFacebook"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="https://facebook.com/adakamar">
+                                    <span class="text-red-500 text-xs error-message" id="edit_facebook_error"></span>
+                                </div>
+
+                                <div>
+                                    <label for="editInstagram"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Instagram</label>
+                                    <input type="text" name="instagram" id="editInstagram"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="https://instagram.com/adakamar">
+                                    <span class="text-red-500 text-xs error-message" id="edit_instagram_error"></span>
+                                </div>
+
+                                <div>
+                                    <label for="editYoutube"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">YouTube</label>
+                                    <input type="text" name="youtube" id="editYoutube"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="https://youtube.com/@adakamar">
+                                    <span class="text-red-500 text-xs error-message" id="edit_youtube_error"></span>
+                                </div>
+
+                                <div>
+                                    <label for="editX"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">X
+                                        (Twitter)</label>
+                                    <input type="text" name="x" id="editX"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="https://x.com/adakamar">
+                                    <span class="text-red-500 text-xs error-message" id="edit_x_error"></span>
+                                </div>
+
+                                <div class="sm:col-span-2">
+                                    <label for="editTiktok"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">TikTok</label>
+                                    <input type="text" name="tiktok" id="editTiktok"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="https://tiktok.com/@adakamar">
+                                    <span class="text-red-500 text-xs error-message" id="edit_tiktok_error"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- ============ TAB 3: LOKASI & MAPS ============ --}}
+                        <div id="edit-maps" class="edit-tab-content hidden">
+                            <h4
+                                class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                                <span class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                Lokasi & Google Maps
+                            </h4>
+                            <div class="grid grid-cols-1 gap-4">
+                                <div>
+                                    <label for="editMapEmbed"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Google
+                                        Maps
+                                        Embed</label>
+                                    <textarea name="maps_embed" id="editMapEmbed" rows="4"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="<iframe src='https://www.google.com/maps/embed?...'></iframe>"></textarea>
+                                    <span class="text-red-500 text-xs error-message" id="edit_maps_embed_error"></span>
+                                </div>
+
+                                <div>
+                                    <label for="editGoogleMapsUrl"
+                                        class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Google
+                                        Maps
+                                        URL</label>
+                                    <input type="url" name="google_maps_url" id="editGoogleMapsUrl"
+                                        class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                        placeholder="https://maps.google.com/...">
                                     <span class="text-red-500 text-xs error-message"
-                                        id="edit_meta_description_error"></span>
+                                        id="edit_google_maps_url_error"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Thumbnail -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Thumbnail</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Kosongkan jika tidak ingin
-                                mengganti thumbnail</p>
-                            <div class="flex flex-col items-center">
-                                <!-- Upload Area -->
-                                <div id="editThumbnailUploadArea"
-                                    class="w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-[#FFF5F5] border-[#FFD4D4] hover:bg-[#FFE8E8] dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 transition-colors">
-                                    <label for="editThumbnailUpload"
-                                        class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
-                                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                            <svg class="w-8 h-8 mb-2 text-[#FF6B6B] dark:text-gray-400" fill="none"
-                                                stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                            <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">
-                                                <span class="font-semibold">Klik untuk upload</span> thumbnail baru
-                                            </p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG, WEBP (Maks.
-                                                5MB)</p>
+                        {{-- ============ TAB 4: MEDIA & SEO ============ --}}
+                        <div id="edit-media" class="edit-tab-content hidden">
+                            <div class="mb-6">
+                                <h4
+                                    class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                                    <span
+                                        class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                    Thumbnail
+                                </h4>
+                                <p class="text-sm text-[#687176] dark:text-gray-400 mb-3">Kosongkan jika tidak ingin
+                                    mengganti thumbnail</p>
+                                <div class="flex flex-col items-center">
+                                    <div id="editThumbnailUploadArea"
+                                        class="w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gradient-to-br from-[#E6F4FF] to-[#F0F9FF] border-[#B3E0FF] hover:from-[#B3E0FF] hover:to-[#E6F4FF] dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:hover:border-[#33ADFF] transition-colors">
+                                        <label for="editThumbnailUpload"
+                                            class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
+                                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                                <i data-lucide="image-plus"
+                                                    class="w-8 h-8 mb-2 text-[#0194F3] dark:text-gray-400"></i>
+                                                <p class="mb-1 text-sm text-[#687176] dark:text-gray-400">
+                                                    <span class="font-semibold text-[#0194F3]">Klik untuk upload</span>
+                                                    thumbnail baru
+                                                </p>
+                                                <p class="text-xs text-[#687176] dark:text-gray-400">PNG, JPG, WEBP
+                                                    (Maks. 100MB)</p>
+                                            </div>
+                                            <input type="file" id="editThumbnailUpload" name="thumbnail"
+                                                accept="image/*" class="hidden">
+                                        </label>
+                                    </div>
+
+                                    <div id="editThumbnailPreviewContainer" class="hidden relative w-full">
+                                        <img id="editThumbnailPreview" src="#" alt="Preview Thumbnail"
+                                            class="w-full h-48 object-cover rounded-lg border-2 border-[#B3E0FF] dark:border-gray-600">
+                                        <div
+                                            class="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-3 py-1.5 rounded-lg">
+                                            <span id="editThumbnailFileName"></span>
+                                            <span class="mx-2">|</span>
+                                            <span id="editThumbnailFileSize"></span>
                                         </div>
-                                        <input type="file" id="editThumbnailUpload" name="thumbnail" accept="image/*"
-                                            class="hidden">
+                                        <button type="button" onclick="removeEditThumbnail()"
+                                            class="absolute top-2 right-2 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-700 transition-colors shadow-lg">
+                                            <i data-lucide="x" class="w-5 h-5"></i>
+                                        </button>
+                                        {{-- Badge "Terupload" biru --}}
+                                        <div
+                                            class="absolute top-2 left-2 bg-gradient-to-r from-[#0194F3] to-[#0064D2] text-white text-xs px-2 py-1 rounded-lg shadow-md inline-flex items-center gap-1">
+                                            <i data-lucide="check" class="w-3 h-3"></i>
+                                            Terupload
+                                        </div>
+                                    </div>
+                                    <span class="text-red-500 text-xs error-message" id="edit_thumbnail_error"></span>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <h4
+                                    class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                                    <span
+                                        class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                    Galeri Foto
+                                </h4>
+                                <p class="text-sm text-[#687176] dark:text-gray-400 mb-3">
+                                    Maks. 100MB per foto (JPG, PNG, WEBP, GIF)
+                                </p>
+                                <div id="editGalleryContainer"
+                                    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-4">
+                                </div>
+                                <div id="editUploadGaleriContainer">
+                                    <label id="editUploadGaleriBtn"
+                                        class="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#0194F3] to-[#0064D2] hover:from-[#0064D2] hover:to-[#0194F3] text-white rounded-lg shadow-md shadow-[#0194F3]/30 transition-all">
+                                        <i data-lucide="upload" class="w-5 h-5"></i>
+                                        Tambah Foto Galeri
+                                        <input type="file" id="editGalleryUpload" name="gallery[]" accept="image/*"
+                                            multiple class="hidden">
                                     </label>
+                                    <span id="editGalleryCounter"
+                                        class="ml-3 text-sm text-[#687176] dark:text-gray-400">0 / 10 foto</span>
                                 </div>
+                                <span class="text-red-500 text-xs error-message" id="edit_gallery_error"></span>
+                            </div>
 
-                                <!-- Preview Thumbnail (muncul setelah upload) -->
-                                <div id="editThumbnailPreviewContainer" class="hidden relative w-full">
-                                    <img id="editThumbnailPreview" src="#" alt="Preview Thumbnail"
-                                        class="w-full h-48 object-cover rounded-lg border-2 border-[#FFD4D4] dark:border-gray-600">
-                                    <div
-                                        class="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-3 py-1.5 rounded-lg">
-                                        <span id="editThumbnailFileName"></span>
-                                        <span class="mx-2">|</span>
-                                        <span id="editThumbnailFileSize"></span>
+                            <div class="pt-6 border-t border-[#B3E0FF] dark:border-gray-700">
+                                <h4
+                                    class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                                    <span
+                                        class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                    SEO (Search Engine Optimization)
+                                </h4>
+                                <div class="grid grid-cols-1 gap-4">
+                                    <div>
+                                        <label for="editMetaTitle"
+                                            class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Meta
+                                            Title</label>
+                                        <input type="text" name="meta_title" id="editMetaTitle"
+                                            class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                            placeholder="Meta Title">
+                                        <span class="text-red-500 text-xs error-message"
+                                            id="edit_meta_title_error"></span>
                                     </div>
-                                    <button type="button" onclick="removeEditThumbnail()"
-                                        class="absolute top-2 right-2 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-700 transition-colors shadow-lg">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                    </button>
-                                    <div
-                                        class="absolute inset-0 bg-green-500/10 border-2 border-green-500 rounded-lg pointer-events-none">
-                                    </div>
-                                    <div
-                                        class="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded-lg">
-                                        <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M5 13l4 4L19 7"></path>
-                                        </svg>
-                                        Terupload
+
+                                    <div>
+                                        <label for="editMetaDescription"
+                                            class="block mb-2 text-sm font-medium text-[#0F294D] dark:text-white">Meta
+                                            Description</label>
+                                        <textarea name="meta_description" id="editMetaDescription" rows="2"
+                                            class="shadow-sm bg-gradient-to-r from-[#E6F4FF] to-[#F0F9FF] border border-[#B3E0FF] text-[#0F294D] sm:text-sm rounded-lg focus:ring-[#0194F3] focus:border-[#0194F3] block w-full p-2.5 dark:from-gray-700 dark:to-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#33ADFF] dark:focus:border-[#33ADFF] transition-all duration-200"
+                                            placeholder="Meta Description"></textarea>
+                                        <span class="text-red-500 text-xs error-message"
+                                            id="edit_meta_description_error"></span>
                                     </div>
                                 </div>
-
-                                <span class="text-red-500 text-xs error-message" id="edit_thumbnail_error"></span>
                             </div>
                         </div>
 
-                        <!-- Fasilitas -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Fasilitas</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Pilih fasilitas yang tersedia</p>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                                @if(isset($facilities) && $facilities->count())
-                                    @foreach($facilities as $facility)
-                                        <label class="flex items-center space-x-2">
-                                            <input type="checkbox" name="facility_ids[]" value="{{ $facility->id }}"
-                                                class="edit-facility-checkbox rounded border-gray-300 text-[#E60000] focus:ring-[#E60000] dark:border-gray-600 dark:bg-gray-700"
-                                                data-facility-id="{{ $facility->id }}">
-                                            <span class="text-sm text-gray-700 dark:text-gray-300">{{ $facility->name }}</span>
-                                        </label>
-                                    @endforeach
-                                @else
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 col-span-full">Tidak ada fasilitas
-                                        tersedia</p>
-                                @endif
-                            </div>
-                            <span class="text-red-500 text-xs error-message" id="edit_facility_ids_error"></span>
-                        </div>
+                        {{-- ============ TAB 5: FASILITAS & ATURAN ============ --}}
+                        <div id="edit-fasilitas" class="edit-tab-content hidden">
+                            <div class="mb-6">
+                                <h4
+                                    class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                                    <span
+                                        class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                    Fasilitas
+                                </h4>
+                                <div
+                                    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 p-4 rounded-xl bg-gradient-to-br from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-800 dark:to-gray-700 border border-[#B3E0FF] dark:border-gray-600">
+                                    @if (isset($facilities) && $facilities->count())
+                                        @foreach ($facilities as $facility)
+                                            <label
+                                                class="flex items-center gap-2 p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-[#B3E0FF] dark:hover:border-gray-500">
+                                                <input type="checkbox" name="facility_ids[]" value="{{ $facility->id }}"
+                                                    class="edit-facility-checkbox rounded border-[#B3E0FF] text-[#0194F3] focus:ring-[#0194F3] dark:border-gray-600 dark:bg-gray-700 flex-shrink-0">
 
-                        <!-- Aturan -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Aturan</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Pilih aturan yang berlaku</p>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                                @if(isset($rules) && $rules->count())
-                                    @foreach($rules as $rule)
-                                        <label class="flex items-center space-x-2">
-                                            <input type="checkbox" name="rule_ids[]" value="{{ $rule->id }}"
-                                                class="edit-rule-checkbox rounded border-gray-300 text-[#E60000] focus:ring-[#E60000] dark:border-gray-600 dark:bg-gray-700"
-                                                data-rule-id="{{ $rule->id }}">
-                                            <span class="text-sm text-gray-700 dark:text-gray-300">{{ $rule->name }}</span>
-                                        </label>
-                                    @endforeach
-                                @else
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 col-span-full">Tidak ada aturan
-                                        tersedia</p>
-                                @endif
-                            </div>
-                            <span class="text-red-500 text-xs error-message" id="edit_rule_ids_error"></span>
-                        </div>
+                                                {{-- ===== ICON FASILITAS (Lucide) ===== --}}
+                                                @if ($facility->icon)
+                                                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-md
+                                                                             bg-white dark:bg-gray-700 border border-[#B3E0FF] dark:border-gray-600
+                                                                             flex-shrink-0" title="{{ $facility->icon }}">
+                                                        @include('example.layouts.partials.accomodation._icon', [
+                                                            'icon' => $facility->icon,
+                                                            'size' => 16,
+                                                        ])
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-md
+                                                                             bg-gray-100 dark:bg-gray-600 border border-dashed border-gray-300 dark:border-gray-500
+                                                                             text-gray-400 dark:text-gray-500 flex-shrink-0"
+                                                        title="Tidak ada icon">
+                                                        <i data-lucide="minus" class="w-3 h-3"></i>
+                                                    </span>
+                                                @endif
 
-                        <!-- Galeri -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-[#E60000] dark:text-[#FF6B6B] mb-4">Galeri Foto</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Upload foto galeri penginapan
-                                (Maksimal 10 foto)</p>
-                            <div id="editGalleryContainer"
-                                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-4">
-                                <!-- Galeri akan ditambahkan di sini -->
+                                                <span
+                                                    class="text-sm text-[#0F294D] dark:text-gray-300 leading-tight">{{ $facility->name }}</span>
+                                            </label>
+                                        @endforeach
+                                    @endif
+                                </div>
+                                <span class="text-red-500 text-xs error-message" id="edit_facility_ids_error"></span>
                             </div>
-                            <div id="editUploadGaleriContainer">
-                                <label id="editUploadGaleriBtn"
-                                    class="cursor-pointer inline-flex items-center px-4 py-2 bg-[#E60000] text-white rounded-lg hover:bg-[#B71C1C] focus:ring-4 focus:ring-[#FFD4D4] dark:bg-[#FF6B6B] dark:hover:bg-[#E60000] dark:focus:ring-[#FF6B6B]">
-                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                        <path
-                                            d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z" />
-                                        <path d="M9 13h2v5a1 1 0 11-2 0v-5z" />
-                                    </svg>
-                                    Tambah Foto Galeri
-                                    <input type="file" id="editGalleryUpload" name="gallery[]" accept="image/*" multiple
-                                        class="hidden">
-                                </label>
-                                <span id="editGalleryCounter" class="ml-3 text-sm text-gray-500 dark:text-gray-400">0 /
-                                    10 foto</span>
+
+                            <div class="pt-6 border-t border-[#B3E0FF] dark:border-gray-700">
+                                <h4
+                                    class="text-lg font-semibold text-[#0194F3] dark:text-[#33ADFF] mb-4 flex items-center gap-2">
+                                    <span
+                                        class="w-1 h-5 bg-gradient-to-b from-[#0194F3] to-[#0064D2] rounded-full"></span>
+                                    Aturan
+                                </h4>
+                                <div
+                                    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 p-4 rounded-xl bg-gradient-to-br from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-800 dark:to-gray-700 border border-[#B3E0FF] dark:border-gray-600">
+                                    @if (isset($rules) && $rules->count())
+                                        @foreach ($rules as $rule)
+                                            <label
+                                                class="flex items-center space-x-2 p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                                                <input type="checkbox" name="rule_ids[]" value="{{ $rule->id }}"
+                                                    class="edit-rule-checkbox rounded border-[#B3E0FF] text-[#0194F3] focus:ring-[#0194F3] dark:border-gray-600 dark:bg-gray-700">
+                                                <span class="text-sm text-[#0F294D] dark:text-gray-300">{{ $rule->name }}</span>
+                                            </label>
+                                        @endforeach
+                                    @endif
+                                </div>
+                                <span class="text-red-500 text-xs error-message" id="edit_rule_ids_error"></span>
                             </div>
-                            <span class="text-red-500 text-xs error-message" id="edit_gallery_error"></span>
                         </div>
                     </div>
 
+                    {{-- ===== FOOTER — GRADIENT ===== --}}
                     <div
-                        class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-6 pt-4 border-t border-[#FFD4D4] dark:border-gray-700">
+                        class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-6 pt-4 border-t border-[#B3E0FF] dark:border-gray-700 bg-gradient-to-r from-transparent via-[#F7F9FC]/50 to-transparent dark:via-gray-800/50 -mx-6 px-6 pb-2">
                         <button type="button" onclick="submitEditPenginapan()"
-                            class="text-white bg-[#3B82F6] hover:bg-[#2563EB] focus:ring-4 focus:ring-[#93C5FD] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#3B82F6] dark:hover:bg-[#2563EB] dark:focus:ring-[#93C5FD] w-full sm:w-auto">
-                            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 4v6h6m-6 0l6-6m0 16v-6h-6m6 0l-6 6"></path>
-                            </svg>
+                            class="inline-flex items-center justify-center gap-2 text-white bg-gradient-to-r from-[#0194F3] to-[#0064D2] hover:from-[#0064D2] hover:to-[#0194F3] focus:ring-4 focus:ring-[#B3E0FF] font-medium rounded-lg text-sm px-5 py-2.5 text-center shadow-md shadow-[#0194F3]/30 w-full sm:w-auto transition-all duration-200">
+                            <i data-lucide="save" class="w-4 h-4"></i>
                             Update Penginapan
                         </button>
                         <button type="button" onclick="closeEditPenginapanModal()"
-                            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 hover:text-[#E60000] focus:ring-4 focus:ring-[#FFD4D4] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 w-full sm:w-auto">
+                            class="text-[#0194F3] bg-white border-2 border-[#0194F3] focus:outline-none hover:bg-[#0194F3] hover:text-white focus:ring-4 focus:ring-[#B3E0FF] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-800 dark:text-[#33ADFF] dark:border-[#33ADFF] dark:hover:bg-[#33ADFF] dark:hover:text-white w-full sm:w-auto transition-all duration-200">
                             Batal
                         </button>
                     </div>
@@ -363,124 +557,166 @@
 </div>
 
 <script>
+    // ========== KONSTANTA BATAS UKURAN ==========
+    const EDIT_MAX_IMAGE_SIZE = 104857600; // 100 MB
+    const EDIT_MAX_IMAGE_SIZE_LABEL = '100 MB';
+    const maxEditGalleryPhotos = 10;
+
     let editGalleryPhotos = [];
     let editExistingGallery = [];
-    const maxEditGalleryPhotos = 10;
+    let editDeletedGalleryIds = []; // ✅ catat ID foto lama yang dihapus
     let editAccommodationId = null;
     let isThumbnailChanged = false;
+
+    // ========== HELPER ==========
+    function formatEditFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function isValidEditImageType(file) {
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        return validTypes.includes(file.type);
+    }
+
+    function isValidEditFileSize(file) {
+        return file.size <= EDIT_MAX_IMAGE_SIZE;
+    }
+
+    function renderLucideSafeEdit() {
+        if (window.renderLucide) {
+            window.renderLucide();
+        } else if (window.lucide) {
+            lucide.createIcons();
+        }
+    }
+
+    // ========== TAB FUNCTION — GRADIENT ACTIVE ==========
+    function switchEditTab(tabId) {
+        document.querySelectorAll('.edit-tab-content').forEach(el => el.classList.add('hidden'));
+        document.getElementById(tabId)?.classList.remove('hidden');
+
+        document.querySelectorAll('#editPenginapanTab button').forEach(btn => {
+            btn.classList.remove(
+                'bg-gradient-to-r', 'from-[#0194F3]', 'to-[#0064D2]',
+                'text-white', 'shadow-md', 'shadow-[#0194F3]/30'
+            );
+            btn.classList.add(
+                'text-[#687176]', 'dark:text-gray-400',
+                'hover:bg-white', 'hover:text-[#0194F3]',
+                'dark:hover:bg-gray-700', 'dark:hover:text-[#33ADFF]'
+            );
+        });
+
+        const activeBtn = document.querySelector(`#editPenginapanTab button[data-tab="${tabId}"]`);
+        if (activeBtn) {
+            activeBtn.classList.remove(
+                'text-[#687176]', 'dark:text-gray-400',
+                'hover:bg-white', 'hover:text-[#0194F3]',
+                'dark:hover:bg-gray-700', 'dark:hover:text-[#33ADFF]'
+            );
+            activeBtn.classList.add(
+                'bg-gradient-to-r', 'from-[#0194F3]', 'to-[#0064D2]',
+                'text-white', 'shadow-md', 'shadow-[#0194F3]/30'
+            );
+        }
+
+        renderLucideSafeEdit();
+    }
 
     // ========== OPEN/CLOSE MODAL ==========
     function openEditPenginapanModal(id) {
         editAccommodationId = id;
         isThumbnailChanged = false;
+        editDeletedGalleryIds = []; // ✅ reset setiap modal dibuka
 
         Swal.fire({
             title: 'Memuat data...',
-            text: 'Mohon tunggu sebentar',
             allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
+            didOpen: () => Swal.showLoading()
         });
 
-        fetch('{{ route('accommodations.show', '') }}/' + id, {
+        const url = '{{ route('accommodations.show', ':id') }}'.replace(':id', id);
+
+        fetch(url, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest'
             }
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+                return response.json();
+            })
             .then(data => {
                 Swal.close();
 
                 if (data.success) {
-                    const accommodation = data.data;
+                    const acc = data.data;
 
-                    console.log('Data accommodation untuk edit:', accommodation);
+                    document.getElementById('editId').value = acc.id;
+                    document.getElementById('editCategory').value = acc.category_id || '';
+                    document.getElementById('editTitle').value = acc.title || '';
+                    document.getElementById('editSlug').value = acc.slug || '';
+                    document.getElementById('editAddress').value = acc.address || '';
+                    document.getElementById('editPrice').value = acc.price || '';
+                    document.getElementById('editCapacity').value = acc.capacity || '';
+                    document.getElementById('editBedroom').value = acc.bedroom || '';
+                    document.getElementById('editBathroom').value = acc.bathroom || '';
+                    document.getElementById('editSize').value = acc.size || '';
+                    document.getElementById('editStatus').value = acc.status || '';
+                    document.getElementById('editDescription').value = acc.description || '';
 
-                    document.getElementById('editId').value = accommodation.id;
+                    document.getElementById('editPhone').value = acc.phone || '';
+                    document.getElementById('editWhatsapp').value = acc.whatsapp || '';
+                    document.getElementById('editEmail').value = acc.email || '';
+                    document.getElementById('editFacebook').value = acc.facebook || '';
+                    document.getElementById('editInstagram').value = acc.instagram || '';
+                    document.getElementById('editYoutube').value = acc.youtube || '';
+                    document.getElementById('editX').value = acc.x || '';
+                    document.getElementById('editTiktok').value = acc.tiktok || '';
 
-                    document.getElementById('editCategory').value = accommodation.category_id || '';
-                    document.getElementById('editTitle').value = accommodation.title || '';
-                    document.getElementById('editSlug').value = accommodation.slug || '';
-                    document.getElementById('editAddress').value = accommodation.address || '';
-                    document.getElementById('editPrice').value = accommodation.price || '';
-                    document.getElementById('editCapacity').value = accommodation.capacity || '';
-                    document.getElementById('editBedroom').value = accommodation.bedroom || '';
-                    document.getElementById('editBathroom').value = accommodation.bathroom || '';
-                    document.getElementById('editSize').value = accommodation.size || '';
-                    document.getElementById('editStatus').value = accommodation.status || '';
-                    document.getElementById('editDescription').value = accommodation.description || '';
-                    document.getElementById('editMetaTitle').value = accommodation.meta_title || '';
-                    document.getElementById('editMetaDescription').value = accommodation.meta_description || '';
+                    document.getElementById('editMapEmbed').value = acc.maps_embed || '';
+                    document.getElementById('editGoogleMapsUrl').value = acc.google_maps_url || '';
+                    document.getElementById('editMetaTitle').value = acc.meta_title || '';
+                    document.getElementById('editMetaDescription').value = acc.meta_description || '';
 
-                    // ========== THUMBNAIL ==========
                     const uploadArea = document.getElementById('editThumbnailUploadArea');
                     const previewContainer = document.getElementById('editThumbnailPreviewContainer');
                     const preview = document.getElementById('editThumbnailPreview');
-                    const fileName = document.getElementById('editThumbnailFileName');
-                    const fileSize = document.getElementById('editThumbnailFileSize');
+                    const fileNameEl = document.getElementById('editThumbnailFileName');
+                    const fileSizeEl = document.getElementById('editThumbnailFileSize');
 
-                    if (accommodation.thumbnail) {
-                        let thumbnailPath = accommodation.thumbnail.replace(/^public\//, '');
-                        preview.src = '{{ asset('') }}' + thumbnailPath;
+                    document.getElementById('editThumbnailUpload').value = '';
+
+                    if (acc.thumbnail) {
+                        preview.src = '{{ asset('') }}' + acc.thumbnail.replace(/^public\//, '');
                         uploadArea.classList.add('hidden');
                         previewContainer.classList.remove('hidden');
-                        fileName.textContent = 'Thumbnail saat ini';
-                        fileSize.textContent = '';
+                        if (fileNameEl) fileNameEl.textContent = 'Thumbnail saat ini';
+                        if (fileSizeEl) fileSizeEl.textContent = '';
                     } else {
                         uploadArea.classList.remove('hidden');
                         previewContainer.classList.add('hidden');
-                        preview.src = '{{ asset('landingpage/home.png') }}';
                     }
 
-                    // ========== FACILITIES ==========
-                    document.querySelectorAll('.edit-facility-checkbox').forEach(checkbox => {
-                        checkbox.checked = false;
+                    document.querySelectorAll('.edit-facility-checkbox').forEach(cb => cb.checked = false);
+                    const facilityIds = acc.facility_ids || (acc.facilities ? acc.facilities.map(f => f.id) : []);
+                    document.querySelectorAll('.edit-facility-checkbox').forEach(cb => {
+                        if (facilityIds.includes(parseInt(cb.value))) cb.checked = true;
                     });
 
-                    let facilityIds = [];
-                    if (accommodation.facility_ids && accommodation.facility_ids.length > 0) {
-                        facilityIds = accommodation.facility_ids;
-                    } else if (accommodation.facilities && accommodation.facilities.length > 0) {
-                        facilityIds = accommodation.facilities.map(f => f.id);
-                    }
-
-                    if (facilityIds.length > 0) {
-                        document.querySelectorAll('.edit-facility-checkbox').forEach(checkbox => {
-                            const val = parseInt(checkbox.value);
-                            if (facilityIds.includes(val)) {
-                                checkbox.checked = true;
-                            }
-                        });
-                    }
-
-                    // ========== RULES ==========
-                    document.querySelectorAll('.edit-rule-checkbox').forEach(checkbox => {
-                        checkbox.checked = false;
+                    document.querySelectorAll('.edit-rule-checkbox').forEach(cb => cb.checked = false);
+                    const ruleIds = acc.rule_ids || (acc.rules ? acc.rules.map(r => r.id) : []);
+                    document.querySelectorAll('.edit-rule-checkbox').forEach(cb => {
+                        if (ruleIds.includes(parseInt(cb.value))) cb.checked = true;
                     });
 
-                    let ruleIds = [];
-                    if (accommodation.rule_ids && accommodation.rule_ids.length > 0) {
-                        ruleIds = accommodation.rule_ids;
-                    } else if (accommodation.rules && accommodation.rules.length > 0) {
-                        ruleIds = accommodation.rules.map(r => r.id);
-                    }
-
-                    if (ruleIds.length > 0) {
-                        document.querySelectorAll('.edit-rule-checkbox').forEach(checkbox => {
-                            const val = parseInt(checkbox.value);
-                            if (ruleIds.includes(val)) {
-                                checkbox.checked = true;
-                            }
-                        });
-                    }
-
-                    // ========== GALLERY ==========
                     editExistingGallery = [];
-                    if (accommodation.gallery && accommodation.gallery.length > 0) {
-                        editExistingGallery = accommodation.gallery.map(g => ({
+                    if (acc.images && acc.images.length > 0) {
+                        editExistingGallery = acc.images.map(g => ({
                             id: g.id,
                             image: g.image,
                             image_url: g.image ? '{{ asset('') }}' + g.image.replace(/^public\//, '') : null
@@ -493,13 +729,17 @@
 
                     document.querySelectorAll('#editPenginapanForm .error-message').forEach(el => el.textContent = '');
 
+                    switchEditTab('edit-utama');
+
                     document.getElementById('editPenginapanModal').classList.remove('hidden');
                     document.body.style.overflow = 'hidden';
+
+                    renderLucideSafeEdit();
                 } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal!',
-                        text: data.message || 'Gagal memuat data penginapan'
+                        text: data.message || 'Gagal memuat data'
                     });
                 }
             })
@@ -519,6 +759,7 @@
         document.body.style.overflow = 'auto';
         editGalleryPhotos = [];
         editExistingGallery = [];
+        editDeletedGalleryIds = []; // ✅ reset
         renderEditGallery();
         updateEditGalleryCounter();
     }
@@ -526,29 +767,19 @@
     // ========== SLUG GENERATOR ==========
     function generateEditSlugFromTitle() {
         const title = document.getElementById('editTitle').value.trim();
-        const slugInput = document.getElementById('editSlug');
-
         if (!title) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Peringatan!',
                 text: 'Masukkan nama penginapan terlebih dahulu'
             });
-            document.getElementById('editTitle').focus();
             return;
         }
-
-        const slug = title.toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-');
-
-        slugInput.value = slug;
-
+        const slug = title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
+        document.getElementById('editSlug').value = slug;
         Swal.fire({
             icon: 'success',
             title: 'Berhasil!',
-            text: 'Slug telah digenerate dari nama penginapan',
             timer: 1500,
             showConfirmButton: false
         });
@@ -557,64 +788,39 @@
     // ========== THUMBNAIL ==========
     document.addEventListener('DOMContentLoaded', function () {
         const upload = document.getElementById('editThumbnailUpload');
-        const uploadArea = document.getElementById('editThumbnailUploadArea');
-        const previewContainer = document.getElementById('editThumbnailPreviewContainer');
-        const preview = document.getElementById('editThumbnailPreview');
-        const fileName = document.getElementById('editThumbnailFileName');
-        const fileSize = document.getElementById('editThumbnailFileSize');
-
         if (upload) {
             upload.addEventListener('change', function (e) {
                 const file = e.target.files[0];
-
-                if (e.target.files.length > 1) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Peringatan!',
-                        text: 'Hanya boleh upload 1 foto thumbnail. Foto pertama yang akan digunakan.'
-                    });
-                    const firstFile = e.target.files[0];
-                    const dt = new DataTransfer();
-                    dt.items.add(firstFile);
-                    this.files = dt.files;
-                }
-
                 if (file) {
-                    if (file.size > 5 * 1024 * 1024) {
+                    if (!isValidEditFileSize(file)) {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Gagal!',
-                            text: 'Ukuran file maksimal 5MB'
+                            title: 'Ukuran File Terlalu Besar!',
+                            html: `Ukuran file: <b>${formatEditFileSize(file.size)}</b><br>Maksimal yang diizinkan: <b>${EDIT_MAX_IMAGE_SIZE_LABEL}</b>`
                         });
                         this.value = '';
                         return;
                     }
-                    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-                    if (!validTypes.includes(file.type)) {
+                    if (!isValidEditImageType(file)) {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Gagal!',
+                            title: 'Format Tidak Didukung!',
                             text: 'Format file harus JPG, JPEG, PNG, GIF atau WEBP.'
                         });
                         this.value = '';
                         return;
                     }
-
                     isThumbnailChanged = true;
-
                     const reader = new FileReader();
                     reader.onload = function (event) {
-                        preview.src = event.target.result;
-                        uploadArea.classList.add('hidden');
-                        previewContainer.classList.remove('hidden');
-
-                        fileName.textContent = file.name;
-                        const sizeInKB = (file.size / 1024).toFixed(2);
-                        if (sizeInKB > 1024) {
-                            fileSize.textContent = (sizeInKB / 1024).toFixed(2) + ' MB';
-                        } else {
-                            fileSize.textContent = sizeInKB + ' KB';
-                        }
+                        document.getElementById('editThumbnailPreview').src = event.target.result;
+                        document.getElementById('editThumbnailUploadArea').classList.add('hidden');
+                        document.getElementById('editThumbnailPreviewContainer').classList.remove('hidden');
+                        const fileNameEl = document.getElementById('editThumbnailFileName');
+                        const fileSizeEl = document.getElementById('editThumbnailFileSize');
+                        if (fileNameEl) fileNameEl.textContent = file.name;
+                        if (fileSizeEl) fileSizeEl.textContent = formatEditFileSize(file.size);
+                        renderLucideSafeEdit();
                     };
                     reader.readAsDataURL(file);
                 }
@@ -625,28 +831,24 @@
             document.getElementById('editThumbnailUpload').value = '';
             document.getElementById('editThumbnailUploadArea').classList.remove('hidden');
             document.getElementById('editThumbnailPreviewContainer').classList.add('hidden');
-            document.getElementById('edit_thumbnail_error').textContent = '';
             isThumbnailChanged = true;
         };
     });
 
     // ========== GALLERY ==========
     function updateEditGalleryCounter() {
-        const counter = document.getElementById('editGalleryCounter');
+        const total = editExistingGallery.length + editGalleryPhotos.length;
+        document.getElementById('editGalleryCounter').textContent = `${total} / ${maxEditGalleryPhotos} foto`;
         const uploadBtn = document.getElementById('editUploadGaleriBtn');
-        const totalPhotos = editExistingGallery.length + editGalleryPhotos.length;
-        const maxPhotos = maxEditGalleryPhotos;
-
-        counter.textContent = `${totalPhotos} / ${maxPhotos} foto`;
-
-        if (totalPhotos >= maxPhotos) {
+        const uploadInput = document.getElementById('editGalleryUpload');
+        if (total >= maxEditGalleryPhotos) {
             uploadBtn.style.opacity = '0.5';
             uploadBtn.style.cursor = 'not-allowed';
-            document.getElementById('editGalleryUpload').disabled = true;
+            uploadInput.disabled = true;
         } else {
             uploadBtn.style.opacity = '1';
             uploadBtn.style.cursor = 'pointer';
-            document.getElementById('editGalleryUpload').disabled = false;
+            uploadInput.disabled = false;
         }
     }
 
@@ -654,35 +856,26 @@
         const container = document.getElementById('editGalleryContainer');
         container.innerHTML = '';
 
-        const allPhotos = [];
-
-        editExistingGallery.forEach(photo => {
-            allPhotos.push({
-                id: photo.id,
-                url: photo.image_url || '{{ asset('landingpage/home.png') }}',
+        const allPhotos = [
+            ...editExistingGallery.map(p => ({
+                ...p,
                 isExisting: true
-            });
-        });
-
-        editGalleryPhotos.forEach((photo, index) => {
-            allPhotos.push({
-                id: 'new_' + index,
-                url: photo.url,
-                isExisting: false,
-                file: photo.file
-            });
-        });
+            })),
+            ...editGalleryPhotos.map(p => ({
+                id: 'new',
+                url: p.url,
+                isExisting: false
+            }))
+        ];
 
         if (allPhotos.length === 0) {
-            container.innerHTML = `
-                <div class="col-span-full text-center py-8 text-gray-400 dark:text-gray-500 border-2 border-dashed border-[#FFD4D4] dark:border-gray-600 rounded-lg">
-                    <svg class="w-12 h-12 mx-auto mb-2 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    <p>Belum ada foto galeri</p>
-                    <p class="text-xs">Klik tombol "Tambah Foto Galeri" untuk menambahkan</p>
+            container.innerHTML = `<div class="col-span-full text-center py-8 text-[#687176] dark:text-gray-500 border-2 border-dashed border-[#B3E0FF] dark:border-gray-600 rounded-lg bg-gradient-to-br from-[#E6F4FF] to-[#F0F9FF] dark:from-gray-800 dark:to-gray-700">
+                <div class="flex justify-center mb-2">
+                    <i data-lucide="image" class="w-12 h-12 text-[#0194F3]"></i>
                 </div>
-            `;
+                <p>Belum ada foto galeri</p>
+            </div>`;
+            renderLucideSafeEdit();
             return;
         }
 
@@ -690,43 +883,34 @@
             const div = document.createElement('div');
             div.className = 'relative group';
             div.innerHTML = `
-                <img src="${photo.url}" alt="Galeri ${index + 1}" 
-                    class="w-full h-32 object-cover rounded-lg border-2 border-[#FFD4D4] dark:border-gray-600">
-                <button type="button" onclick="removeEditGalleryPhoto(${index})" 
-                    class="absolute top-2 right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-700 transition-colors opacity-0 group-hover:opacity-100">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
+                <img src="${photo.image_url || photo.url}" class="w-full h-32 object-cover rounded-lg border-2 border-[#B3E0FF] dark:border-gray-600">
+                <button type="button" onclick="removeEditGalleryPhoto(${index})"
+                    class="absolute top-2 right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
-                ${photo.isExisting ? '<span class="absolute bottom-2 left-2 bg-green-600/80 text-white text-xs px-2 py-1 rounded">Existing</span>' :
-                    `<span class="absolute bottom-2 left-2 bg-blue-600/80 text-white text-xs px-2 py-1 rounded">New</span>`}
+                ${photo.isExisting ? '<span class="absolute bottom-2 left-2 bg-gradient-to-r from-[#0194F3] to-[#0064D2] text-white text-xs px-2 py-1 rounded">Existing</span>' : '<span class="absolute bottom-2 left-2 bg-gradient-to-r from-[#33ADFF] to-[#0194F3] text-white text-xs px-2 py-1 rounded">Baru</span>'}
             `;
             container.appendChild(div);
         });
+
+        renderLucideSafeEdit();
     }
 
+    // =============================================================
+    // ✅ FUNGSI REMOVE GALERI — SUDAH DIPERBAIKI
+    // =============================================================
     function removeEditGalleryPhoto(index) {
-        const allPhotos = [];
-        editExistingGallery.forEach(photo => {
-            allPhotos.push({ id: photo.id, isExisting: true });
-        });
-        editGalleryPhotos.forEach(photo => {
-            allPhotos.push({ id: 'new_' + Date.now(), isExisting: false });
-        });
+        const totalExisting = editExistingGallery.length;
 
-        if (index < allPhotos.length) {
-            const photo = allPhotos[index];
-            if (photo.isExisting) {
-                const existingIndex = editExistingGallery.findIndex(p => p.id === photo.id);
-                if (existingIndex !== -1) {
-                    editExistingGallery.splice(existingIndex, 1);
-                }
-            } else {
-                const newIndex = index - editExistingGallery.length;
-                if (newIndex >= 0 && newIndex < editGalleryPhotos.length) {
-                    editGalleryPhotos.splice(newIndex, 1);
-                }
+        if (index < totalExisting) {
+            // ✅ Foto existing — catat ID-nya agar server tahu harus hapus
+            const removed = editExistingGallery.splice(index, 1)[0];
+            if (removed && removed.id) {
+                editDeletedGalleryIds.push(removed.id);
             }
+        } else {
+            // Foto baru — cukup hapus dari array JS (belum tersimpan di server)
+            editGalleryPhotos.splice(index - totalExisting, 1);
         }
 
         renderEditGallery();
@@ -734,35 +918,30 @@
     }
 
     function addEditGalleryPhoto(file) {
-        const totalPhotos = editExistingGallery.length + editGalleryPhotos.length;
-        if (totalPhotos >= maxEditGalleryPhotos) {
+        if (editExistingGallery.length + editGalleryPhotos.length >= maxEditGalleryPhotos) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Peringatan!',
-                text: 'Maksimal 10 foto galeri!'
+                text: `Maksimal ${maxEditGalleryPhotos} foto!`
             });
             return;
         }
-
-        if (file.size > 5 * 1024 * 1024) {
+        if (!isValidEditFileSize(file)) {
             Swal.fire({
                 icon: 'error',
-                title: 'Gagal!',
-                text: 'Ukuran file maksimal 5MB'
+                title: 'Ukuran File Terlalu Besar!',
+                html: `File: <b>${file.name}</b><br>Ukuran: <b>${formatEditFileSize(file.size)}</b><br>Maksimal: <b>${EDIT_MAX_IMAGE_SIZE_LABEL}</b> per foto.`
             });
             return;
         }
-
-        const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        if (!validTypes.includes(file.type)) {
+        if (!isValidEditImageType(file)) {
             Swal.fire({
                 icon: 'error',
-                title: 'Gagal!',
-                text: 'Format file harus JPG, JPEG, PNG, GIF atau WEBP.'
+                title: 'Format Tidak Didukung!',
+                text: `"${file.name}" bukan format gambar yang didukung (JPG, JPEG, PNG, GIF, WEBP).`
             });
             return;
         }
-
         const reader = new FileReader();
         reader.onload = function (event) {
             editGalleryPhotos.push({
@@ -779,166 +958,106 @@
         const upload = document.getElementById('editGalleryUpload');
         if (upload) {
             upload.addEventListener('change', function (e) {
-                const files = e.target.files;
-                for (let i = 0; i < files.length; i++) {
-                    addEditGalleryPhoto(files[i]);
-                }
+                for (let file of e.target.files) addEditGalleryPhoto(file);
                 this.value = '';
             });
         }
-
-        const container = document.getElementById('editUploadGaleriContainer');
-        if (container) {
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                container.addEventListener(eventName, function (e) { e.preventDefault(); e.stopPropagation(); });
-            });
-            container.addEventListener('dragover', function () { this.classList.add('ring-4', 'ring-[#E60000]', 'ring-offset-2', 'rounded-lg'); });
-            container.addEventListener('dragleave', function () { this.classList.remove('ring-4', 'ring-[#E60000]', 'ring-offset-2', 'rounded-lg'); });
-            container.addEventListener('drop', function (e) {
-                this.classList.remove('ring-4', 'ring-[#E60000]', 'ring-offset-2', 'rounded-lg');
-                const files = e.dataTransfer.files;
-                for (let i = 0; i < files.length; i++) { addEditGalleryPhoto(files[i]); }
-            });
-        }
-
-        // Auto generate slug on title input - hanya jika slug kosong
-        const titleInput = document.getElementById('editTitle');
-        const slugInput = document.getElementById('editSlug');
-        if (titleInput && slugInput) {
-            titleInput.addEventListener('input', function () {
-                // Hanya auto-generate jika slug kosong
-                if (slugInput.value === '') {
-                    const slug = this.value.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
-                    slugInput.value = slug;
-                }
-            });
-        }
-
-        console.log('Modal Edit Penginapan siap digunakan.');
     });
 
-    // ========== SUBMIT FUNCTION ==========
+    // ========== SUBMIT ==========
     window.submitEditPenginapan = async function () {
-        console.log('=== SUBMIT EDIT PENGINAPAN ===');
-
         document.querySelectorAll('#editPenginapanForm .error-message').forEach(el => el.textContent = '');
 
         const category = document.getElementById('editCategory').value;
         const title = document.getElementById('editTitle').value.trim();
         const address = document.getElementById('editAddress').value.trim();
         const price = document.getElementById('editPrice').value;
-        const capacity = document.getElementById('editCapacity').value;
-        const bedroom = document.getElementById('editBedroom').value;
-        const bathroom = document.getElementById('editBathroom').value;
-        const status = document.getElementById('editStatus').value;
-        const description = document.getElementById('editDescription').value.trim();
 
         if (!category) {
             document.getElementById('edit_category_id_error').textContent = 'Kategori wajib dipilih';
-            Swal.fire({ icon: 'warning', title: 'Peringatan!', text: 'Kategori wajib dipilih' });
-            document.getElementById('editCategory').focus();
+            Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: 'Kategori wajib dipilih'
+            });
             return;
         }
-
         if (!title) {
             document.getElementById('edit_title_error').textContent = 'Nama penginapan wajib diisi';
-            Swal.fire({ icon: 'warning', title: 'Peringatan!', text: 'Nama penginapan wajib diisi' });
-            document.getElementById('editTitle').focus();
+            Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: 'Nama penginapan wajib diisi'
+            });
             return;
         }
-
         if (!address) {
             document.getElementById('edit_address_error').textContent = 'Alamat wajib diisi';
-            Swal.fire({ icon: 'warning', title: 'Peringatan!', text: 'Alamat wajib diisi' });
-            document.getElementById('editAddress').focus();
+            Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: 'Alamat wajib diisi'
+            });
             return;
         }
-
         if (!price || Number(price) <= 0) {
-            document.getElementById('edit_price_error').textContent = 'Harga wajib diisi dan harus lebih dari 0';
-            Swal.fire({ icon: 'warning', title: 'Peringatan!', text: 'Harga wajib diisi dan harus lebih dari 0' });
-            document.getElementById('editPrice').focus();
+            document.getElementById('edit_price_error').textContent = 'Harga wajib diisi';
+            Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: 'Harga wajib diisi'
+            });
             return;
         }
 
-        if (!capacity || Number(capacity) <= 0) {
-            document.getElementById('edit_capacity_error').textContent = 'Kapasitas wajib diisi dan harus lebih dari 0';
-            Swal.fire({ icon: 'warning', title: 'Peringatan!', text: 'Kapasitas wajib diisi dan harus lebih dari 0' });
-            document.getElementById('editCapacity').focus();
+        const thumbnailInput = document.getElementById('editThumbnailUpload');
+        const newThumbnail = thumbnailInput.files[0];
+        if (newThumbnail && !isValidEditFileSize(newThumbnail)) {
+            document.getElementById('edit_thumbnail_error').textContent =
+                `Ukuran thumbnail maksimal ${EDIT_MAX_IMAGE_SIZE_LABEL}`;
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran Thumbnail Terlalu Besar!',
+                html: `Ukuran: <b>${formatEditFileSize(newThumbnail.size)}</b><br>Maksimal: <b>${EDIT_MAX_IMAGE_SIZE_LABEL}</b>`
+            });
             return;
         }
 
-        if (bedroom === '' || Number(bedroom) < 0) {
-            document.getElementById('edit_bedroom_error').textContent = 'Kamar tidur wajib diisi dan minimal 0';
-            Swal.fire({ icon: 'warning', title: 'Peringatan!', text: 'Kamar tidur wajib diisi dan minimal 0' });
-            document.getElementById('editBedroom').focus();
-            return;
-        }
-
-        if (bathroom === '' || Number(bathroom) < 0) {
-            document.getElementById('edit_bathroom_error').textContent = 'Kamar mandi wajib diisi dan minimal 0';
-            Swal.fire({ icon: 'warning', title: 'Peringatan!', text: 'Kamar mandi wajib diisi dan minimal 0' });
-            document.getElementById('editBathroom').focus();
-            return;
-        }
-
-        if (!status) {
-            document.getElementById('edit_status_error').textContent = 'Status wajib dipilih';
-            Swal.fire({ icon: 'warning', title: 'Peringatan!', text: 'Status wajib dipilih' });
-            document.getElementById('editStatus').focus();
-            return;
-        }
-
-        if (!description) {
-            document.getElementById('edit_description_error').textContent = 'Deskripsi wajib diisi';
-            Swal.fire({ icon: 'warning', title: 'Peringatan!', text: 'Deskripsi wajib diisi' });
-            document.getElementById('editDescription').focus();
-            return;
-        }
-
-        console.log('Validasi berhasil');
-
-        const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-        if (!csrfMeta) {
-            console.error('CSRF meta tag tidak ditemukan');
-            Swal.fire({ icon: 'error', title: 'Error!', text: 'CSRF token tidak ditemukan.' });
-            return;
-        }
-
-        const csrfToken = csrfMeta.getAttribute('content');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         const id = document.getElementById('editId').value;
-
         const form = document.getElementById('editPenginapanForm');
         const formData = new FormData(form);
 
-        // Hapus gallery dari input asli
         formData.delete('gallery[]');
 
-        // Kirim ID galeri yang ada
-        editExistingGallery.forEach(photo => {
-            formData.append('existing_gallery_ids[]', photo.id);
+        // ✅ Penanda bahwa field existing_gallery_ids[] dikirim (boleh kosong)
+        formData.append('existing_gallery_ids_present', '1');
+
+        // Existing foto yang masih ada
+        editExistingGallery.forEach(p => {
+            formData.append('existing_gallery_ids[]', p.id);
         });
 
-        // Kirim file galeri baru
-        editGalleryPhotos.forEach(photo => {
-            if (photo.file) {
-                formData.append('gallery[]', photo.file);
-            }
+        // ✅ Existing foto yang dihapus user — dikirim ke server
+        editDeletedGalleryIds.forEach(deletedId => {
+            formData.append('deleted_gallery_ids[]', deletedId);
+        });
+
+        // Foto baru
+        editGalleryPhotos.forEach(p => {
+            if (p.file) formData.append('gallery[]', p.file);
         });
 
         Swal.fire({
             title: 'Mengupdate...',
-            text: 'Mohon tunggu sebentar',
             allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
+            didOpen: () => Swal.showLoading()
         });
 
         try {
-            console.log('Mengirim PUT ke:', '{{ route('accommodations.update', '') }}/' + id);
+            const url = '{{ route('accommodations.update', ':id') }}'.replace(':id', id);
 
-            const response = await fetch('{{ route('accommodations.update', '') }}/' + id, {
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': csrfToken,
@@ -949,20 +1068,7 @@
                 body: formData
             });
 
-            console.log('HTTP Status:', response.status);
-
-            const contentType = response.headers.get('content-type') || '';
-            let data;
-
-            if (contentType.includes('application/json')) {
-                data = await response.json();
-            } else {
-                const text = await response.text();
-                console.error('Response bukan JSON:', text);
-                throw new Error(`Server mengembalikan response bukan JSON. HTTP ${response.status}`);
-            }
-
-            console.log('Response JSON:', data);
+            const data = await response.json();
 
             if (response.ok && data.success) {
                 Swal.fire({
@@ -971,19 +1077,17 @@
                     text: 'Penginapan berhasil diupdate!',
                     timer: 2000,
                     showConfirmButton: false
-                }).then(() => {
-                    closeEditPenginapanModal();
-                    location.reload();
-                });
-                return;
-            }
-
-            if (data.errors) {
+                })
+                    .then(() => {
+                        closeEditPenginapanModal();
+                        location.reload();
+                    });
+            } else if (data.errors) {
                 Object.keys(data.errors).forEach(key => {
-                    const errorEl = document.getElementById('edit_' + key + '_error');
-                    if (errorEl) {
-                        errorEl.textContent = Array.isArray(data.errors[key]) ? data.errors[key][0] : data.errors[key];
-                    }
+                    const normalizedKey = key.replace(/\.\d+/g, '');
+                    const el = document.getElementById('edit_' + normalizedKey + '_error');
+                    if (el) el.textContent = Array.isArray(data.errors[key]) ? data.errors[key][0] : data
+                        .errors[key];
                 });
                 const firstError = Object.values(data.errors)[0];
                 Swal.fire({
@@ -995,12 +1099,11 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal!',
-                    text: data.message || 'Gagal mengupdate penginapan'
+                    text: data.message || 'Gagal mengupdate'
                 });
             }
-
         } catch (error) {
-            console.error('=== ERROR SUBMIT ===', error);
+            console.error('Error:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error!',
@@ -1012,14 +1115,17 @@
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
             const modal = document.getElementById('editPenginapanModal');
-            if (modal && !modal.classList.contains('hidden')) {
-                closeEditPenginapanModal();
-            }
+            if (modal && !modal.classList.contains('hidden')) closeEditPenginapanModal();
         }
     });
 
     document.querySelector('#editPenginapanModal .fixed.inset-0')?.addEventListener('click', function (e) {
         if (e.target === this) closeEditPenginapanModal();
+    });
+
+    // Render Lucide saat halaman pertama load
+    document.addEventListener('DOMContentLoaded', function () {
+        renderLucideSafeEdit();
     });
 </script>
 
@@ -1044,12 +1150,12 @@
     }
 
     #editPenginapanModal .max-h-\[70vh\]::-webkit-scrollbar-track {
-        background: #f1f1f1;
+        background: #E6F4FF;
         border-radius: 3px;
     }
 
     #editPenginapanModal .max-h-\[70vh\]::-webkit-scrollbar-thumb {
-        background: #E60000;
+        background: linear-gradient(180deg, #0194F3, #0064D2);
         border-radius: 3px;
     }
 
@@ -1058,35 +1164,11 @@
     }
 
     .dark #editPenginapanModal .max-h-\[70vh\]::-webkit-scrollbar-thumb {
-        background: #FF6B6B;
-    }
-
-    #editGalleryContainer .group:hover button {
-        opacity: 1 !important;
-    }
-
-    #editGalleryContainer .group button {
-        transition: opacity 0.2s ease;
+        background: linear-gradient(180deg, #33ADFF, #0194F3);
     }
 
     .error-message {
         margin-top: 4px;
         display: block;
-    }
-
-    #editThumbnailPreviewContainer {
-        animation: fadeIn 0.3s ease-out;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: scale(0.95);
-        }
-
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
     }
 </style>

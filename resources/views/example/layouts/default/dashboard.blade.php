@@ -13,4 +13,5 @@
             @include('example.layouts.partials.footer-dashboard')
       </div>
     </div>
+    
 @endsection
